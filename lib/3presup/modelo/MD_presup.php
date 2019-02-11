@@ -19,6 +19,8 @@ session_start();
 
 class MD_presup {
 
+
+
     function gritPresupuesto() {
 
         $obj_bd = new BD();
@@ -645,6 +647,10 @@ class MD_presup {
 
 */
 
+        /**
+         * Inicio listar actividades del presupuesto
+         */
+
         $sql = "CALL SP_ptpresupuesto('3','','','','','','','','','','','','','','','','" . trim($data['detallepresupuesto_id']) . "','','','','','');";
 
         $resultado = $obj_bd->EjecutaConsulta($sql);
@@ -657,8 +663,12 @@ class MD_presup {
                 <td>" . utf8_encode($row['modulo_descripcion']) . "</td>
                 <td>" . utf8_encode($row['item'] . " " . $row['labor_descripcion']) . "</td>                     
                 <td>" . utf8_encode($row['presupuesto_obs']) . "</td>                                                          
-                <td>" . number_format((float) $row['total_actividad'], 0, ',','.') . "</td>
-aqui voy        <td>" . (number_format((float) $row['total_actividad'], 0, ',', '.') / number_format((float) $row['detallepresupuesto_total'], 0, ',','.'))* 100 . "%" . "</td>
+                <td>" . number_format((float) $row['total_actividad'], 0, ',','.') . "</td>";
+    
+            //calculamos el porcentaje de la actividad con respecto a el costo total presupuesto
+            $totalPorcentajeActividad= ($row['total_actividad'] / $row['detallepresupuesto_total'])*100;
+
+            $tabla .="<td>" . number_format((float) $totalPorcentajeActividad, 0, ',','.') . "%" . "</td>
                 <td><input type='button' class='btn btn-primary'  onclick='EditarActividadPresupuesto(" . $row['baremo_id'] . "," . $row['tipobaremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . ",0," . trim($obs) . ");' value='Editar'/>                     
                     <input type='button' class='btn btn-danger'  onclick='DeletePresupuestoActividad(" . $row['baremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . "," . $obs . ");' value='Eliminar' />       
                     
@@ -676,9 +686,11 @@ aqui voy        <td>" . (number_format((float) $row['total_actividad'], 0, ',', 
         $tabla .= "<fieldset><script type='text/javascript'>
                     ListModuloCopiar('sl_copiar_md');
                  </script>";
-        $tabla .= '<button name="btnNew" id="btnNew" class="btn btn-default" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
+        $tabla .= '<b
+        utton name="btnNew" id="btnNew" class="btn btn-default" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
         return $tabla;
     }
+
 
     public function DeletePresupuestoActividad($data) {
         $obj_bd = new BD();

@@ -241,9 +241,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     <div class="col-sm-8" id="valor_labor">                      
                     </div>
                 </div>
-
-
-
+                
                 <!--OBSERVACIONES-->
                 <div class="form-group">
                     <label for="lb_objetivo" class="col-sm-3 control-label">Alcance técnico particular:</label>
