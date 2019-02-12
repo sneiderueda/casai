@@ -28,7 +28,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
         ListSubestacion('slSubestacion');
         ListGestor('slGestor');
         ListTipBaremo('slTipActividad');
-
+        ListarPmCodensa('slPmCodensa');
 
 
         if (detallepresupuesto_id != 0) {
@@ -110,7 +110,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
             <div class="col-sm-6">
                                 <!--Alcance-->
                 <div class="form-group">
-                    <label for="lb_alcance" class="col-sm-3 control-label">Alcance Particular Cliente:</label>
+                    <label for="lb_alcance" class="col-sm-3 control-label">Alcance:</label>
                     <div class="col-sm-8">  
                         <textarea class="form-control"  id="txt_alcance" name="txt_alcance"rows="5" cols="40" placeholder="Alcance del Proyecto por Modulos" ></textarea>
                     </div>
@@ -127,9 +127,12 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 
                 <!-- Gestor-->
                 <div class="form-group">
-                    <label for="lb_gestor" class="col-sm-3 control-label">PM CODENSA:</label>
-                    <div class="col-sm-8">                
-                        <input type="text" class="form-control" id="txt_gestorCodensa" name="txt_gestorCodensa" placeholder="Gestor Administrativo de Contrato CODENSA" onblur="aMayusculas(this.value, this.id);">
+                    <label for="lb_PmCodensa" class="col-sm-3 control-label">PM Codensa:</label>
+                    <div class="col-sm-8">
+                    <select id="slPmCodensa" name="slPmCodensa" class="form-control" required="true">
+                        </select>              
+                        <!--<input type="text" class="form-control" id="txt_gestorCodensa" name="txt_gestorCodensa" placeholder="Gestor Administrativo de Contrato CODENSA" onblur="aMayusculas(this.value, this.id);">
+                    -->
                     </div>
                 </div>
 
@@ -241,6 +244,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     <div class="col-sm-8" id="valor_labor">                      
                     </div>
                 </div>
+
                 
                 <!--OBSERVACIONES-->
                 <div class="form-group">

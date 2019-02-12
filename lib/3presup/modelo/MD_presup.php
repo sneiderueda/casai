@@ -167,7 +167,7 @@ class MD_presup {
         $alcance = preg_replace("/\s+/", " ", $data['txt_alcance']);
         $objeto = preg_replace("/\s+/", " ", $data['txt_Objetivo']);
         if ($data['detallepresupuesto_id'] != "") {
-            $sql_PRES = "CALL SP_dtdetallepresupuesto('6','" . $data['detallepresupuesto_id'] . "','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . trim(utf8_decode($data['txt_gestorCodensa'])) . "');";
+            $sql_PRES = "CALL SP_dtdetallepresupuesto('6','" . $data['detallepresupuesto_id'] . "','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . $data['txt_gestorCodensa'] . "');";
         } else {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('2','','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . trim(utf8_decode($data['txt_gestorCodensa'])) . "');";
         }
@@ -255,6 +255,81 @@ class MD_presup {
         $obj_bd = new BD();
 
         $sql = "CALL SP_dtusuario('4',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',
+                    '',                    
+                    ''
+                    );";
+
+        $resul = $obj_bd->EjecutaConsulta($sql);
+        $retorno .= "<option value=''>-Seleccione-</option>";
+        while ($row = $obj_bd->FuncionFetch($resul)) {
+
+            $retorno .= "<option value='" . $row['usuario_id'] . "'>" . utf8_encode($row['usuario_apellidos']) . ' ' . utf8_encode($row['usuario_nombre']) . " </option>";
+        }
+        return $retorno;
+    }
+
+     public function ListarPmCodensa() {
+        $obj_bd = new BD();
+
+        $sql = "CALL SP_dtusuario('6',
                     '',
                     '',
                     '',
@@ -686,8 +761,7 @@ class MD_presup {
         $tabla .= "<fieldset><script type='text/javascript'>
                     ListModuloCopiar('sl_copiar_md');
                  </script>";
-        $tabla .= '<b
-        utton name="btnNew" id="btnNew" class="btn btn-default" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
+        $tabla .= '<button name="btnNew" id="btnNew" class="btn btn-default" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
         return $tabla;
     }
 

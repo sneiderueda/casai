@@ -54,6 +54,11 @@ if ($opcion == 'ListGestor') {
     echo $resultado;
 }
 
+if ($opcion == 'ListarPmCodensa') {
+    (string) $resultado = $obj_presup->ListarPmCodensa($_POST);
+    echo $resultado;
+}
+
 if ($opcion == 'dataBaremoItemPresupuesto') {
     $retorno = $obj_presup->dataBaremoItemPresupuesto($_POST);
     echo $retorno;
