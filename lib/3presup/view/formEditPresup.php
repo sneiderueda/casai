@@ -206,10 +206,11 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 <div class="form-group">
                     <label for="lb_modulo" class="col-sm-3 control-label">Modulo:</label>
                     <div class="col-sm-8">                
-                        <select id="slModulo" style="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
+                       <!-- <select id="slModulo" style="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
                         </select>
                         <input type="text" style="display: none" class="form-control data" id="txt_modulo" name="txt_modulo" placeholder="Nombre del Modulo" onblur="aMayusculas(this.value, this.id);">
-                        <img src='img/atras.png' style="display: none"  title='Atras' width='20' height='20' id='AtrasModulo' name='AtrasModulo' style='cursor:pointer' border='0' onclick='AddModulo("")'>
+                        <img src='img/atras.png' style="display: none"  title='Atras' width='20' height='20' id='AtrasModulo' name='AtrasModulo' style='cursor:pointer' border='0' onclick='AddModulo("")'>-->
+                        <input type="text" name="txt_modulo" id="txt_modulo" class="form-control data">
                     </div>
                 </div>
                 

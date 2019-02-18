@@ -507,7 +507,7 @@ class MD_presup {
                     </div>
                     ";
             $tabla .= "<fieldset>";
-            $tabla .= '<button name="btnGuardar" id="btnGuardar" class="btn btn-default" type="button" onclick="SaveActividadPresupuesto(' . $baremo_id . ')">Guardar</button>';
+            $tabla .= '<button name="btnGuardar" id="btnGuardar" class="btn btn-primary" type="button" onclick="SaveActividadPresupuesto(' . $baremo_id . ')">Guardar</button>';
             return $tabla;
         } else {
             return 0;
