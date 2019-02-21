@@ -35,7 +35,7 @@ class MD_presup {
         $tabla .= "<legend>Presupuestos Registrados</legend>";
         $url = "'lib/3presup/view/formEditPresup.php','contenido','0'";
 
-        $tabla .= '<button name="btnAdd" id="btnAdd" class="btn btn-default" type="button" onclick="loadingFunctions(' . $url . ')">Crear</button>';
+        //$tabla .= '<button name="btnAdd" id="btnAdd" class="btn btn-default" type="button" onclick="loadingFunctions(' . $url . ')">Crear</button>';
         $tabla .= "<br>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
@@ -45,10 +45,10 @@ class MD_presup {
                             <th>No.</th>  
                             <th>Estado</th>  
                             <th>Cliente</th>
-                            <th>Subestacion</th>                                                        
+                            <th>Subestacion</th>                                                  
                             <th>Fecha Inicio</th>                                                        
-                            <th>Presupuesto</th>                                                                                                                
-                            <th>Total + Incremento</th>                                                                                                                                                                                                                             
+                            <th>Presupuesto</th>                                                    
+                            <th>Total + Incremento</th>     
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -162,14 +162,28 @@ class MD_presup {
         $obj_bd = new BD();
         $id_usuario = $_SESSION['Usuario']['usuario_id'];
 
+        
 
         //INSERTAR PRESUPUESTO    
         $alcance = preg_replace("/\s+/", " ", $data['txt_alcance']);
         $objeto = preg_replace("/\s+/", " ", $data['txt_Objetivo']);
         if ($data['detallepresupuesto_id'] != "") {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('6','" . $data['detallepresupuesto_id'] . "','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . $data['txt_gestorCodensa'] . "');";
+        
+        /*
+        Creamos carpetas para guardar archivos de visita tecnica
+         */
+        $carpeta = $data['detallepresupuesto_id'];
+        $ruta = 'C:/Presupuestos/'. $carpeta;
+        if (!file_exists($ruta)) {
+            mkdir($ruta);
+        }
+                
+                
+        
         } else {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('2','','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . trim(utf8_decode($data['txt_gestorCodensa'])) . "');";
+
         }
 
         $res_PRES = $obj_bd->EjecutaConsulta($sql_PRES);
@@ -178,6 +192,15 @@ class MD_presup {
 
         $array = $obj_bd->FuncionFetch($res_PRES);
         $detallepresupuesto_id = $array['detallepresupuesto_id_insert'];
+
+        /*
+        Creamos carpetas para guardar archivos de visita tecnica
+         */
+        $carpeta = $detallepresupuesto_id;
+        $ruta = 'C:/Presupuestos/'. $carpeta;
+        if (!file_exists($ruta)) {
+            mkdir($ruta);
+        }
 
         /* Actualizar baremos a contraato */
         $sql_upd_contrato = "CALL SP_ptpresupuesto('23','" . $data['slCliente'] . "','','','','','','','','','','','','','','','" . $detallepresupuesto_id . "',
@@ -861,7 +884,7 @@ class MD_presup {
             $actividad_valordecimal = $row['actividad_valordecimal'];
             /**/
 
-
+        
 
             /* validar si tiene sub actividades */
             $sql_subactividades = "CALL SP_ptpresupuesto('6','','','','','','','','','','" . trim(utf8_decode($data['obs'])) . "','','','','','','" . trim($data['detallepresupuesto_id']) . "','" . $row['baremoactividad_id'] . "','','','" . trim($data['modulo_id']) . "','');";

@@ -158,7 +158,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
                 <!--TOTAL PRESUPUESTO-->                     
                 <div class="form-group">
-                    <label for="lb_tot_pres" class="col-sm-3 control-label">Total Presupuesto: $</label>
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Total Presupuesto sin incrementos: $</label>
                     <div class="col-sm-8">                                   
                         <input type="text"  class="form-control data" id="txt_tot_pres" name="txt_tot_pres"  disabled="disabled" value="0" style="width:200px">
                     </div>
@@ -166,7 +166,15 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
             </div>
 
+                <!-- Porcentaje pago 90 dias -->
+                 <div class="form-group">
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias: $</label>
+                    <div class="col-sm-8">                                   
+                        <input type="text"  class="form-control data" id="txt_tot_90dias" name="txt_tot_pres"  disabled="disabled" value="0" style="width:200px">
+                    </div>
+                </div>
 
+            </div>
 
 
 
@@ -199,18 +207,17 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
 
             <div id="div_Add_actividades" style="display: none">
-                <input type="hidden" class="form-control" id="presupuesto_id" name="presupuesto_id">  
+                <input type="text" class="form-control" id="presupuesto_id" name="presupuesto_id">  
                 <legend>Agregar Actividades</legend>
 
                 <!--Modulo-->                     
                 <div class="form-group">
                     <label for="lb_modulo" class="col-sm-3 control-label">Modulo:</label>
                     <div class="col-sm-8">                
-                       <!-- <select id="slModulo" style="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
+                       <select id="slModulo" stylegit="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
                         </select>
                         <input type="text" style="display: none" class="form-control data" id="txt_modulo" name="txt_modulo" placeholder="Nombre del Modulo" onblur="aMayusculas(this.value, this.id);">
-                        <img src='img/atras.png' style="display: none"  title='Atras' width='20' height='20' id='AtrasModulo' name='AtrasModulo' style='cursor:pointer' border='0' onclick='AddModulo("")'>-->
-                        <input type="text" name="txt_modulo" id="txt_modulo" class="form-control data">
+                        <img src='img/atras.png' style="display: none"  title='Atras' width='20' height='20' id='AtrasModulo' name='AtrasModulo' style='cursor:pointer' border='0' onclick='AddModulo("")'>
                     </div>
                 </div>
                 
@@ -243,6 +250,12 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 <div class="form-group" id="contenido_labor_valor" style="display: none">
                     <label for="lb_gom" class="col-sm-3 control-label">Valor:</label>                                        
                     <div class="col-sm-8" id="valor_labor">                      
+                    </div>
+                </div>
+
+                <div class="form-group" id="contenido_labor_valo" style="display: none">
+                    <label for="lb_gom" class="col-sm-3 control-label">Valor 1.25 a 90 días:</label>                                        
+                    <div class="col-sm-8" id="valor90dias">                      
                     </div>
                 </div>
 

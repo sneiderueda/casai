@@ -36,13 +36,13 @@ $usuario = $_SESSION['Usuario'];
 
     <body class="nav-md">
         <div class="container body" >
-            <div class="main_container" style="background: black">
-                <div class="col-md-3 left_col" style="background: black; ">
-                    <div class="left_col scroll-view" style="background: black">
+            <div class="main_container" style="background: gray">
+                <div class="col-md-3 left_col" style="background: gray; ">
+                    <div class="left_col scroll-view" style="background: gray">
 
                         <div  style="">  
 
-                            <a href="index.php" class="site_title" style="background: black"><img src="img/icon.png"  width="150" height="80"></a>
+                            <a href="index.php" class="site_title" style="background: gray"><img src="img/icon.png"  width="150" height="80"></a>
                         </div>
 
 
@@ -50,8 +50,8 @@ $usuario = $_SESSION['Usuario'];
                         <br/>
 
                         <!-- sidebar menu -->
-                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="background: black">
-                            <div class="menu_section" style="background: black">
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="background: gray">
+                            <div class="menu_section" style="background: gray">
 
                                 <!-- mostrar menu-->
                                 <div id="menu_sistema"></div>                                                                                                                                                                                                  
@@ -66,7 +66,7 @@ $usuario = $_SESSION['Usuario'];
 
                 <!-- top navigation -->
                 <div class="top_nav" >  
-                    <div class="nav_menu" style="background: black">
+                    <div class="nav_menu" style="background: gray">
                         <nav class="" role="navigation">
                             <div class="nav toggle">
                                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
@@ -79,7 +79,7 @@ $usuario = $_SESSION['Usuario'];
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown-toggle">
                                     <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <h7><b style="color: white"><?php echo $usuario[usuario_apellidos]; ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="img/user.png" alt="">
+                                        <h7><b style="color: black"><?php echo $usuario[usuario_apellidos]; ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="img/user.png" alt="">
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right"> 
