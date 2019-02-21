@@ -57,8 +57,8 @@ class MD_1config {
             $resultado_exi_hijos = $obj_bd->Filas($sql_verifica_hijos);
             if ($resultado_exi_hijos > 0) {
 
-                $div_abre = '<ul class="nav side-menu" style="background: black">
-                              <li><a style="color:white; background: black" href="#"><i class="' . $row['menu_icono'] . '"></i> ' . utf8_encode($row['menu_nombre']) . ' <span class="fa fa-chevron-down"></span></a>
+                $div_abre = '<ul class="nav side-menu" style="background: gray">
+                              <li><a style="color:black; background: gray; border: 1px solid black" href="#"><i class="' . $row['menu_icono'] . '"></i> ' . utf8_encode($row['menu_nombre']) . ' <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu" id="collapse_' . $row['menu_id'] . '">
                             ';
 
@@ -68,7 +68,7 @@ class MD_1config {
 
                 while ($row2 = $obj_bd->FuncionFetch($resultado_hijos)) {
                     $url = "'" . $row2['menu_url'] . "','codigo'";
-                    $html_menu .= '<li><a style="color:white" href="#" onclick="loadingFunctions(' . $url . ')">' . utf8_encode($row2['menu_nombre']) . '</a></li>';
+                    $html_menu .= '<li><a style="color:black" href="#" onclick="loadingFunctions(' . $url . ')">' . utf8_encode($row2['menu_nombre']) . '</a></li>';
                     //  $html_menu.='<tr><td><a href="#" onclick="loadingFunctions(' . $url . ')"><span class="glyphicon glyphicon-list-alt text-primary"></span> ' . $row2['configmenuname'] . '</a></td></tr>';
                 }
 

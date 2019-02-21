@@ -210,10 +210,11 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 <input type="text" class="form-control" id="presupuesto_id" name="presupuesto_id">  
                 <legend>Agregar Actividades</legend>
 
+                <p>hola</p>
                 <!--Modulo-->                     
                 <div class="form-group">
                     <label for="lb_modulo" class="col-sm-3 control-label">Modulo:</label>
-                    <div class="col-sm-8">                
+                    <div class="col-sm-8">             
                        <select id="slModulo" stylegit="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
                         </select>
                         <input type="text" style="display: none" class="form-control data" id="txt_modulo" name="txt_modulo" placeholder="Nombre del Modulo" onblur="aMayusculas(this.value, this.id);">

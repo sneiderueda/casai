@@ -37,7 +37,7 @@ $usuario = $_SESSION['Usuario'];
     <body class="nav-md">
         <div class="container body" >
             <div class="main_container" style="background: gray">
-                <div class="col-md-3 left_col" style="background: gray; ">
+                <div class="col-md-3 left_col" style="background: gray; border: 1px solid black ">
                     <div class="left_col scroll-view" style="background: gray">
 
                         <div  style="">  
@@ -50,8 +50,8 @@ $usuario = $_SESSION['Usuario'];
                         <br/>
 
                         <!-- sidebar menu -->
-                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="background: gray">
-                            <div class="menu_section" style="background: gray">
+                        <div id="sidebar-menu" class="main_menu_side hidden-print main_menu" style="">
+                            <div class="menu_section" style="background: red">
 
                                 <!-- mostrar menu-->
                                 <div id="menu_sistema"></div>                                                                                                                                                                                                  
@@ -66,10 +66,10 @@ $usuario = $_SESSION['Usuario'];
 
                 <!-- top navigation -->
                 <div class="top_nav" >  
-                    <div class="nav_menu" style="background: gray">
+                    <div class="nav_menu" style="background: gray; border: 1px solid black">
                         <nav class="" role="navigation">
                             <div class="nav toggle">
-                                <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                                <a id="menu_toggle"><i class="fa fa-bars" style="color: black"></i></a>
                             </div>
                             <!--                            <div class="navbar-static-top">
                                                            <h5><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
