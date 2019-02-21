@@ -12,18 +12,18 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 <html lang="en">
     <script type="text/javascript">
         var detallepresupuesto_id = '<?php echo $detallepresupuesto_id ?>';
-        var jsonlsMd = ListModulo('slModulo');
+        //var jsonlsMd = ListModulo('slModulo');
         // console.log(jsonlsMd);
-        var retorno = "<option value=''>-Seleccione-</option>";
-        retorno += "<option value='nuevo'>Nuevo - Modificar</option>";
-        $.each(jsonlsMd.MODULO, function (key, data) {
+        //var retorno = "<option value=''>-Seleccione-</option>";
+        var retorno = "<option value='nuevo'>Nuevo Módulo</option>";
+        /*$.each(jsonlsMd.MODULO, function (key, data) {
 
             retorno += '<option value="' + data.modulo_id + '">' + data.modulo_descripcion + '</option>';
 
         });
-        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');
+        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');*/
         $("#slModulo").html(retorno);
-
+      
         ListContratClien('slCliente_pret');
         ListSubestacion('slSubestacion');
         ListGestor('slGestor');
@@ -207,13 +207,13 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
 
             <div id="div_Add_actividades" style="display: none">
-                <input type="text" class="form-control" id="presupuesto_id" name="presupuesto_id">  
+                <input type="hidden" class="form-control" id="presupuesto_id" name="presupuesto_id">  
                 <legend>Agregar Actividades</legend>
 
-                <p>hola</p>
+               
                 <!--Modulo-->                     
                 <div class="form-group">
-                    <label for="lb_modulo" class="col-sm-3 control-label">Modulo:</label>
+                    <label for="lb_modulo" class="col-sm-3 control-label">Módulo:</label>
                     <div class="col-sm-8">             
                        <select id="slModulo" stylegit="display: block" name="slModulo" class="form-control data" required="true" onchange="AddModulo(this.value);">
                         </select>
@@ -255,7 +255,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 </div>
 
                 <div class="form-group" id="contenido_labor_valo" style="display: none">
-                    <label for="lb_gom" class="col-sm-3 control-label">Valor 1.25 a 90 días:</label>                                        
+                    <label for="lb_gom" class="col-sm-3 control-label">Valor 1.25 a 90 días:</label>                                
                     <div class="col-sm-8" id="valor90dias">                      
                     </div>
                 </div>
