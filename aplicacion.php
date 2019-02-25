@@ -79,7 +79,7 @@ $usuario = $_SESSION['Usuario'];
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown-toggle">
                                     <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <h7><b style="color: black"><?php echo $usuario[usuario_apellidos]; ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="img/user.png" alt="">
+                                        <h7><b style="color: black"><?php echo utf8_encode($usuario[usuario_apellidos]) . " " . utf8_encode($usuario[usuario_nombre]) ; ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="img/user.png" alt="">
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-usermenu pull-right"> 

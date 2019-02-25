@@ -12,16 +12,16 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 <html lang="en">
     <script type="text/javascript">
         var detallepresupuesto_id = '<?php echo $detallepresupuesto_id ?>';
-        //var jsonlsMd = ListModulo('slModulo');
-        // console.log(jsonlsMd);
-        //var retorno = "<option value=''>-Seleccione-</option>";
+        var jsonlsMd = ListModulo('slModulo');
+        //console.log(jsonlsMd);
+        var retorno = "<option value=''>-Seleccione-</option>";
         var retorno = "<option value='nuevo'>Nuevo Módulo</option>";
-        /*$.each(jsonlsMd.MODULO, function (key, data) {
+        $.each(jsonlsMd.MODULO, function (key, data) {
 
             retorno += '<option value="' + data.modulo_id + '">' + data.modulo_descripcion + '</option>';
 
         });
-        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');*/
+        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');
         $("#slModulo").html(retorno);
       
         ListContratClien('slCliente_pret');
@@ -120,7 +120,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 <div class="form-group">
                     <label for="lb_gestor" class="col-sm-3 control-label">Gestor Proyecto:</label>
                     <div class="col-sm-8">                
-                        <select id="slGestor" name="slGestor" class="form-control" required="true">
+                        <select id="slGestor" name="slGestor" class="form-control" required="true" onblur="enviar(this.value)">
                         </select>
                     </div>
                 </div>
@@ -129,9 +129,10 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 <div class="form-group">
                     <label for="lb_PmCodensa" class="col-sm-3 control-label">PM Codensa:</label>
                     <div class="col-sm-8">
-                    <select id="slPmCodensa" name="slPmCodensa" class="form-control" required="true">
-                        </select>              
-                        <!--<input type="text" class="form-control" id="txt_gestorCodensa" name="txt_gestorCodensa" placeholder="Gestor Administrativo de Contrato CODENSA" onblur="aMayusculas(this.value, this.id);">
+                    <select id="slPmCodensa" name="slPmCodensa" class="form-control" required="true" onblur="enviar(this.value)">
+                        </select>     
+                    <!--      
+                        <input type="text" class="form-control" id="txt_gestorCodensa" name="txt_gestorCodensa" placeholder="Gestor Administrativo de Contrato CODENSA" onblur="aMayusculas(this.value, this.id);">
                     -->
                     </div>
                 </div>

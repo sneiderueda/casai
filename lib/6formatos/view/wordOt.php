@@ -13,7 +13,10 @@ $obj_bd = new BD();
 $det_pret = $_GET['er'];
 
 // New Word Document
+
+//$phpWord->getCompatibility()->setOoxmlVersion(15);
 $PHPWord = new PHPWord();
+
 // New portrait section
 $section = $PHPWord->createSection();
 
@@ -112,7 +115,7 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaemision']), $fontStyle2, 'p2Style');
     $table_des->addCell(1500)->addText(utf8_encode($row1['ordentrabajo_contratista']), $fontStyle2, 'p2Style');
     $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaini']), $fontStyle2, 'p2Style');
-    $table_des->addCell(2000)->addText(utf8_encode($row1['subestacion_nombre']), $fontStyle2, 'p2Style');
+    $table_des->addCell(2000)->addText($row1['subestacion_nombre'], $fontStyle2, 'p2Style');
     $table_des->addCell(2000)->addText("$" . number_format($row1['detallepresupuesto_total'], 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
 
     $contrato1 = utf8_encode($row1['contrato_numero']);
@@ -165,8 +168,9 @@ $section->addTextBreak(1);
 $alcance = explode(". ", $alcance);
 foreach ($alcance as $line) {
     $section->addText(utf8_decode($line), $fontStyle_texto, $paragraphOptions);
+    $section->addTextBreak(1);
 }
-$section->addTextBreak(1);
+
 
 //$texto_alcance=preg_replace('/\<br(\s*)?\/?\>/i', "\n", $alcance);
 //$texto_alcance= str_replace('. ','\r\n', $alcance);
@@ -220,12 +224,12 @@ while ($row2 = $obj_bd->FuncionFetch($resultado2)) {
     $table_res->addRow();
 
     if ($i % 2 == 0) {
-        $table_res->addCell(2800)->addText(utf8_encode($row2['modulo_descripcion']), $fontStyle_texto, 'p2Style');
+        $table_res->addCell(2800)->addText($row2['modulo_descripcion'], $fontStyle_texto, 'p2Style');
         $table_res->addCell(1800)->addText(utf8_encode('Subactividad'), $fontStyle_texto, 'p2Style');
         $table_res->addCell(1500)->addText(utf8_encode($row2['presupuesto_fechaini']), $fontStyle_texto, 'p2Style');
         $table_res->addCell(1500)->addText(utf8_encode($row2['presupuesto_fechafin']), $fontStyle_texto, 'p2Style');
     } else {
-        $table_res->addCell(2800, $styleFirstRow1)->addText(utf8_encode($row2['modulo_descripcion']), $fontStyle_texto, 'p2Style');
+        $table_res->addCell(2800, $styleFirstRow1)->addText($row2['modulo_descripcion'], $fontStyle_texto, 'p2Style');
         $table_res->addCell(1800, $styleFirstRow1)->addText(utf8_encode('Subactividad'), $fontStyle_texto, 'p2Style');
         $table_res->addCell(1500, $styleFirstRow1)->addText(utf8_encode($row2['presupuesto_fechaini']), $fontStyle_texto, 'p2Style');
         $table_res->addCell(1500, $styleFirstRow1)->addText(utf8_encode($row2['presupuesto_fechafin']), $fontStyle_texto, 'p2Style');
@@ -278,9 +282,9 @@ $resultado3 = $obj_bd->EjecutaConsulta($sql3);
 
 while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
 
-
+    $section->addTextBreak(1);
     $section->addText(utf8_decode('Módulo: '), $fontStyle, $paragraphOptions);
-    $section->addText(utf8_decode($row3['modulo_descripcion']), $fontStyle_texto);
+    $section->addText($row3['modulo_descripcion'], $fontStyle_texto);
 
     $section->addText(utf8_decode('Actividad: '), $fontStyle, $paragraphOptions);
     $lb_descripcion = utf8_encode($row3['labor_descripcion']);
@@ -304,13 +308,13 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                     ac.actividad_valorservicio,
                     sum(pt.presupuesto_valorporcentaje) as valorporcentaje,
                     pt.presupuesto_id,
-                    pt.baremoactividad_id,					
+                    pt.baremoactividad_id,                  
                     bm.baremo_item,
                     bm.baremo_id,
                     ac.actividad_id,
                     ac.actividad_descripcion,
                     pt.presupuesto_obs,
-                    ac.actividad_GOM			
+                    ac.actividad_GOM            
                 FROM pt_presupuesto pt
                 JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
                 JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
@@ -388,25 +392,25 @@ $table_res->addCell(2000, $styleTable)->addText('Labor', $fontStyle, 'p2Style');
 $table_res->addCell(1000, $styleTable)->addText('Total', $fontStyle, 'p2Style');
 
 $sql5 = "SELECT lb.labor_id,
-		 md.modulo_descripcion,
-		 dp.detallepresupuesto_total,
-		 sum(presupuesto_valorporcentaje) as total_actividad,
+         md.modulo_descripcion,
+         dp.detallepresupuesto_total,
+         sum(presupuesto_valorporcentaje) as total_actividad,
                  dp.detallepresupuesto_valorincremento,
                  dp.detallepresupuesto_porcentincremento
-	FROM pt_presupuesto pt
-	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
-	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
-	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
-	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
-	JOIN dt_detalle_presupuesto dp ON pt.detallepresupuesto_id=dp.detallepresupuesto_id
-	 AND pt.presupuesto_estado=1
-	 AND pt.detallepresupuesto_id=$det_pret
+    FROM pt_presupuesto pt
+    JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+    JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+    JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
+    JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+    JOIN dt_detalle_presupuesto dp ON pt.detallepresupuesto_id=dp.detallepresupuesto_id
+     AND pt.presupuesto_estado=1
+     AND pt.detallepresupuesto_id=$det_pret
     GROUP BY pt.baremo_id,
-		pt.tipobaremo_id,
-		pt.detallepresupuesto_id,
-		bm.baremo_item,
-		tb.tipobaremo_descripcion,
-		md.modulo_descripcion";
+        pt.tipobaremo_id,
+        pt.detallepresupuesto_id,
+        bm.baremo_item,
+        tb.tipobaremo_descripcion,
+        md.modulo_descripcion";
 
 $resultado5 = $obj_bd->EjecutaConsulta($sql5);
 
@@ -422,7 +426,7 @@ while ($row5 = $obj_bd->FuncionFetch($resultado5)) {
     $table_res->addRow();
     $table_res->addCell(null, $comb_rows)->addText($ordentrabajo_pep, null, $firmas);
     $table_res->addCell(null, $comb_rows)->addText($ordentrabajo_ordenpresupuestal, null, $firmas);
-    $table_res->addCell(2800)->addText(utf8_encode($row5['modulo_descripcion']), null, 'p2Style');
+    $table_res->addCell(2800)->addText($row5['modulo_descripcion'], null, 'p2Style');
     $table_res->addCell(2800)->addText(utf8_encode("Subtotal labores No. " . $row5['labor_id']), null, 'p2Style');
     $table_res->addCell(1000)->addText("$" . $total_actividad, null, 'p2Style');
 
@@ -440,8 +444,8 @@ $table_res->addCell(1000)->addText("$" . $total_pt_frmt, $fontStyle, 'p2Style');
 
 /* Incrementos */
 $sql_incremento = "SELECT * 
-		   FROM dt_incremento_presupuesto 
-		  WHERE detallepresupuesto_id=$det_pret
+           FROM dt_incremento_presupuesto 
+          WHERE detallepresupuesto_id=$det_pret
                     AND incrementopresupuesto_estado=1";
 $existe_incremmentos = $obj_bd->Filas($sql_incremento);
 if ($existe_incremmentos > 0) {
@@ -510,15 +514,30 @@ $section->addText(utf8_decode('Para constancia de lo anterior, se firma la prese
 $section->addTextBreak(2);
 //tabla firmas
 $gestor_sql = "SELECT CONCAT(usu.usuario_nombre,' ',usu.usuario_apellidos) AS gestor, dp.detallepresupuesto_codensaGestor
-		   FROM dt_detalle_presupuesto dp
+           FROM dt_detalle_presupuesto dp
            JOIN dt_usuario usu ON dp.detallepresupuesto_gestor=usu.usuario_id
            WHERE dp.detallepresupuesto_id=" . $det_pret;
+
+
 
 $resultado_gestor = $obj_bd->EjecutaConsulta($gestor_sql);
 $data_gestor = $obj_bd->FuncionFetch($resultado_gestor);
 //$nombre_gestor= utf8_decode( $data_gestor['gestor']);
 $nombre_gestor = utf8_encode(strtolower($data_gestor['gestor']));
-$nombre_gestor_codensa = utf8_encode(strtolower($data_gestor['detallepresupuesto_codensagestor']));
+$nombre_gestor2 = utf8_encode(strtolower($data_gestor['detallepresupuesto_codensagestor']));
+
+
+
+$gestor_sql1 = "SELECT usu.usuario_apellidos AS gestor1
+           FROM dt_usuario usu
+           WHERE usu.usuario_id =" . $nombre_gestor2;
+           
+
+$resultado_gestor1 = $obj_bd->EjecutaConsulta($gestor_sql1);
+$data_gestor1 = $obj_bd->FuncionFetch($resultado_gestor1);
+//$nombre_gestor= utf8_decode( $data_gestor['gestor']);
+$nombre_gestor1 = utf8_encode(strtolower($data_gestor1['gestor1']));
+
 
 
 $PHPWord->addTableStyle('firmas', '');
@@ -528,9 +547,23 @@ $table_firm->addRow(10);
 // Add cells
 $table_firm->addCell(6000, $styleCell)->addText("_______________________________________\n" .
         utf8_decode("Ing. " . ucwords($nombre_gestor) . "                                    
-Gestor de Ingeniería.                                       
+Gestor de Ingeniería                                       
 CODENSA S.A. ESP") . "
 ", $fontStyle_texto, $firmas);
+
+$table_firm->addCell(2000)->addText("");
+$table_firm->addCell(2000)->addText("");
+
+$table_firm->addCell(6000, $styleCell)->addText("_______________________________________\n" .
+         utf8_decode("Ing. " . ucwords($nombre_gestor1) . "                                  
+         Project Manager                                       
+CODENSA S.A ESP") . "", $fontStyle_texto, $firmas);
+
+$table_firm->addRow();
+$table_firm->addCell(2000)->addText("");
+$table_firm->addCell(2000)->addText("");
+
+$table_firm->addRow();
 
 $table_firm->addCell(6000, $styleCell)->addText("_______________________________________\n" .
         utf8_decode("Ing. Diana Marcela García P                                      
@@ -538,27 +571,34 @@ Coordinadora Operativa De Contrato
 CODENSA S.A. ESP") . ""
         , $fontStyle_texto, $firmas);
 
-$table_firm->addRow();
 $table_firm->addCell(2000)->addText("");
 $table_firm->addCell(2000)->addText("");
 
-$table_firm->addRow();
+
 $table_firm->addCell(6000)->addText("_______________________________________\n" .
-        utf8_decode("Ing. " . ucwords($nombre_gestor_codensa) . "                                    
+        utf8_decode("Ing. Rodrigo Villamil García                                     
 Gestor Administrativo de Contrato                                       
 CODENSA S.A ESP") . "", $fontStyle_texto, $firmas);
 
+$table_firm->addRow();
+$table_firm->addCell(2000)->addText("");
+$table_firm->addCell(2000)->addText("");
+
+$table_firm->addRow();
+
+
 $table_firm->addCell(6000)->addText("_______________________________________\n" .
-        utf8_decode("Ing. Armando Ciendua C                                      
-Director de Proyecto.                                          
+        utf8_decode("Ing. Armando Ciendúa C                                      
+Director de Proyecto                                           
 AC ENERGY S.A.S") . "", $fontStyle_texto, $firmas);
 
 
 // Save File
 $objWriter = PHPWord_IOFactory::createWriter($PHPWord, 'Word2007');
-$objWriter->save('otAprobada.docx');
-
-$filename = 'otAprobada.docx';
+$objWriter->save('OT ' . $subestacion . '.docx');
+//$objWriter->save('otAprobada.docx');
+//$filename = 'otAprobada.docx';
+$filename = 'OT ' . $subestacion . '.docx';
 
 $retorno = $filename;
 
