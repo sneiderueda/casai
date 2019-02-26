@@ -85,6 +85,7 @@ $sql1 = "SELECT   OT.ordentrabajo_num,
                 OT.ordentrabajo_pep,
                 SB.subestacion_nombre,
                 DP.detallepresupuesto_total,
+                DP.detallepresupuesto_valorincremento,
 
                 CT.contrato_numero,
                 CL.cliente_descripcion,
@@ -109,6 +110,7 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $orden_trabajo = utf8_encode($row1['ordentrabajo_num']);
     $ordentrabajo_ordenpresupuestal = utf8_encode($row1['ordentrabajo_ordenpresupuestal']);
     $ordentrabajo_pep = utf8_encode($row1['ordentrabajo_pep']);
+    $total_final_OT = $row1['detallepresupuesto_total'] + $row1['detallepresupuesto_valorincremento'];
     $table_des->addRow();
     $table_des->addCell(2000)->addText(utf8_encode($row1['ordentrabajo_num']), $fontStyle, 'p2Style');
     // $table_des->addCell(1800)->addText(utf8_encode($row1['ordentrabajo_GOM']));
@@ -116,7 +118,7 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $table_des->addCell(1500)->addText(utf8_encode($row1['ordentrabajo_contratista']), $fontStyle2, 'p2Style');
     $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaini']), $fontStyle2, 'p2Style');
     $table_des->addCell(2000)->addText($row1['subestacion_nombre'], $fontStyle2, 'p2Style');
-    $table_des->addCell(2000)->addText("$" . number_format($row1['detallepresupuesto_total'], 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
+    $table_des->addCell(2000)->addText("$" . number_format($total_final_OT, 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
 
     $contrato1 = utf8_encode($row1['contrato_numero']);
     $contrato = split('-', $contrato1);
@@ -243,7 +245,7 @@ $section->addTextBreak(1);
 
 //Valor de la orden de trabajo:
 $section->addText(utf8_decode('B. Valor de la orden de trabajo:'), $fontStyle1);
-$texto3 = "El valor inicial de esta Orden de Trabajo es de COP $ " . $valo_presupuesto . " antes de IVA. Cualquier variación en el alcance acordado en esta Orden de Trabajo con su respectiva valoración económica, deberá ser validada previamente por la División Ingeniera de Redes Alta Tensión de CODENSA S.A. ESP. No se reconocerán después de ejecutadas, actividades ni precios que no hayan sido acordados previamente.";
+$texto3 = "El valor inicial de esta Orden de Trabajo es de COP $ " . number_format($total_final_OT, 0, ',', '.')  . " antes de IVA. Cualquier variación en el alcance acordado en esta Orden de Trabajo con su respectiva valoración económica, deberá ser validada previamente por la División Ingeniera de Redes Alta Tensión de CODENSA S.A. ESP. No se reconocerán después de ejecutadas, actividades ni precios que no hayan sido acordados previamente.";
 $section->addText(utf8_decode($texto3), $fontStyle_texto, $paragraphOptions);
 
 //C. Alcance baremado:
