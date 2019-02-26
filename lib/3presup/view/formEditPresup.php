@@ -36,6 +36,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
             JsonDetallePresupuesto('<?php echo $detallepresupuesto_id ?>');
         }
 
+
     </script>
 
     </br>
@@ -52,7 +53,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
             <legend style="color: black;"><h1 style=" font-weight: bold">Generar Presupuesto</h1></legend>
 
 
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="color: black">
                 <?php if ($detallepresupuesto_id != 0) { ?>
                     <div class="form-group">
                         <label for="slc_Estado" class="col-sm-3 control-label">Estado</label>
@@ -101,20 +102,21 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
                 
-
-
-            </div>
-
-
-
-            <div class="col-sm-6">
-                                <!--Alcance-->
+                               <!--Alcance-->
                 <div class="form-group">
                     <label for="lb_alcance" class="col-sm-3 control-label">Alcance:</label>
                     <div class="col-sm-8">  
                         <textarea class="form-control"  id="txt_alcance" name="txt_alcance"rows="5" cols="40" placeholder="Alcance del Proyecto por Modulos" ></textarea>
                     </div>
                 </div>
+
+
+            </div>
+
+
+
+            <div class="col-sm-6" style="color: black">
+                
                                 
                 <!-- Gestor-->
                 <div class="form-group">
@@ -165,21 +167,36 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
-            </div>
-
+                    
                 <!-- Porcentaje pago 90 dias -->
                  <div class="form-group">
-                    <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias: $</label>
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias, 1.5%: $</label>
                     <div class="col-sm-8">                                   
-                        <input type="text"  class="form-control data" id="txt_tot_90dias" name="txt_tot_pres"  disabled="disabled" value="0" style="width:200px">
+                        <input type="text"  class="form-control data" id="incremento_90dias" disabled="disabled" value="" style="width:200px">
                     </div>
                 </div>
+           
 
+                <div class="form-group">
+
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Incrementos por ubicación 3%</label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" id="confirmacionUbicacion" style="width: 20px; height: 20px"></input>      
+                        <input type="text"  class="form-control data" id="incremento_ubicacion" name="txt_tot_pres"  disabled="disabled" value="" style="width:179px">
+                    </div>
+                </div>
+            
+        
+
+<!-- Total presupuesto con incrementos -->
+                 <div class="form-group">
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Total presupuesto con incrementos: $</label>
+                    <div class="col-sm-8">                                   
+                        <input type="text"  class="form-control data" id="total+incrementos" name="txt_tot_pres"  disabled="disabled" value="" style="width:200px">
+                    </div>
+                </div>
             </div>
-
-
-
-
+        
 
 
             <!--         Modulo

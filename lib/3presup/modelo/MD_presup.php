@@ -104,7 +104,7 @@ class MD_presup {
 
         $resul = $obj_bd->EjecutaConsulta($sql);
         $retorno .= "<option value=''>-Seleccione-</option>";
-        $retorno .= "<option value='0'>Crear - Editar</option>";
+        $retorno .= "<option value='0'>Nueva subestación</option>";
         while ($row = $obj_bd->FuncionFetch($resul)) {
 
             $retorno .= "<option value='" . $row['subestacion_id'] . "'>" . utf8_encode($row['subestacion_nombre']) . " </option>";
@@ -173,12 +173,7 @@ class MD_presup {
         /*
         Creamos carpetas para guardar archivos de visita tecnica
          */
-        $carpeta = $data['detallepresupuesto_id'];
-        $ruta = 'C:/Presupuestos/'. $carpeta;
-        if (!file_exists($ruta)) {
-            mkdir($ruta);
-        }
-                
+    
                 
         
         } else {
@@ -420,6 +415,8 @@ class MD_presup {
         while ($row = $obj_bd->FuncionFetch($resul)) {
 
             $retorno .= "<option value='" . $row['usuario_id'] . "'>" . utf8_encode($row['usuario_apellidos']) . ' ' . utf8_encode($row['usuario_nombre']) . " </option>";
+
+            
         }
         return $retorno;
     }
