@@ -28,14 +28,14 @@ class MD_presup {
 
         $tabla .= "<style>
                 .ui-dialog-titlebar-close {
-                visibility: hidden;
+                visibility: hidden
                 }
                 </style>";
-        $tabla .= "<fieldset>";
+        $tabla .= "<fieldset style='color:black'>";
         $tabla .= "<legend>Presupuestos Registrados</legend>";
         $url = "'lib/3presup/view/formEditPresup.php','contenido','0'";
 
-        //$tabla .= '<button name="btnAdd" id="btnAdd" class="btn btn-default" type="button" onclick="loadingFunctions(' . $url . ')">Crear</button>';
+        $tabla .= '<button name="btnAdd" id="btnAdd" class="btn btn-success" type="button" onclick="loadingFunctions(' . $url . ')"><span class="glyphicon glyphicon-file" aria-hidden="true"></span></span<strong> Generar Presupuesto</strong></button>';
         $tabla .= "<br>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
@@ -80,7 +80,7 @@ class MD_presup {
                 <td>" . $row['detallepresupuesto_fechaini'] . "</td>                
                 <td>" . utf8_encode($row['detallepresupuesto_nombre']) . "</td>                                                                                                   
                 <td>" . number_format((float) $row['total_presupuesto_incremento'], 0, ',', '.') . "</td>                                             
-                <td><button class='btn btn-default'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>Editar  </button>";
+                <td><button class='btn btn-primary'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>Editar  </button>";
             if ($estado == "Registrado" || $estado == "Pendiente") {
                 $tabla .= "<button class='btn btn-danger'  onclick='DeleteDetallePresupuesto(" . $row['detallepresupuesto_id'] . ",0)'><span class='glyphicon glyphicon-remove' aria-hidden='true'></span>Eliminar  </button>";
             }
@@ -781,7 +781,7 @@ class MD_presup {
         $tabla .= "<fieldset><script type='text/javascript'>
                     ListModuloCopiar('sl_copiar_md');
                  </script>";
-        $tabla .= '<button name="btnNew" id="btnNew" class="btn btn-default" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
+        $tabla .= '<button name="btnNew" id="btnNew" class="btn btn-basic" type="button" onclick="MostrarNuevaActividad()">Nueva Actividad</button>';
         return $tabla;
     }
 
@@ -965,7 +965,7 @@ class MD_presup {
                                 if (utf8_encode($row_sub['subactividad_descripcion']) == "LEVANTAMIENTO") {
 
                                     // $tabla .= "<img src='img/word2010.png' id='arbol' title='Generar Descargo' width='20' height='20' style='cursor:pointer' border='0' onclick='DivEditDescargo(" . $row_sub['ordentrabajo_id'] . "," . $row_sub['presupuesto_id'] . ")'>";
-                                    $tabla .= "<input type='button' id='btoGuardar' name='btoGuardar' class='btn btn-default' type='submit' value=' Descargo ' onclick='DivEditDescargo(" . $row_sub['ordentrabajo_id'] . "," . $row_sub['presupuesto_id'] . ")'/>";
+                                    $tabla .= "<input type='button' id='btoGuardar' name='btoGuardar' class='btn btn-primary' type='submit' value=' Descargo ' onclick='DivEditDescargo(" . $row_sub['ordentrabajo_id'] . "," . $row_sub['presupuesto_id'] . ")'/>";
                                 }
                                 /**/
                                 $tabla . "</td>";
@@ -1076,9 +1076,9 @@ class MD_presup {
         $tabla .= "</fieldset>";
 
         if ($data['control'] == "1") {
-            $tabla .= '<button name="btnListActividadesPre" id="btnListActividadesPre" class="btn btn-default" type="button" onclick="ListActividadesPresupuestoOT(' . trim($data['detallepresupuesto_id']) . ')">Mostrar Actividades</button>';
+            $tabla .= '<button name="btnListActividadesPre" id="btnListActividadesPre" class="btn btn-warning" type="button" onclick="ListActividadesPresupuestoOT(' . trim($data['detallepresupuesto_id']) . ')">Mostrar Actividades</button>';
         } else {
-            $tabla .= '<button name="btnGuardar" id="btnGuardar" class="btn btn-default" type="button" onclick="UpdateActividadPresupuesto(' . $data['baremo_id'] . ')">Guardar</button>';
+            $tabla .= '<button name="btnGuardar" id="btnGuardar" class="btn btn-primary" type="button" onclick="UpdateActividadPresupuesto(' . $data['baremo_id'] . ')">Guardar</button>';
             $tabla .= '<button name="btnListActividadesPre" id="btnListActividadesPre" class="btn btn-default" type="button" onclick="ListActividadesPresupuesto(' . trim($data['detallepresupuesto_id']) . ')">Mostrar Actividades</button>';
         }
 

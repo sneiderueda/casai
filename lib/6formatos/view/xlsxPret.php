@@ -165,7 +165,7 @@ $objPHPExcel->setActiveSheetIndex(0)
         ->setCellValue('B2', 'PRESUPUESTO')
         ->setCellValue('A3', 'No. CONTRATO:')
         ->setCellValue('C3', 'SUBESTACION:')
-        ->setCellValue('F3', 'OT: ' . $num_ot)
+        ->setCellValue('F3', '' . $num_ot)
         ->setCellValue('A4', 'OBJETO:')
         ->setCellValue('A5', 'ALCANCE:')
         ->setCellValue('A6', 'Módulo')
@@ -876,7 +876,7 @@ $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
 $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
 $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
 $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue("Valor Incremento " . $porcentaje_incremento . "%: ");
+$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue("Incremento por ubicación" . $porcentaje_incremento . "%: ");
 
 $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
 $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);

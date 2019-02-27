@@ -40,20 +40,20 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
     </script>
 
     </br>
-    <!--
-    <button name="btnListPres" id="btnListPres" class="btn btn-default" type="button" onclick="gritPresupuesto()">Mostrar listado</button>-->
+    
+    <!--<button name="btnListPres" id="btnListPres" class="btn btn-success" style="color: black" type="button" onclick="gritPresupuesto()">Mostrar listado</button>-->
     </br>
     </br>
     <form id="frm_DataPresupuesto" class="form-horizontal">    
-        <!--ocultar de nuevo-->
-        <input type="text" class="form-control" id="detallepresupuesto_id" name="detallepresupuesto_id">                
-        <input type="text" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
+        
+        <input type="hidden" class="form-control" id="detallepresupuesto_id" name="detallepresupuesto_id">                
+        <input type="hidden" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
 
-        <fieldset>
-            <legend style="color: black;"><h1 style=" font-weight: bold">Generar Presupuesto</h1></legend>
+        <fieldset style="color: black">
+            <legend><h1 style=" font-weight: bold">Generar Presupuesto</h1></legend>
 
 
-            <div class="col-sm-6" style="color: black">
+            <div class="col-sm-6">
                 <?php if ($detallepresupuesto_id != 0) { ?>
                     <div class="form-group">
                         <label for="slc_Estado" class="col-sm-3 control-label">Estado</label>
@@ -115,7 +115,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
 
 
-            <div class="col-sm-6" style="color: black">
+            <div class="col-sm-6">
                 
                                 
                 <!-- Gestor-->
@@ -133,9 +133,6 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     <div class="col-sm-8">
                     <select id="slPmCodensa" name="slPmCodensa" class="form-control" required="true" onblur="enviar(this.value)">
                         </select>     
-                    <!--      
-                        <input type="text" class="form-control" id="txt_gestorCodensa" name="txt_gestorCodensa" placeholder="Gestor Administrativo de Contrato CODENSA" onblur="aMayusculas(this.value, this.id);">
-                    -->
                     </div>
                 </div>
 
@@ -167,7 +164,11 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
-                    
+                <?php 
+
+                    if ($detallepresupuesto_id != 0) {
+                        
+                ?>  
                 <!-- Porcentaje pago 90 dias -->
                  <div class="form-group">
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias, 1.5%: $</label>
@@ -195,9 +196,13 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                         <input type="text"  class="form-control data" id="total+incrementos" name="txt_tot_pres"  disabled="disabled" value="" style="width:200px">
                     </div>
                 </div>
+        <?php
+            }
+        ?>
+
             </div>
         
-
+              
 
             <!--         Modulo
                     <div class="form-group">
@@ -272,13 +277,8 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
-                <div class="form-group" id="contenido_labor_valo" style="display: none">
-                    <label for="lb_gom" class="col-sm-3 control-label">Valor 1.25 a 90 días:</label>                                
-                    <div class="col-sm-8" id="valor90dias">                      
-                    </div>
-                </div>
 
-                
+                                
                 <!--OBSERVACIONES-->
                 <div class="form-group">
                     <label for="lb_objetivo" class="col-sm-3 control-label">Alcance técnico particular:</label>
