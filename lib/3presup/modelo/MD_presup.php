@@ -688,9 +688,9 @@ class MD_presup {
         $arreglo_retorno['detallepresupuesto_porcentincremento'] = $array['detallepresupuesto_porcentincremento'];
         $arreglo_retorno['detallepresupuesto_valorincremento'] = $array['detallepresupuesto_valorincremento'];
         $arreglo_retorno['detallepresupuesto_total'] = $array['detallepresupuesto_total'];
-        $arreglo_retorno['detallepresupuesto_total_formato'] = number_format((float) $array['detallepresupuesto_total'], 0, ',', '.');
+        $arreglo_retorno['detallepresupuesto_total_formato'] =/* number_format((float)*/ $array['detallepresupuesto_total']/*, 0, ',', '.')*/;
         $arreglo_retorno['detallepresupuesto_incremento_formato'] = number_format((float) $array['detallepresupuesto_valorincremento'], 0, ',', '.');
-        $arreglo_retorno['total_final_presupuesto_formato'] = number_format((float) $total_final, 0, ',', '.');
+        $arreglo_retorno['total_final_presupuesto_formato'] = /*number_format((float)*/ $total_final/*, 0, ',', '.')*/;
         $arreglo_retorno['detallepresupuesto_tipoincremento'] = $array['detallepresupuesto_tipoincremento'];
 
         $json = json_encode($arreglo_retorno);

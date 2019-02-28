@@ -34,6 +34,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
         if (detallepresupuesto_id != 0) {
             ListActividadesPresupuesto('<?php echo $detallepresupuesto_id ?>');
             JsonDetallePresupuesto('<?php echo $detallepresupuesto_id ?>');
+            calcularIncrementos();
         }
 
 
@@ -156,20 +157,23 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
+                 
+
                 <!--TOTAL PRESUPUESTO-->                     
                 <div class="form-group">
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Total Presupuesto sin incrementos: $</label>
                     <div class="col-sm-8">                                   
-                        <input type="text"  class="form-control data" id="txt_tot_pres" name="txt_tot_pres"  disabled="disabled" value="0" style="width:200px">
+                        <input type="text" class="form-control data" id="txt_tot_pres" name="txt_tot_pres"  disabled="disabled" value="0" style="width:200px">
                     </div>
                 </div>
 
                 <?php 
 
                     if ($detallepresupuesto_id != 0) {
-                        
-                ?>  
-                <!-- Porcentaje pago 90 dias -->
+                
+
+                ?> 
+<!-- Porcentaje pago 90 dias -->
                  <div class="form-group">
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias, 1.5%: $</label>
                     <div class="col-sm-8">                                   
@@ -177,9 +181,8 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
            
-
+<!--Porcentaje por ubicación-->
                 <div class="form-group">
-
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Incrementos por ubicación 3%</label>
                     <div class="col-sm-8">
                         <input type="checkbox" id="confirmacionUbicacion" style="width: 20px; height: 20px"></input>      

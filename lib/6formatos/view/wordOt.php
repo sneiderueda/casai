@@ -214,7 +214,9 @@ $sql2 = "SELECT pt.presupuesto_id,
                    JOIN cf_labor lb ON bm.labor_id=lb.labor_id
                     AND pt.presupuesto_estado=1
                     AND pt.detallepresupuesto_id=$det_pret
-               GROUP BY pt.baremo_id,
+               GROUP BY 
+                        pt.presupuesto_obs,
+                        pt.baremo_id,
                         pt.tipobaremo_id,
                         pt.detallepresupuesto_id,
                         bm.baremo_item,
@@ -273,7 +275,8 @@ $sql3 = "SELECT lb.labor_id,
            JOIN cf_labor lb ON bm.labor_id=lb.labor_id
             AND pt.presupuesto_estado=1
             AND pt.detallepresupuesto_id=$det_pret
-       GROUP BY pt.baremo_id,
+       GROUP BY pt.presupuesto_obs,
+                pt.baremo_id,
                 pt.tipobaremo_id,
                 pt.detallepresupuesto_id,
                 bm.baremo_item,
@@ -310,9 +313,11 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                     ac.actividad_valorservicio,
                     sum(pt.presupuesto_valorporcentaje) as valorporcentaje,
                     pt.presupuesto_id,
-                    pt.baremoactividad_id,                  
+                    pt.baremoactividad_id, 
+                    pt.presupuesto_alcances,                 
                     bm.baremo_item,
                     bm.baremo_id,
+                    tb.tipobaremo_sigla,
                     ac.actividad_id,
                     ac.actividad_descripcion,
                     pt.presupuesto_obs,
@@ -320,6 +325,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                 FROM pt_presupuesto pt
                 JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
                 JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+                JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
                 JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
                 AND pt.baremo_id=" . $row3['baremo_id'] . "
                 AND pt.tipobaremo_id=" . $row3['tipobaremo_id'] . "
@@ -327,7 +333,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                 AND bm.baremo_estado=1
                 AND pt.detallepresupuesto_id=$det_pret
                 AND pt.presupuesto_estado=1
-                group by actividad_id";
+                group by presupuesto_obs, presupuesto_alcances";
 //echo '<pre>';
 //var_dump($sql4);
 //echo '</pre>';
@@ -335,7 +341,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
     $suma_servicio = 0;
     while ($row4 = $obj_bd->FuncionFetch($resultado4)) {
 
-        $suma_servicio = $suma_servicio + $row4['actividad_valorservicio'];
+        $suma_servicio = /*$suma_servicio +*/ $row4['actividad_valorservicio'];
 
         $suma_servicio_t = number_format($suma_servicio, 0, ',', '.');
         $total_actividad = number_format($row3['total_actividad'], 0, ',', '.');
@@ -352,7 +358,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
         $table_act->addCell(1000)->addText("$" . $valo_porcentaje, $fontStyle_texto, 'p2Style');
     }
     $table_act->addRow();
-    $table_act->addCell(4600, $styleFirstRow1)->addText(utf8_encode("Suma de los costos asociados a la labor " . $row3['labor_id']), $fontStyle, 'p2Style');
+    $table_act->addCell(4600, $styleFirstRow1)->addText(utf8_encode("Suma de los costos asociados a la labor " . $row3['tipobaremo_sigla'] . '-' . $row3['baremo_item']), $fontStyle, 'p2Style');
     $table_act->addCell(1000, $styleFirstRow1)->addText("", $fontStyle_texto, 'p2Style');
     $table_act->addCell(1000, $styleFirstRow1)->addText("$" . $suma_servicio_t, $fontStyle, 'p2Style');
     $table_act->addCell(1000, $styleFirstRow1)->addText("");
@@ -394,8 +400,11 @@ $table_res->addCell(2000, $styleTable)->addText('Labor', $fontStyle, 'p2Style');
 $table_res->addCell(1000, $styleTable)->addText('Total', $fontStyle, 'p2Style');
 
 $sql5 = "SELECT lb.labor_id,
+        tb.tipobaremo_sigla,
+        bm.baremo_item,
          md.modulo_descripcion,
          dp.detallepresupuesto_total,
+         pt.presupuesto_obs,
          sum(presupuesto_valorporcentaje) as total_actividad,
                  dp.detallepresupuesto_valorincremento,
                  dp.detallepresupuesto_porcentincremento
@@ -407,7 +416,9 @@ $sql5 = "SELECT lb.labor_id,
     JOIN dt_detalle_presupuesto dp ON pt.detallepresupuesto_id=dp.detallepresupuesto_id
      AND pt.presupuesto_estado=1
      AND pt.detallepresupuesto_id=$det_pret
-    GROUP BY pt.baremo_id,
+    GROUP BY 
+        pt.presupuesto_obs,
+        pt.baremo_id,
         pt.tipobaremo_id,
         pt.detallepresupuesto_id,
         bm.baremo_item,
@@ -429,7 +440,7 @@ while ($row5 = $obj_bd->FuncionFetch($resultado5)) {
     $table_res->addCell(null, $comb_rows)->addText($ordentrabajo_pep, null, $firmas);
     $table_res->addCell(null, $comb_rows)->addText($ordentrabajo_ordenpresupuestal, null, $firmas);
     $table_res->addCell(2800)->addText($row5['modulo_descripcion'], null, 'p2Style');
-    $table_res->addCell(2800)->addText(utf8_encode("Subtotal labores No. " . $row5['labor_id']), null, 'p2Style');
+    $table_res->addCell(2800)->addText(utf8_encode("Subtotal labores No. " . $row5['tipobaremo_sigla'] . '-' . $row5['baremo_item']), null, 'p2Style');
     $table_res->addCell(1000)->addText("$" . $total_actividad, null, 'p2Style');
 
     $comb_rows = array('vMerge' => 'continue', 'valign' => 'center');
@@ -482,13 +493,13 @@ if ($existe_incremmentos > 0) {
 $porcentaje_ubicacion = $ubicacion_porcentaje * 100;
 $total_final_ubi = number_format($ubicacion_valor, 0, ',', '.');
 $table_res->addRow();
-$table_res->addCell(2000, array('gridSpan' => 4))->addText(utf8_decode($porcentaje_ubicacion . "% - Incremento por ubicación"), $fontStyle, 'p2Style');
+$table_res->addCell(2000, array('gridSpan' => 4))->addText(utf8_decode(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación"), $fontStyle, 'p2Style');
 $table_res->addCell(1000)->addText("$" . $total_final_ubi, $fontStyle, 'p2Style');
 
 $porcentaje_dias = $dias_porcentaje * 100;
 $total_final_dias = number_format($dias_valor, 0, ',', '.');
 $table_res->addRow();
-$table_res->addCell(2000, array('gridSpan' => 4))->addText(utf8_decode($porcentaje_dias . "% - Otros ­ #1, Incremento por pago a 90 días"), $fontStyle, 'p2Style');
+$table_res->addCell(2000, array('gridSpan' => 4))->addText(utf8_decode(/*$porcentaje_dias .*/ "1.5 % Incremento por pago a 90 días"), $fontStyle, 'p2Style');
 $table_res->addCell(1000)->addText("$" . $total_final_dias, $fontStyle, 'p2Style');
 
 /* Fin de incrementos */
