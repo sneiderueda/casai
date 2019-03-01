@@ -99,7 +99,7 @@ class MD_ot {
         $tabla .= "</tbody>
                     </table>
                     </div>
-                    <script>$('#example').DataTable({'order': [[ 1, 'desc' ]]});</script>";
+                    <script>$('#example').DataTable({'order': [[ 1, 'asc' ]]});</script>";
         $tabla .= "<fieldset>";
         return $tabla;
     }
