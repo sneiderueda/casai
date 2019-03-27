@@ -122,7 +122,7 @@ $hora = date("g:i A");
                                     <tr>
                                         <th>Opcion</th>
                                         <th>Documento</th>
-                                    </tr>
+                                </tr>
                                 </thead>
                                 <tbody id="table-adj-docu">
                                 </tbody>

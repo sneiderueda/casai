@@ -99,7 +99,7 @@ class MD_ot {
         $tabla .= "</tbody>
                     </table>
                     </div>
-                    <script>$('#example').DataTable({'order': [[ 1, 'asc' ]]});</script>";
+                    <script>$('#example').DataTable({'order': [[ 1, 'desc' ]]});</script>";
         $tabla .= "<fieldset>";
         return $tabla;
     }
@@ -508,6 +508,7 @@ class MD_ot {
                     return 2;
                 }
             }
+            
             foreach ($files_data as $key => $value) {
                 $name = $value['name'];
                 $tipo_documento = $value['type'];

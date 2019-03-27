@@ -5,11 +5,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 include '../modelo/MD_presup.php';
 
 $opcion = $_POST['opcion'];
 $obj_presup = new MD_presup();
+
 
 
 if ($opcion == 'gritPresupuesto') {
@@ -126,4 +126,24 @@ if ($opcion == 'CopiLabores') {
 if ($opcion == 'JsonDetallePresupuestoIncrementos') {
     $retorno = $obj_presup->JsonDetallePresupuestoIncrementos($_POST);
     echo $retorno;    
+}
+
+if ($opcion == 'okcheckbox') {
+    $retorno = $obj_presup-> okcheckbox($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'calcularIncrementos') {
+    $retorno = $obj_presup-> calcularIncrementos($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'guardarIncrementos') {
+    $retorno = $obj_presup-> guardarIncrementos($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'guardarDocumentos') {
+    $retorno = $obj_presup-> guardarDocumentos($_POST);
+    echo $retorno;
 }

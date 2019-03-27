@@ -157,7 +157,8 @@ $usuario = $_SESSION['Usuario'];
         <script src="lib/2usuario/js/usuario.js"></script>  
         <script src="lib/1config/js/baremos.js"></script> 
         <script src="lib/1config/js/modulos.js"></script> 
-        <script src="lib/3presup/js/presupuesto.js"></script>  
+        <script src="lib/3presup/js/presupuesto.js"></script>
+        <script src="lib/3presup/js/presupuesto_1.js"></script>   
         <script src="lib/8reportes/js/reportes.js"></script>  
 
         

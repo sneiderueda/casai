@@ -1,4 +1,5 @@
 <?php
+
 /*
   Autor:jennifer.cabiativa@gmail.com
  */
@@ -10,35 +11,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 <!DOCTYPE html>
 
 <html lang="en">
-    <script type="text/javascript">
-        var detallepresupuesto_id = '<?php echo $detallepresupuesto_id ?>';
-        var jsonlsMd = ListModulo('slModulo');
-        //console.log(jsonlsMd);
-        var retorno = "<option value=''>-Seleccione-</option>";
-        var retorno = "<option value='nuevo'>Nuevo Módulo</option>";
-        $.each(jsonlsMd.MODULO, function (key, data) {
-
-            retorno += '<option value="' + data.modulo_id + '">' + data.modulo_descripcion + '</option>';
-
-        });
-        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');
-        $("#slModulo").html(retorno);
-      
-        ListContratClien('slCliente_pret');
-        ListSubestacion('slSubestacion');
-        ListGestor('slGestor');
-        ListTipBaremo('slTipActividad');
-        ListarPmCodensa('slPmCodensa');
-
-
-        if (detallepresupuesto_id != 0) {
-            ListActividadesPresupuesto('<?php echo $detallepresupuesto_id ?>');
-            JsonDetallePresupuesto('<?php echo $detallepresupuesto_id ?>');
-            calcularIncrementos();
-        }
-
-
-    </script>
+    
 
     </br>
     
@@ -60,7 +33,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                         <label for="slc_Estado" class="col-sm-3 control-label">Estado</label>
                         <div class="col-sm-8">
                             <select class="form-control" id="slc_regimen" name="slc_estado_presupuesto" onclick="DeleteDetallePresupuestoSelect(<?php echo $detallepresupuesto_id; ?>, this.value);" >
-                                <option value="1">-Seleccione-</option>                        
+                                <option value="1">-Seleccione-</option>                       
                                 <option value="2">Pendiente</option>
                                 <option value="3">Guardado</option>
                             </select>                    
@@ -103,7 +76,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
                 
-                               <!--Alcance-->
+                <!--Alcance-->
                 <div class="form-group">
                     <label for="lb_alcance" class="col-sm-3 control-label">Alcance:</label>
                     <div class="col-sm-8">  
@@ -111,6 +84,24 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
+                <?php 
+
+                    if ($detallepresupuesto_id != 0) {
+                
+                ?>  
+
+                <div class="form-group">
+                    <label for="lb_tot_pres" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-8">
+                    <button id="subirDocumentos" name="subirDocumentos" class="btn btn-warning" type="" onclick="agregarDocumento()" style="color:black"><span class="glyphicon glyphicon-upload"></span><strong> Subir Documentos</strong></button>
+                    </div>
+                </div>
+
+                <?php 
+
+                    }
+                
+                ?>  
 
             </div>
 
@@ -167,43 +158,55 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
+
                 <?php 
 
                     if ($detallepresupuesto_id != 0) {
                 
+                ?>                
 
-                ?> 
+
+<!--Porcentaje por ubicación-->
+                <div class="form-group">
+                    <label for="lb_tot_pres" class="col-sm-3 control-label">Incrementos por ubicación 3%</label>
+                    <div class="col-sm-8">
+                        <input type="checkbox" id="checkboxUbicacion" name="checkboxUbicacion" style="width: 20px; height: 20px"></input>
+                        <input type="hidden" id="check" value="0"></input>     
+                        <input type="text"  class="form-control data" id="incremento_ubicacion" name="txt_tot_pres"  disabled="disabled" value="" style="width:179px">
+                    </div>
+                </div>
+
+                 
+
 <!-- Porcentaje pago 90 dias -->
                  <div class="form-group">
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias, 1.5%: $</label>
                     <div class="col-sm-8">                                   
                         <input type="text"  class="form-control data" id="incremento_90dias" disabled="disabled" value="" style="width:200px">
                     </div>
-                </div>
-           
-<!--Porcentaje por ubicación-->
-                <div class="form-group">
-                    <label for="lb_tot_pres" class="col-sm-3 control-label">Incrementos por ubicación 3%</label>
-                    <div class="col-sm-8">
-                        <input type="checkbox" id="confirmacionUbicacion" style="width: 20px; height: 20px"></input>      
-                        <input type="text"  class="form-control data" id="incremento_ubicacion" name="txt_tot_pres"  disabled="disabled" value="" style="width:179px">
-                    </div>
-                </div>
-            
+                </div>         
         
-
 <!-- Total presupuesto con incrementos -->
                  <div class="form-group">
                     <label for="lb_tot_pres" class="col-sm-3 control-label">Total presupuesto con incrementos: $</label>
                     <div class="col-sm-8">                                   
-                        <input type="text"  class="form-control data" id="total+incrementos" name="txt_tot_pres"  disabled="disabled" value="" style="width:200px">
+                        <input type="text"  class="form-control data" id="totalIncrementos" name="txt_tot_pres" disabled  value="" style="width:200px">
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label for="lb_tot_pres" class="col-sm-3 control-label"></label>
+                    <div class="col-sm-8">
+                    <button id="calcularIncrementos" name="calcularIncrementos" class="btn btn-success" type="" onclick="guardarIncrementos()" style="color:black"><span class="glyphicon glyphicon-floppy-save"></span><strong> Guardar Incrementos</strong></button>
+                    </div>
+                </div>
+               
+
         <?php
             }
         ?>
 
-            </div>
+            </div>    
         
               
 
@@ -267,7 +270,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
-                <!--dESCRIPCION DE LA LABOR-->
+                <!--DESCRIPCION DE LA LABOR-->
                 <div class="form-group" id="contenido_labor" style="display: none">
                     <label for="lb_gom" class="col-sm-3 control-label">Labor:</label>
                     <div class="col-sm-8" id="desc_labor">                                                               
@@ -322,6 +325,36 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
     <div id="div_alc_ent"></div>
     <div id="div_info"></div>
 </html>
+
+<script type="text/javascript">
+        var detallepresupuesto_id = '<?php echo $detallepresupuesto_id ?>';
+        var jsonlsMd = ListModulo('slModulo');
+        //console.log(jsonlsMd);
+        var retorno = "<option value=''>-Seleccione-</option>";
+        var retorno = "<option value='nuevo'>Nuevo Módulo</option>";
+        $.each(jsonlsMd.MODULO, function (key, data) {
+
+            retorno += '<option value="' + data.modulo_id + '">' + data.modulo_descripcion + '</option>';
+
+        });
+        //$("#slModulo").append('<option value="'+data.modulo_id+'">'+data.modulo_descripcion+'</option>');
+        $("#slModulo").html(retorno);
+      
+        ListContratClien('slCliente_pret');
+        ListSubestacion('slSubestacion');
+        ListGestor('slGestor');
+        ListTipBaremo('slTipActividad');
+        ListarPmCodensa('slPmCodensa');
+
+
+        if (detallepresupuesto_id != 0) {
+            ListActividadesPresupuesto('<?php echo $detallepresupuesto_id ?>');
+            JsonDetallePresupuesto('<?php echo $detallepresupuesto_id ?>');
+            check ();            
+        }
+
+
+    </script>
 <script type="text/javascript">
 
     $(function () {

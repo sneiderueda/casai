@@ -1,5 +1,4 @@
 <?php
-
 define('CHARSET', 'UTF-8');
 require_once '../../../components/PHPWord/PHPWord.php';
 require_once '../../0connection/BD_config.php';
@@ -11,6 +10,8 @@ $fecha_emisionOt = "";
 
 $obj_bd = new BD();
 $det_pret = $_GET['er'];
+
+
 
 // New Word Document
 
@@ -156,7 +157,9 @@ $table_res = $section->addTable('alcance');
 // Add row
 $table_res->addRow();
 // Add cells
-$table_res->addCell(4000, array('gridSpan' => 2))->addText(htmlspecialchars('Existe una orden de trabajo anterior asociada con el alcance de esta OT                      ' . utf8_decode("Sí") . ' _  No _'), $fontStyle_texto, $paragraphOptions);
+$table_res->addCell(4000, array('gridSpan' => 2))->addText("Existe una orden de trabajo anterior asociada con el alcance de esta OT                       SI _  NO _", $fontStyle_texto, $paragraphOptions);
+
+$section->addTextBreak(1);
 $table_res->addRow();
 $table_res->addCell(3000)->addText(trim('No. Orden de trabajo: '), $fontStyle_texto, $paragraphOptions);
 $table_res->addCell(12000)->addText('', $fontStyle_texto, $paragraphOptions);
@@ -248,12 +251,44 @@ $section->addTextBreak(1);
 //Valor de la orden de trabajo:
 $section->addText(utf8_decode('B. Valor de la orden de trabajo:'), $fontStyle1);
 $texto3 = "El valor inicial de esta Orden de Trabajo es de COP $ " . number_format($total_final_OT, 0, ',', '.')  . " antes de IVA. Cualquier variación en el alcance acordado en esta Orden de Trabajo con su respectiva valoración económica, deberá ser validada previamente por la División Ingeniera de Redes Alta Tensión de CODENSA S.A. ESP. No se reconocerán después de ejecutadas, actividades ni precios que no hayan sido acordados previamente.";
-$section->addText(utf8_decode($texto3), $fontStyle_texto, $paragraphOptions);
+$section->addText(utf8_decode($texto3), c);
+$section->addTextBreak();
+$section->addText(utf8_decode("El valor de la OT incluye el incremento del 1.5% según el otrosí No.1 del contrato No. 5700014501."),$fontStyle_texto, $paragraphOptions);
 
-//C. Alcance baremado:
-$section->addTextBreak(1);
-$section->addText(utf8_decode('C. Alcance baremado:'), $fontStyle1);
-$section->addText(utf8_decode('El valor asociado con los trabajos objeto de esta Orden de trabajo se discrimina a continuación:'), $fontStyle_texto, $paragraphOptions);
+
+
+$sql_incremento = "SELECT * 
+           FROM dt_incremento_presupuesto 
+          WHERE detallepresupuesto_id=$det_pret
+                    AND incrementopresupuesto_estado=1";
+$existe_incremmentos = $obj_bd->Filas($sql_incremento);
+if ($existe_incremmentos > 0) {
+    $result_incremento = $obj_bd->EjecutaConsulta($sql_incremento);
+    $row6 = $obj_bd->FuncionFetch($result_incremento);
+
+        //$tipo_incremento = $row6["incrementopresupuesto_tipo"];
+        //$tipo_incremento1 = $row6["incrementopresupuesto_porcentaje"];
+
+        if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") {        
+            $section->addTextBreak(1);
+            $section->addText(utf8_decode('C. Incremento de precio:'), $fontStyle1);
+            $section->addText(utf8_decode('De acuerdo con lo establecido en el contrato “Para los trabajos desarrollados en subestaciones o líneas de AT que estén ubicadas fuera de la zona comprendida por el Distrito Capital y las zonas demarcadas en el mapa adjunto como Charquito, Madrid, Chía, Zipaquirá y Sopó se considerará un incremento del  3% en el precio contratado de las Unidades Básicas de servicio (Un. Ser1 para ingeniería de subestaciones y Un. Ser2 para ingeniería de líneas), este incremento solo aplicará para actividades de levantamientos y estudios donde se requiere el desplazamiento del personal a la zona del proyecto en general se excluyen las actividades ejecutadas en la oficina como son la ingeniería de detalle y la elaboración de  planos As Built.”.'), $fontStyle_texto, $paragraphOptions);
+            $section->addTextBreak(1);
+            $section->addText(utf8_decode('Según lo transcrito anteriormente del Numeral 3.2. INCREMENTO DEL COSTO DE LAS ACTIVIDADES BAREMADAS, del Contrato, el valor de esta Orden de Trabajo tiene un incremento del 3% sobre los valores baremados de levantamiento, debido a que la SE ' . $subestacion . ' se encuentra fuera de la zona demarcada.'), $fontStyle_texto, $paragraphOptions);
+            $section->addTextBreak(1);
+            $section->addText(utf8_decode('D. Alcance baremado:'), $fontStyle1);
+                                    
+        }else{
+        //Actividades de Levantamento incremento por ubicacion
+            //C. Alcance baremado:
+            $section->addTextBreak(1);
+            $section->addText(utf8_decode('C. Alcance baremado:'), $fontStyle1);
+    
+    }
+    }
+
+
+        $section->addText(utf8_decode('El valor asociado con los trabajos objeto de esta Orden de trabajo se discrimina a continuación:'), $fontStyle_texto, $paragraphOptions);
 
 //detalle de las actividades
 $sql3 = "SELECT lb.labor_id,
@@ -333,7 +368,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                 AND bm.baremo_estado=1
                 AND pt.detallepresupuesto_id=$det_pret
                 AND pt.presupuesto_estado=1
-                group by presupuesto_obs, presupuesto_alcances";
+                group by presupuesto_obs";
 //echo '<pre>';
 //var_dump($sql4);
 //echo '</pre>';
@@ -341,7 +376,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
     $suma_servicio = 0;
     while ($row4 = $obj_bd->FuncionFetch($resultado4)) {
 
-        $suma_servicio = /*$suma_servicio +*/ $row4['actividad_valorservicio'];
+        $suma_servicio = $suma_servicio + $row4['actividad_valorservicio'];
 
         $suma_servicio_t = number_format($suma_servicio, 0, ',', '.');
         $total_actividad = number_format($row3['total_actividad'], 0, ',', '.');
@@ -371,7 +406,35 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
     $obs = utf8_encode($row3['presupuesto_obs']);
     $section->addText(utf8_decode($obs), $fontStyle_texto, $paragraphOptions);
 }
+$$sql_incremento = "SELECT * 
+           FROM dt_incremento_presupuesto 
+          WHERE detallepresupuesto_id=$det_pret
+                    AND incrementopresupuesto_estado=1";
+$existe_incremmentos = $obj_bd->Filas($sql_incremento);
+if ($existe_incremmentos > 0) {
+    $result_incremento = $obj_bd->EjecutaConsulta($sql_incremento);
+    $row6 = $obj_bd->FuncionFetch($result_incremento);
 
+        //$tipo_incremento = $row6["incrementopresupuesto_tipo"];
+        //$tipo_incremento1 = $row6["incrementopresupuesto_porcentaje"];
+
+        if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") { 
+        //Actividades de Levantamento incremento por ubicacion
+    //E. Plan de calidad:
+$section->addTextBreak(1);
+$section->addText(utf8_decode('E. Plan de calidad:'), $fontStyle1);
+$section->addText(utf8_decode('El contratista elaborará los planes de calidad de acuerdo con lo dispuesto en el Sistema de Gestión de calidad (SGS) vigente de CODENSA S.A. ESP'), $fontStyle_texto, $paragraphOptions);
+
+//F. Plan de Descargos por Maniobras:
+$section->addTextBreak(1);
+$section->addText(utf8_decode('F. Plan de Descargos por Maniobras:'), $fontStyle1);
+$section->addText(utf8_decode('El contratista elaborará su plan de maniobras y descargos para los módulos y activos involucrados en el alcance de esta orden trabajo, el cual será presentado para aprobación y programación de CODENSA S.A. ESP Con una anticipación mínima de 15 días calendario.'), $fontStyle_texto, $paragraphOptions);
+
+    //G. Resumen:
+$section->addTextBreak(1);
+$section->addText(utf8_decode('G. Resumen:'), $fontStyle1);
+            }else{
+        
 //D. Plan de calidad:
 $section->addTextBreak(1);
 $section->addText(utf8_decode('D. Plan de calidad:'), $fontStyle1);
@@ -382,10 +445,15 @@ $section->addTextBreak(1);
 $section->addText(utf8_decode('E. Plan de Descargos por Maniobras:'), $fontStyle1);
 $section->addText(utf8_decode('El contratista elaborará su plan de maniobras y descargos para los módulos y activos involucrados en el alcance de esta orden trabajo, el cual será presentado para aprobación y programación de CODENSA S.A. ESP Con una anticipación mínima de 15 días calendario.'), $fontStyle_texto, $paragraphOptions);
 
-
 //F. Resumen:
 $section->addTextBreak(1);
 $section->addText(utf8_decode('F. Resumen:'), $fontStyle1);
+
+            }
+        }
+    
+
+
 
 // tabla resumen
 $PHPWord->addTableStyle('resumen1', $styleTable);

@@ -18,3 +18,4 @@ Autir:jennifer.cabiativa@gmail.com
 </script>
 
 <div id="div_subestacion"></div>
+<div id="div_agregarDocumento"></div>
