@@ -1,11 +1,4 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  * Description of MD_presup
  *
@@ -1362,11 +1355,10 @@ public function SaveActividadPresupuesto($data) {
         return $json;
     }
 
-
+/******************************************************************************/
     public function calcularIncrementos ($post){//inicio
 
         if ($post['check'] == "1"){
-
 
             $respuesta = array();
 
@@ -1425,7 +1417,7 @@ public function SaveActividadPresupuesto($data) {
         }
     }//fin
 
-
+/******************************************************************************/
 public function guardarIncrementos ($post){//inicio funcion
 
     $id_usuario = $_SESSION['Usuario']['usuario_id'];
@@ -1465,16 +1457,19 @@ public function guardarIncrementos ($post){//inicio funcion
     }
 }//fin guardarIncrementos
 
-
+/******************************************************************************/
 public function guardarDocumentos($post){
 
+    //delaramos las variables
     $id_usuario = $_SESSION['Usuario']['usuario_id'];
     $obj_bd = new BD();
-
     $id = $post['id'];
-    
+    $num = count($_FILES);    
+
+    //recorremos los archivos y guardamos en carpeta y base de datos
     for ($i=0; $i < $num; $i++) { 
 
+        //guardamos en la carpeta
         $nombre = $_FILES['archivo'.$i]['name'];
         $tipo = $_FILES['archivo'.$i]['type'];
         $tamanio = $_FILES['archivo'.$i]['size'];
@@ -1482,6 +1477,7 @@ public function guardarDocumentos($post){
         $carpeta = 'C:/Presupuestos/'. $id .'/'.$nombre;
         move_uploaded_file($tmpUbicacion, $carpeta);
 
+        //guardamos en la base de datos
         $sql_sopt = "CALL SP_dtsoporte('2','','','','" . trim($nombre) . "','" . trim($tamanio) . "','" . trim($tipo) . "','".$carpeta."','" . $id_usuario . "','');";
 
         $resultado_sopt = $obj_bd->EjecutaConsulta($sql_sopt);
