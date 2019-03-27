@@ -1478,7 +1478,7 @@ public function guardarDocumentos($post){
         move_uploaded_file($tmpUbicacion, $carpeta);
 
         //guardamos en la base de datos
-        $sql_sopt = "CALL SP_dtsoporte('2','','','','" . trim($nombre) . "','" . trim($tamanio) . "','" . trim($tipo) . "','".$carpeta."','" . $id_usuario . "','');";
+        $sql_sopt = "CALL SP_dtsoporte('2','','','','" . trim($nombre) . "','" . trim($tamanio) . "','" . trim($tipo) . "','".$carpeta."','" . $id_usuario . "','".$id."');";
 
         $resultado_sopt = $obj_bd->EjecutaConsulta($sql_sopt);
         $array_sopt = $obj_bd->FuncionFetch($resultado_sopt);

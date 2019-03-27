@@ -2,6 +2,7 @@
 
 /*
   Autor:jennifer.cabiativa@gmail.com
+  Modificaciones: Daniel Rueda
  */
 
 
