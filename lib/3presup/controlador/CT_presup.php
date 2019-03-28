@@ -7,8 +7,10 @@
  */
 include '../modelo/MD_presup.php';
 
+
 $opcion = $_POST['opcion'];
 $obj_presup = new MD_presup();
+
 
 
 
@@ -145,5 +147,10 @@ if ($opcion == 'guardarIncrementos') {
 
 if ($opcion == 'guardarDocumentos') {
     $retorno = $obj_presup-> guardarDocumentos($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'mostrarDocumentos') {
+    $retorno = $obj_presup-> mostrarDocumentos($_POST);
     echo $retorno;
 }

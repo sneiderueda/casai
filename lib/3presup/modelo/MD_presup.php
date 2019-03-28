@@ -13,8 +13,7 @@ session_start();
 class MD_presup {
 
 
-
-    function gritPresupuesto() {
+    public function gritPresupuesto() {
 
         $obj_bd = new BD();
         $tabla = "";
@@ -1492,6 +1491,23 @@ public function guardarDocumentos($post){
     }
 }//fin guardarDocumentos
 
+/******************************************************************************/
+public function mostrarDocumentos($post){
+    
+    // se instancia el objeto de BD
+    $obj_bd = new BD();
+
+    // se definen las variables
+    $retorno = "";
+    $id = $post['detallepresupuesto_id'];
+
+    // hacemos la consulta a la BD
+    $sql = "select * from dt_soporte where soporte_usuariomodifico = ".$id.";";
+    $query=$obj_bd->EjecutaConsulta($sql);
+    while ($row = $obj_bd->FuncionFetch($query)) {
+        $retorno .= '<tr><td><a style="color:black" download href="'.$row['soporte_url'].'">'.$row['soporte_nombre'].'</a></td><td><button type="button" onclick="eliminarDocumento()">Eliminar</button></td></label></tr><br>';
+    }
+    return $retorno;
+}//fin
+
 }//Fin de la clase
-
-
