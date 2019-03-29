@@ -13,15 +13,20 @@ $dato = $_POST['detallepresupuesto_id'];
 			<table class="table table-bordered table-striped"  style="font-size:11.5px">
 				<thead >
 					<tr>
-						<th colspan=2 class="col-sm-6">Agregar Documento</th>
+						<th class="col-sm-6">Agregar Documentos</th>
+						<th class="col-sm-6">Accion</th>
 					</tr>
 					<tr>
-						<th >
+						<th>
 							<input type="file" multiple="multiple" id="archivos" accept=".jpg,.pdf,.png,.dwg,.xlsx,.docx,.jpeg">
+						</th>
+						<th>
+							<button type="button" class="btn btn-primary" onclick="guardarDocumentos()">Guardar</button>
 						</th>
 					</tr>
 					<tr>
-						<th colspan=2>Documentos Agregados</th>
+						<th>Documentos Agregados</th>
+						<th>Acciones</th>
 					</tr>
 				</thead>
 				<tbody id="documentosAgregados">

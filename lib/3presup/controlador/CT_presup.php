@@ -154,3 +154,9 @@ if ($opcion == 'mostrarDocumentos') {
     $retorno = $obj_presup-> mostrarDocumentos($_POST);
     echo $retorno;
 }
+
+if ($opcion == 'eliminarDocumento') {
+    $retorno = $obj_presup-> eliminarDocumento($_POST);
+    echo $retorno;
+}
+

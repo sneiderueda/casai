@@ -179,13 +179,13 @@ class MD_presup {
 
         /*
         Creamos carpetas para guardar archivos de visita tecnica
-         */
+        
         $carpeta = $detallepresupuesto_id;
         $ruta = 'C:/Presupuestos/'. $carpeta;
         if (!file_exists($ruta)) {
             mkdir($ruta);
         }
-
+        
         /* Actualizar baremos a contraato */
         $sql_upd_contrato = "CALL SP_ptpresupuesto('23','" . $data['slCliente'] . "','','','','','','','','','','','','','','','" . $detallepresupuesto_id . "',
         '','','','','');";
@@ -1459,11 +1459,17 @@ public function guardarIncrementos ($post){//inicio funcion
 /******************************************************************************/
 public function guardarDocumentos($post){
 
+    $obj_bd = new BD();
+
     //delaramos las variables
     $id_usuario = $_SESSION['Usuario']['usuario_id'];
-    $obj_bd = new BD();
     $id = $post['id'];
-    $num = count($_FILES);    
+    $num = count($_FILES);
+
+    $ruta = '../../../doc_presupuesto/'. $id;
+        if (!file_exists($ruta)) {
+            mkdir($ruta);
+        }    
 
     //recorremos los archivos y guardamos en carpeta y base de datos
     for ($i=0; $i < $num; $i++) { 
@@ -1473,7 +1479,7 @@ public function guardarDocumentos($post){
         $tipo = $_FILES['archivo'.$i]['type'];
         $tamanio = $_FILES['archivo'.$i]['size'];
         $tmpUbicacion = $_FILES['archivo'.$i]['tmp_name'];
-        $carpeta = 'C:/Presupuestos/'. $id .'/'.$nombre;
+        $carpeta = '../../../doc_presupuesto/'. $id .'/'.$nombre;
         move_uploaded_file($tmpUbicacion, $carpeta);
 
         //guardamos en la base de datos
@@ -1501,13 +1507,50 @@ public function mostrarDocumentos($post){
     $retorno = "";
     $id = $post['detallepresupuesto_id'];
 
+    $data= array();
     // hacemos la consulta a la BD
-    $sql = "select * from dt_soporte where soporte_usuariomodifico = ".$id.";";
+    $sql = "select * from dt_soporte where soporte_usuariomodifico = ".$id." order by soporte_nombre asc;";
     $query=$obj_bd->EjecutaConsulta($sql);
     while ($row = $obj_bd->FuncionFetch($query)) {
-        $retorno .= '<tr><td><a style="color:black" download href="'.$row['soporte_url'].'">'.$row['soporte_nombre'].'</a></td><td><button type="button" onclick="eliminarDocumento()">Eliminar</button></td></label></tr><br>';
+
+        $retorno .= '<tr><td><p style="color:black">'.$row['soporte_nombre'].'</p></td><td><a class="btn btn-primary" href="doc_presupuesto/'.$id.'/'.$row['soporte_nombre'].'" target = "_blank">Ver</a><a class="btn btn-success" href="doc_presupuesto/'.$id.'/'.$row['soporte_nombre'].'" download>Descargar</a><a class="btn btn-danger" href="javascript:eliminarDocumento('.$row['soporte_id'].')">Eliminar</a></td></tr><br>';
     }
     return $retorno;
-}//fin
+}//fin mostrarDocumentos
+
+/******************************************************************************/
+public function eliminarDocumento($post){
+
+    // se instancia el objeto de BD
+    $obj_bd = new BD();
+
+    $soporte_id = $post['soporte_id'];
+    $detallepresupuesto_id = $post['id'];
+
+
+    $sql1 = "select * from dt_soporte where soporte_id = ".$soporte_id.";
+            ";
+    $query1=$obj_bd->EjecutaConsulta($sql1);
+    $row1 = $obj_bd->FuncionFetch($query1);
+
+    $nombre = $row1['soporte_nombre'];
+
+    $carpeta = $row1['soporte_url'];
+
+    $borrar = unlink($carpeta);
+
+    $sql = "delete from dt_soporte where soporte_id =".$soporte_id.";";
+    $query=$obj_bd->EjecutaConsulta($sql);
+
+    if ($borrar) {
+       return 1;
+    }else{
+       return 0;
+    }
+
+}//fin eliminarDocumento
+
+/******************************************************************************/
+
 
 }//Fin de la clase
