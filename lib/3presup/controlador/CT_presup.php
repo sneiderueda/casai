@@ -11,9 +11,6 @@ include '../modelo/MD_presup.php';
 $opcion = $_POST['opcion'];
 $obj_presup = new MD_presup();
 
-
-
-
 if ($opcion == 'gritPresupuesto') {
     $retorno = $obj_presup->gritPresupuesto($_POST);
     echo $retorno;
@@ -39,11 +36,9 @@ if ($opcion == 'SavePresupuesto') {
     echo $resultado;
 }
 
-
 if ($opcion == 'JsonSubestacion') {
     $retorno = $obj_presup->JsonSubestacion($_POST);
     echo $retorno;
-    
 }
 
 if ($opcion == 'ListModulo') {
@@ -64,12 +59,13 @@ if ($opcion == 'ListarPmCodensa') {
 if ($opcion == 'dataBaremoItemPresupuesto') {
     $retorno = $obj_presup->dataBaremoItemPresupuesto($_POST);
     echo $retorno;
-    
 }
+
 if ($opcion == 'SaveActividadPresupuesto') {
     (string) $resultado = $obj_presup->SaveActividadPresupuesto($_POST);
     echo $resultado;
 }
+
 if ($opcion == 'DeleteDetallePresupuesto') {
     $retorno = $obj_presup->DeleteDetallePresupuesto($_POST);
     echo $retorno;    
@@ -98,8 +94,8 @@ if ($opcion == 'JsonDetalleActividad') {
 if ($opcion == 'UpdateDataBaremoPresupuesto') {
     $retorno = $obj_presup->UpdateDataBaremoPresupuesto($_POST);
     echo $retorno;
-    
 }
+
 if ($opcion == 'UpdateActividadPresupuesto') {
     (string) $resultado = $obj_presup->UpdateActividadPresupuesto($_POST);
     echo $resultado;

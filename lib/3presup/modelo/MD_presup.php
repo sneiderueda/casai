@@ -773,9 +773,9 @@ public function SaveActividadPresupuesto($data) {
             <td>" . number_format((float) $row['total_actividad'], 0, ',','.') . "</td>";
 
             //calculamos el porcentaje de la actividad con respecto a el costo total presupuesto
-            $totalPorcentajeActividad= ($row['total_actividad'] / $row['detallepresupuesto_total'])*100;
+            $totalPorcentajeActividad= (round($row['total_actividad']) / round($row['detallepresupuesto_total']))*100;
 
-            $tabla .="<td>" . number_format((float) $totalPorcentajeActividad, 0, ',','.') . "%" . "</td>
+            $tabla .="<td>" . number_format((float) $totalPorcentajeActividad, 1, ',','.') . "%" . "</td>
             <td><input type='button' class='btn btn-primary'  onclick='EditarActividadPresupuesto(" . $row['baremo_id'] . "," . $row['tipobaremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . ",0," . trim($obs) . ");' value='Editar'/>                     
             <input type='button' class='btn btn-danger'  onclick='DeletePresupuestoActividad(" . $row['baremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . "," . $obs . ");' value='Eliminar' />       
 
@@ -1354,7 +1354,7 @@ public function SaveActividadPresupuesto($data) {
         return $json;
     }
 
-/******************************************************************************/
+    /******************************************************************************/
     public function calcularIncrementos ($post){//inicio
 
         if ($post['check'] == "1"){
@@ -1416,7 +1416,7 @@ public function SaveActividadPresupuesto($data) {
         }
     }//fin
 
-/******************************************************************************/
+    /******************************************************************************/
 public function guardarIncrementos ($post){//inicio funcion
 
     $id_usuario = $_SESSION['Usuario']['usuario_id'];
@@ -1459,17 +1459,19 @@ public function guardarIncrementos ($post){//inicio funcion
 /******************************************************************************/
 public function guardarDocumentos($post){
 
+    //se intancia el objeto de conexion a la base de datos
     $obj_bd = new BD();
 
     //delaramos las variables
     $id_usuario = $_SESSION['Usuario']['usuario_id'];
     $id = $post['id'];
     $num = count($_FILES);
-
     $ruta = '../../../doc_presupuesto/'. $id;
-        if (!file_exists($ruta)) {
-            mkdir($ruta);
-        }    
+    
+    //verificamos que la carpeta no exista, para crearla.
+    if (!file_exists($ruta)) {
+        mkdir($ruta);
+    }    
 
     //recorremos los archivos y guardamos en carpeta y base de datos
     for ($i=0; $i < $num; $i++) { 
@@ -1499,17 +1501,17 @@ public function guardarDocumentos($post){
 
 /******************************************************************************/
 public function mostrarDocumentos($post){
-    
-    // se instancia el objeto de BD
+
+    // se instancia el objeto de conexion a BD
     $obj_bd = new BD();
 
     // se definen las variables
     $retorno = "";
     $id = $post['detallepresupuesto_id'];
 
-    $data= array();
     // hacemos la consulta a la BD
-    $sql = "select * from dt_soporte where soporte_usuariomodifico = ".$id." order by soporte_nombre asc;";
+    $sql= "CALL SP_dtsoporte('4','','','','','','','','','".$id."');";
+    // $sql = "select * from dt_soporte where soporte_usuariomodifico = ".$id." order by soporte_nombre asc;";
     $query=$obj_bd->EjecutaConsulta($sql);
     while ($row = $obj_bd->FuncionFetch($query)) {
 
@@ -1521,32 +1523,37 @@ public function mostrarDocumentos($post){
 /******************************************************************************/
 public function eliminarDocumento($post){
 
-    // se instancia el objeto de BD
+    // se instancia el objeto de conexion a BD
     $obj_bd = new BD();
 
+    //variables
     $soporte_id = $post['soporte_id'];
     $detallepresupuesto_id = $post['id'];
 
-
-    $sql1 = "select * from dt_soporte where soporte_id = ".$soporte_id.";
-            ";
+    //consultamos los registro en la bd
+    $sql1= "CALL SP_dtsoporte('4','".$soporte_id."','','','','','','','','');";
+    // $sql1 = "select * from dt_soporte where soporte_id = ".$soporte_id.";
+    // ";
     $query1=$obj_bd->EjecutaConsulta($sql1);
     $row1 = $obj_bd->FuncionFetch($query1);
 
     $nombre = $row1['soporte_nombre'];
-
     $carpeta = $row1['soporte_url'];
 
+    //borramos los archivos seleccionados
     $borrar = unlink($carpeta);
 
-    $sql = "delete from dt_soporte where soporte_id =".$soporte_id.";";
+    //borramos el registro en la BD
+    $sql= "CALL SP_dtsoporte('5','".$soporte_id."','','','','','','','','');";
+    // $sql = "delete from dt_soporte where soporte_id =".$soporte_id.";";
     $query=$obj_bd->EjecutaConsulta($sql);
 
-    if ($borrar) {
-       return 1;
-    }else{
-       return 0;
-    }
+    //retornamos la respuesta   
+    if ($borrar && $query) {
+     return 1;
+ }else{
+     return 0;
+ }
 
 }//fin eliminarDocumento
 
