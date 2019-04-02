@@ -35,14 +35,14 @@ $usuario = $_SESSION['Usuario'];
     </head>
 
     <body class="nav-md">
-        <div class="container body" >
-            <div class="main_container" style="background: gray">
-                <div class="col-md-3 left_col" style="background: gray; border: 1px solid black ">
-                    <div class="left_col scroll-view" style="background: gray">
+        <div class="container body">
+            <div class="main_container" style="background: #3498DB">
+                <div class="col-md-3 left_col" style="background: #3498DB; border: 1px solid black ">
+                    <div class="left_col scroll-view" style="background: #3498DB">
 
                         <div  style="">  
 
-                            <a href="index.php" class="site_title" style="background: gray"><img src="img/icon.png"  width="150" height="80"></a>
+                            <a href="index.php" class="site_title" style="background: #3498DB"><img src="img/icon.png"  width="150" height="80"></a>
                         </div>
 
 
@@ -66,7 +66,7 @@ $usuario = $_SESSION['Usuario'];
 
                 <!-- top navigation -->
                 <div class="top_nav" >  
-                    <div class="nav_menu" style="background: gray; border: 1px solid black">
+                    <div class="nav_menu" style="background: #3498DB; border: 1px solid black">
                         <nav class="" role="navigation">
                             <div class="nav toggle">
                                 <a id="menu_toggle"><i class="fa fa-bars" style="color: black"></i></a>
