@@ -15,7 +15,7 @@ require_once '../../../components/phpexcel/Classes/PHPExcel.php';
 require_once '../../0connection/BD_config.php';
 require_once '../../0connection/connection.php';
 require_once '../../0connection/BD.php';
-$array_total_presupuesto = 0;
+
 
 //session_start();
 $obj_bd = new BD();
@@ -33,17 +33,17 @@ $objDrawing = new PHPExcel_Worksheet_Drawing();
 /**/
 
 //variables 
-
+$array_total_presupuesto = 0;
 /**/
 
 // Ajustar propiedades del documento
 $objPHPExcel->getProperties()->setCreator("Casai")
-        ->setLastModifiedBy("Casai")
-        ->setTitle("Presupuesto")
-        ->setSubject("_")
-        ->setDescription("_")
-        ->setKeywords("office 2007 openxml php")
-        ->setCategory("excel");
+->setLastModifiedBy("Casai")
+->setTitle("Presupuesto")
+->setSubject("_")
+->setDescription("_")
+->setKeywords("office 2007 openxml php")
+->setCategory("excel");
 /**/
 
 /* CABEZERA DEL REPORTE */
@@ -161,24 +161,24 @@ $num_ot = $row_ot['ordentrabajo_num'];
 //Agregar valores a las celdas
 
 $objPHPExcel->setActiveSheetIndex(0)
-        ->setCellValue('B1', "REGISTRO")
-        ->setCellValue('B2', 'PRESUPUESTO')
-        ->setCellValue('A3', 'No. CONTRATO:')
-        ->setCellValue('C3', 'SUBESTACION:')
-        ->setCellValue('F3', '' . $num_ot)
-        ->setCellValue('A4', 'OBJETO:')
-        ->setCellValue('A5', 'ALCANCE:')
-        ->setCellValue('A6', 'Módulo')
-        ->setCellValue('B6', 'Labor')
-        ->setCellValue('C6', 'Actividad')
-        ->setCellValue('D6', 'Codigo GOM')
+->setCellValue('B1', "REGISTRO")
+->setCellValue('B2', 'PRESUPUESTO')
+->setCellValue('A3', 'No. CONTRATO:')
+->setCellValue('C3', 'SUBESTACION:')
+->setCellValue('F3', '' . $num_ot)
+->setCellValue('A4', 'OBJETO:')
+->setCellValue('A5', 'ALCANCE:')
+->setCellValue('A6', 'Módulo')
+->setCellValue('B6', 'Labor')
+->setCellValue('C6', 'Actividad')
+->setCellValue('D6', 'Codigo GOM')
         // ->setCellValue('E6', 'Subactividad')
-        ->setCellValue('E6', 'Cantidad')
-        ->setCellValue('F6', "Vr. Unitario\n(" . $year . ')')
-        ->setCellValue('H2', 'Abr-16')
-        ->setCellValue('G6', 'Vr. Total')
-        ->setCellValue('H6', 'Observaciones')
-        ->setCellValue('H1', $version);
+->setCellValue('E6', 'Cantidad')
+->setCellValue('F6', "Vr. Unitario\n(" . $year . ')')
+->setCellValue('H2', 'Abr-16')
+->setCellValue('G6', 'Vr. Total')
+->setCellValue('H6', 'Observaciones')
+->setCellValue('H1', $version);
 
 $objPHPExcel->setActiveSheetIndex(0);
 //cuadrar el alto cuando se usa alt+enter
@@ -192,18 +192,18 @@ $objPHPExcel->getActiveSheet()->getStyle('G1')->getAlignment()->setWrapText(true
 
 /* ENCABEZADO */
 $sql_encabezado = "SELECT DP.detallepresupuesto_id,
-                        CT.contrato_numero,
-                        SB.subestacion_nombre,
-                        DP.detallepresupuesto_objeto,
-                        DP.detallepresupuesto_alcance,
-                        DP.detallepresupuesto_total,
-                        DP.detallepresupuesto_valorincremento,
-                        DP.detallepresupuesto_porcentincremento
-                   FROM dt_detalle_presupuesto DP
-                   JOIN dt_contrato CT ON DP.contrato_id=CT.contrato_id
-                   JOIN dt_subestacion SB ON DP.subestacion_id=SB.subestacion_id
-                    AND DP.detallepresupuesto_estado=3
-                    AND DP.detallepresupuesto_id=" . $det_pret;
+CT.contrato_numero,
+SB.subestacion_nombre,
+DP.detallepresupuesto_objeto,
+DP.detallepresupuesto_alcance,
+DP.detallepresupuesto_total,
+DP.detallepresupuesto_valorincremento,
+DP.detallepresupuesto_porcentincremento
+FROM dt_detalle_presupuesto DP
+JOIN dt_contrato CT ON DP.contrato_id=CT.contrato_id
+JOIN dt_subestacion SB ON DP.subestacion_id=SB.subestacion_id
+AND DP.detallepresupuesto_estado=3
+AND DP.detallepresupuesto_id=" . $det_pret;
 
 $resultado = $obj_bd->EjecutaConsulta($sql_encabezado);
 
@@ -244,32 +244,32 @@ $objPHPExcel->getActiveSheet()->getStyle('E6:G6')->getFill()->getStartColor()->s
 //1. CAntidad de Modulos
 
 $sql_mod = "SELECT lb.labor_id,
-                 md.modulo_descripcion,
-                 tb.tipobaremo_sigla,
-                 bm.baremo_item,
-                 lb.labor_unidmedida,
-                 lb.labor_descripcion,
-                 pt.baremo_id,
-                 pt.tipobaremo_id,
-                 pt.detallepresupuesto_id,
-                 md.modulo_id,                 
-                 pt.presupuesto_obs,
-                 sum(presupuesto_valorporcentaje) as total_actividad
-            FROM pt_presupuesto pt
-            JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
-            JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
-            JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
-            JOIN cf_labor lb ON bm.labor_id=lb.labor_id
-             AND pt.presupuesto_estado=1
-             AND pt.detallepresupuesto_id=$det_pret
-        GROUP BY pt.baremo_id,
-                 pt.tipobaremo_id,
-                 pt.detallepresupuesto_id,
-                 bm.baremo_item,
-                 tb.tipobaremo_descripcion,
-                 pt.presupuesto_obs,
-                 md.modulo_descripcion
-         ORDER BY modulo_descripcion,tb.tipobaremo_sigla,bm.baremo_item asc";
+md.modulo_descripcion,
+tb.tipobaremo_sigla,
+bm.baremo_item,
+lb.labor_unidmedida,
+lb.labor_descripcion,
+pt.baremo_id,
+pt.tipobaremo_id,
+pt.detallepresupuesto_id,
+md.modulo_id,                 
+pt.presupuesto_obs,
+sum(presupuesto_valorporcentaje) as total_actividad
+FROM pt_presupuesto pt
+JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
+JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+AND pt.presupuesto_estado=1
+AND pt.detallepresupuesto_id=$det_pret
+GROUP BY pt.baremo_id,
+pt.tipobaremo_id,
+pt.detallepresupuesto_id,
+bm.baremo_item,
+tb.tipobaremo_descripcion,
+pt.presupuesto_obs,
+md.modulo_descripcion
+ORDER BY modulo_descripcion,tb.tipobaremo_sigla,bm.baremo_item asc";
 
 $resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 //echo '<pre>';
@@ -297,35 +297,37 @@ while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
 
     $num_act_com = 0;
     $obs = $row_mod['presupuesto_obs'];
+
+    
     //2. Validar las actividades
     $sql_act = "SELECT pt.presupuesto_porcentaje,
-             ac.actividad_valorservicio,
-             pt.presupuesto_valorporcentaje,
-             pt.presupuesto_id,
-             pt.baremoactividad_id,                 
-             bm.baremo_item,
-                         bm.baremo_id,
-             ac.actividad_id,
-             ac.actividad_descripcion,
-                         pt.presupuesto_obs,
-             ac.actividad_GOM           
-                    FROM pt_presupuesto pt
-                    JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
-                    JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
-                    JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
-                     AND pt.baremo_id=" . $row_mod['baremo_id'] . "
-                     AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
-                     AND pt.modulo_id=" . $row_mod['modulo_id'] . "
-                     AND bm.baremo_estado=1
-                     AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
-                     AND pt.presupuesto_estado=1
-                     AND pt.presupuesto_obs='" . $obs . "'
-                GROUP BY actividad_id";
+    ac.actividad_valorservicio,
+    pt.presupuesto_valorporcentaje,
+    pt.presupuesto_id,
+    pt.baremoactividad_id,                 
+    bm.baremo_item,
+    bm.baremo_id,
+    ac.actividad_id,
+    ac.actividad_descripcion,
+    pt.presupuesto_obs,
+    ac.actividad_GOM           
+    FROM pt_presupuesto pt
+    JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+    JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+    JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+    AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+    AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+    AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+    AND bm.baremo_estado=1
+    AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+    AND pt.presupuesto_estado=1
+    AND pt.presupuesto_obs='" . $obs . "'
+    GROUP BY actividad_id";
 
 
-//    echo '<pre>';
-//    var_dump($sql_act);
-//    echo '</pre>';
+            //    echo '<pre>';
+            //    var_dump($sql_act);
+            //    echo '</pre>';
 
     $result_act = $obj_bd->EjecutaConsulta($sql_act);
     $num_act = $obj_bd->Filas($sql_act);
@@ -335,28 +337,28 @@ while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
 
         /* 3. CONSULTAR SI LA ACTIVIDAD TIENE SUBACTIVIDADES */
         $sql_sub = " SELECT pt.presupuesto_id,
-                        pt.baremoactividad_id,
-                        pt.detalleactividad_id,                             
-                        sb.subactividad_descripcion,
-                        pt.presupuesto_porcentaje,
-                        pt.presupuesto_valorporcentaje,
-                        SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
-                        SUM(pt.presupuesto_valorporcentaje) as suma_valor
-                        FROM pt_presupuesto pt
-                        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id         
-                        JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
-                        JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id           
-                        AND da.detalleactividad_estado=1
-                        AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
-                        AND pt.detallepresupuesto_id=$det_pret
-                        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
-                        AND pt.presupuesto_estado=1
-                        AND pt.presupuesto_obs='" . $obs . "'
-                   GROUP BY pt.baremoactividad_id";
+        pt.baremoactividad_id,
+        pt.detalleactividad_id,                             
+        sb.subactividad_descripcion,
+        pt.presupuesto_porcentaje,
+        pt.presupuesto_valorporcentaje,
+        SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+        SUM(pt.presupuesto_valorporcentaje) as suma_valor
+        FROM pt_presupuesto pt
+        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id         
+        JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+        JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id           
+        AND da.detalleactividad_estado=1
+        AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+        AND pt.detallepresupuesto_id=$det_pret
+        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+        AND pt.presupuesto_estado=1
+        AND pt.presupuesto_obs='" . $obs . "'
+        GROUP BY pt.baremoactividad_id";
 
-//    echo '<pre>';
-//    var_dump($sql_sub);
-//    echo '</pre>';
+    //    echo '<pre>';
+    //    var_dump($sql_sub);
+    //    echo '</pre>';
         $result_sub = $obj_bd->EjecutaConsulta($sql_sub);
         $num_sub = $obj_bd->Filas($sql_sub);
 
@@ -448,14 +450,14 @@ while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
             //$objPHPExcel->getActiveSheet()->getCell('E' . $E)->setValue('');
             //CATIDAD
             $com = $E + 1;
-                $objPHPExcel->setActiveSheetIndex(0)->mergeCells('E' . $D . ':E' . $E);
+            $objPHPExcel->setActiveSheetIndex(0)->mergeCells('E' . $D . ':E' . $E);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, $row_act['presupuesto_porcentaje']);
             $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
             //VR. UNITARIO
             $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $com = $F + 1;
-                $objPHPExcel->setActiveSheetIndex(0)->mergeCells('F' . $D . ':F' . $F);
+            $objPHPExcel->setActiveSheetIndex(0)->mergeCells('F' . $D . ':F' . $F);
             $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $F, number_format($row_act['actividad_valorservicio'], 0, ',', ''));
             $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
             $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -463,7 +465,7 @@ while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
             //VR. TOTAL
             $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             $com = $G + 1;
-                $objPHPExcel->setActiveSheetIndex(0)->mergeCells('G' . $D . ':G' . $G);
+            $objPHPExcel->setActiveSheetIndex(0)->mergeCells('G' . $D . ':G' . $G);
             $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=ROUND((E' . $E . '*F' . $F . '),0)');
             $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
             $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -493,9 +495,12 @@ while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
             $num_act_com = $num_act;
         }
     }
-//    echo '<pre> num_act_com';
-//    var_dump($num_act_com);
-//    echo '</pre>';
+
+
+    //    echo '<pre> num_act_com';
+    //    var_dump($num_act_com);
+    //    echo '</pre>';
+    
     //LABOR
     if ($B_com == 6) {
         $B_com = $B_com + $num_act_com + 1;
@@ -619,158 +624,158 @@ $dias_valor = 0;
 
 
 $sql_incremento = "SELECT * 
-           FROM dt_incremento_presupuesto 
-          WHERE detallepresupuesto_id=$det_pret
-                    AND incrementopresupuesto_estado=1";
+FROM dt_incremento_presupuesto 
+WHERE detallepresupuesto_id=$det_pret
+AND incrementopresupuesto_estado=1";
 $existe_incremmentos = $obj_bd->Filas($sql_incremento);
 if ($existe_incremmentos > 0) {
     $result_incremento = $obj_bd->EjecutaConsulta($sql_incremento);
     $row6 = $obj_bd->FuncionFetch($result_incremento);
 
-        if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") {
+    if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") {
 
             //$porcentaje_ubicacion = $ubicacion_porcentaje * 100;
-            $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
             //$total_final_ubi = number_format($ubicacion_valor, 0, ',', '.');
 
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
             //$objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             //$objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, "=G" . $H_SUB . '*0.03');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, "=G" . $H_SUB . '*0.03');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-            $H_IVA = $G;
-            $A = $A_com + 1;
-            $A_com = $A;
-            $B = $B_com + 1;
-            $B_com = $B;
-            $sig_fil = $A;
+        $H_IVA = $G;
+        $A = $A_com + 1;
+        $A_com = $A;
+        $B = $B_com + 1;
+        $B_com = $B;
+        $sig_fil = $A;
 
-            $D = $sig_fil;
-            $E = $sig_fil;
-            $F = $sig_fil;
-            $G = $sig_fil;
-            $H = $sig_fil;
-            $C = $sig_fil;
-            $I = $sig_fil;
-            $C_com = $sig_fil;
-            $I_com = $sig_fil;
+        $D = $sig_fil;
+        $E = $sig_fil;
+        $F = $sig_fil;
+        $G = $sig_fil;
+        $H = $sig_fil;
+        $C = $sig_fil;
+        $I = $sig_fil;
+        $C_com = $sig_fil;
+        $I_com = $sig_fil;
 
             //$porcentaje_dias = $dias_porcentaje * 100;
             //$total_final_dias = number_format($dias_valor, 0, ',', '.');
             //$porcentaje_incremento = $porc_inc * 100;
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue("1.5% Incremento por pago a 90 días: ");
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue("1.5% Incremento por pago a 90 días: ");
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
 
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
             //$objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             //$objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, '=SUM(G' . $H_SUB . ':G' . $H_IVA . ')*0.015');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, '=SUM(G' . $H_SUB . ':G' . $H_IVA . ')*0.015');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-            $H_IVA = $G;
-            $A = $A_com + 1;
-            $A_com = $A;
-            $B = $B_com + 1;
-            $B_com = $B;
-            $sig_fil = $A;
+        $H_IVA = $G;
+        $A = $A_com + 1;
+        $A_com = $A;
+        $B = $B_com + 1;
+        $B_com = $B;
+        $sig_fil = $A;
 
-            $D = $sig_fil;
-            $E = $sig_fil;
-            $F = $sig_fil;
-            $G = $sig_fil;
-            $H = $sig_fil;
-            $C = $sig_fil;
-            $I = $sig_fil;
-            $C_com = $sig_fil;
-            $I_com = $sig_fil;
+        $D = $sig_fil;
+        $E = $sig_fil;
+        $F = $sig_fil;
+        $G = $sig_fil;
+        $H = $sig_fil;
+        $C = $sig_fil;
+        $I = $sig_fil;
+        $C_com = $sig_fil;
+        $I_com = $sig_fil;
 
-        }else{
-            $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    }else{
+        $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
             //$total_final_ubi = number_format($ubicacion_valor, 0, ',', '.');
 
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
             //$objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             //$objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, 0 );
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, 0 );
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-            $H_IVA = $G;
-            $A = $A_com + 1;
-            $A_com = $A;
-            $B = $B_com + 1;
-            $B_com = $B;
-            $sig_fil = $A;
+        $H_IVA = $G;
+        $A = $A_com + 1;
+        $A_com = $A;
+        $B = $B_com + 1;
+        $B_com = $B;
+        $sig_fil = $A;
 
-            $D = $sig_fil;
-            $E = $sig_fil;
-            $F = $sig_fil;
-            $G = $sig_fil;
-            $H = $sig_fil;
-            $C = $sig_fil;
-            $I = $sig_fil;
-            $C_com = $sig_fil;
-            $I_com = $sig_fil;
+        $D = $sig_fil;
+        $E = $sig_fil;
+        $F = $sig_fil;
+        $G = $sig_fil;
+        $H = $sig_fil;
+        $C = $sig_fil;
+        $I = $sig_fil;
+        $C_com = $sig_fil;
+        $I_com = $sig_fil;
 
-           $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_dias .*/ "1.5% Incremento por pago a 90 días: ");
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue(/*$porcentaje_dias .*/ "1.5% Incremento por pago a 90 días: ");
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->getColor()->setARGB('000000');
 
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->setSize(11);
             //$objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             //$objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, '=SUM(G' . $H_SUB . ':G' . $H_IVA .')*0.015');
-            $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $G, '=SUM(G' . $H_SUB . ':G' . $H_IVA .')*0.015');
+        $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-            $H_IVA = $G;
-            $A = $A_com + 1;
-            $A_com = $A;
-            $B = $B_com + 1;
-            $B_com = $B;
-            $sig_fil = $A;
+        $H_IVA = $G;
+        $A = $A_com + 1;
+        $A_com = $A;
+        $B = $B_com + 1;
+        $B_com = $B;
+        $sig_fil = $A;
 
-            $D = $sig_fil;
-            $E = $sig_fil;
-            $F = $sig_fil;
-            $G = $sig_fil;
-            $H = $sig_fil;
-            $C = $sig_fil;
-            $I = $sig_fil;
-            $C_com = $sig_fil;
-            $I_com = $sig_fil; 
+        $D = $sig_fil;
+        $E = $sig_fil;
+        $F = $sig_fil;
+        $G = $sig_fil;
+        $H = $sig_fil;
+        $C = $sig_fil;
+        $I = $sig_fil;
+        $C_com = $sig_fil;
+        $I_com = $sig_fil; 
 
-        }
+    }
 }
 
 $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -818,10 +823,10 @@ $objPHPExcel->getActiveSheet()->getCell('A' . $A)->setValue("PEP");
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('A' . $A)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('A' . $A)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getFont()->setName('Calibri');
 $objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getFont()->setSize(11);
@@ -832,10 +837,10 @@ $objPHPExcel->getActiveSheet()->getCell('B' . $B)->setValue("No. Orden Presupues
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('B' . $B)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('B' . $B)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
 $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
@@ -846,10 +851,10 @@ $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue("Módulo ");
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('C' . $C)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('C' . $C)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $objPHPExcel->getActiveSheet()->getStyle('D' . $D)->getFont()->setName('Calibri');
 $objPHPExcel->getActiveSheet()->getStyle('D' . $D)->getFont()->setSize(11);
@@ -860,10 +865,10 @@ $objPHPExcel->getActiveSheet()->getCell('D' . $D)->setValue("Labor");
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('D' . $D)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('D' . $D)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
@@ -875,10 +880,10 @@ $objPHPExcel->getActiveSheet()->getCell('E' . $E)->setValue("Subtotal: ");
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('E' . $E)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('E' . $E)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 $A = $A_com + 1;
@@ -898,33 +903,33 @@ $C_com = $sig_fil;
 $I_com = $sig_fil;
 
 $sql_resumen = "SELECT lb.labor_id,
-                     md.modulo_descripcion,
-                     sum(presupuesto_valorporcentaje) as total_actividad,
-                     tb.tipobaremo_sigla,
-                     bm.baremo_item
-                FROM pt_presupuesto pt
-                JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
-                JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
-                JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
-                JOIN cf_labor lb ON bm.labor_id=lb.labor_id
-                 AND pt.presupuesto_estado=1
-                 AND pt.detallepresupuesto_id=$det_pret
-            GROUP BY 
-                    pt.presupuesto_obs,
-                    pt.baremo_id,
-                    pt.tipobaremo_id,
-                    pt.detallepresupuesto_id,
-                    bm.baremo_item,
-                    tb.tipobaremo_descripcion,
-                    md.modulo_descripcion
-           ORDER BY modulo_descripcion asc";
+md.modulo_descripcion,
+sum(presupuesto_valorporcentaje) as total_actividad,
+tb.tipobaremo_sigla,
+bm.baremo_item
+FROM pt_presupuesto pt
+JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+JOIN cf_modulo md ON pt.modulo_id=md.modulo_id            
+JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+AND pt.presupuesto_estado=1
+AND pt.detallepresupuesto_id=$det_pret
+GROUP BY 
+pt.presupuesto_obs,
+pt.baremo_id,
+pt.tipobaremo_id,
+pt.detallepresupuesto_id,
+bm.baremo_item,
+tb.tipobaremo_descripcion,
+md.modulo_descripcion
+ORDER BY modulo_descripcion asc";
 
 $result_resumen = $obj_bd->EjecutaConsulta($sql_resumen);
 $s = 1;
 while ($row_resumen = $obj_bd->FuncionFetch($result_resumen)) {
 
-$sigla = $row_resumen['tipobaremo_sigla'];
-$labor = $row_resumen['baremo_item'];
+    $sigla = $row_resumen['tipobaremo_sigla'];
+    $labor = $row_resumen['baremo_item'];
 
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('C' . $C, utf8_encode($row_resumen['modulo_descripcion']));
 
@@ -938,24 +943,24 @@ $labor = $row_resumen['baremo_item'];
     // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, "$" . number_format($array_valor_subactividad[$s], 0, ',', '.'));
 
     $objPHPExcel->getActiveSheet()
-            ->getStyle('E' . $E)
-            ->getBorders()
-            ->getAllBorders()
-            ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+    ->getStyle('E' . $E)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
     //BORDES
     $objPHPExcel->getActiveSheet()
-            ->getStyle('D' . $D)
-            ->getBorders()
-            ->getAllBorders()
-            ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+    ->getStyle('D' . $D)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 //BORDES
     $objPHPExcel->getActiveSheet()
-            ->getStyle('C' . $C)
-            ->getBorders()
-            ->getAllBorders()
-            ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+    ->getStyle('C' . $C)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
     $A_com = $A_com + 1;
     $B_com = $B_com + 1;
@@ -979,31 +984,31 @@ $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('A' . $A . ':A' . $A_com)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('A' . $A . ':A' . $A_com)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('B' . $B . ':B' . $B_com)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('B' . $B . ':B' . $B_com)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('C' . $C . ':D' . $D)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('C' . $C . ':D' . $D)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 //BORDES
 $objPHPExcel->getActiveSheet()
-        ->getStyle('E' . $E)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('E' . $E)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 //total del RESUMEN
@@ -1025,31 +1030,31 @@ $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormat
 $E_SUB = $E;
 
 $sql_incremento = "SELECT * 
-           FROM dt_incremento_presupuesto 
-          WHERE detallepresupuesto_id=$det_pret
-                    AND incrementopresupuesto_estado=1";
+FROM dt_incremento_presupuesto 
+WHERE detallepresupuesto_id=$det_pret
+AND incrementopresupuesto_estado=1";
 $existe_incremmentos = $obj_bd->Filas($sql_incremento);
 if ($existe_incremmentos > 0) {
     $result_incremento = $obj_bd->EjecutaConsulta($sql_incremento);
     $row6 = $obj_bd->FuncionFetch($result_incremento);
 
-        if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") {
+    if ($row6["incrementopresupuesto_tipo"] == "Actividades de Levantamento") {
 
             //TOTAL INCREMENTO IVA
-$C = $C + 1;
-$D = $D + 1;
-$E = $E + 1;
+        $C = $C + 1;
+        $D = $D + 1;
+        $E = $E + 1;
 
 
-$objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
+        $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
 //bordes
-$objPHPExcel->getActiveSheet()
+        $objPHPExcel->getActiveSheet()
         ->getStyle('C' . $C . ':D' . $D)
         ->getBorders()
         ->getAllBorders()
         ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-$objPHPExcel->getActiveSheet()
+        $objPHPExcel->getActiveSheet()
         ->getStyle('E' . $E)
         ->getBorders()
         ->getAllBorders()
@@ -1057,122 +1062,122 @@ $objPHPExcel->getActiveSheet()
 
 
 
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
 
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 //$objPHPExcel->getActiveSheet()->getCell('E' . $E)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-$objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, "=E" . $E_SUB . '*0.03');
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, "=E" . $E_SUB . '*0.03');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-$E_UBI = $E;
+        $E_UBI = $E;
 
-$C = $C + 1;
-$D = $D + 1;
-$E = $E + 1;
+        $C = $C + 1;
+        $D = $D + 1;
+        $E = $E + 1;
 
-$objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
+        $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
 //bordes
-$objPHPExcel->getActiveSheet()
+        $objPHPExcel->getActiveSheet()
         ->getStyle('C' . $C . ':D' . $D)
         ->getBorders()
         ->getAllBorders()
         ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-$objPHPExcel->getActiveSheet()
+        $objPHPExcel->getActiveSheet()
         ->getStyle('E' . $E)
         ->getBorders()
         ->getAllBorders()
         ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
-$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_dias .*/ "1.5% - Otrosí ­ #1, Incremento por pago a 90 días: ");
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_dias .*/ "1.5% - Otrosí ­ #1, Incremento por pago a 90 días: ");
 
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-$objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, '=SUM(E' . $E_SUB . ':E' . $E_UBI . ')*0.015');
-$objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, '=SUM(E' . $E_SUB . ':E' . $E_UBI . ')*0.015');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-        }else{
-            $C = $C + 1;
-            $D = $D + 1;
-            $E = $E + 1;
+    }else{
+        $C = $C + 1;
+        $D = $D + 1;
+        $E = $E + 1;
 
 
-            $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
+        $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
             //bordes
-            $objPHPExcel->getActiveSheet()
-                    ->getStyle('C' . $C . ':D' . $D)
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+        $objPHPExcel->getActiveSheet()
+        ->getStyle('C' . $C . ':D' . $D)
+        ->getBorders()
+        ->getAllBorders()
+        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-            $objPHPExcel->getActiveSheet()
-                    ->getStyle('E' . $E)
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+        $objPHPExcel->getActiveSheet()
+        ->getStyle('E' . $E)
+        ->getBorders()
+        ->getAllBorders()
+        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_ubicacion .*/ "3% Incremento por ubicación: ");
 
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
             //$objPHPExcel->getActiveSheet()->getCell('E' . $E)->setValue("$" . number_format($total_presupuesto, 0, ',', '.'));
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, 0);
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, 0);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
 
-            $E_UBI = $E;
+        $E_UBI = $E;
 
-            $C = $C + 1;
-            $D = $D + 1;
-            $E = $E + 1;
+        $C = $C + 1;
+        $D = $D + 1;
+        $E = $E + 1;
 
-            $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
+        $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
             //bordes
-            $objPHPExcel->getActiveSheet()
-                    ->getStyle('C' . $C . ':D' . $D)
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+        $objPHPExcel->getActiveSheet()
+        ->getStyle('C' . $C . ':D' . $D)
+        ->getBorders()
+        ->getAllBorders()
+        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-            $objPHPExcel->getActiveSheet()
-                    ->getStyle('E' . $E)
-                    ->getBorders()
-                    ->getAllBorders()
-                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+        $objPHPExcel->getActiveSheet()
+        ->getStyle('E' . $E)
+        ->getBorders()
+        ->getAllBorders()
+        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
-            $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_dias .*/ "1.5% - Otrosí ­ #1, Incremento por pago a 90 días: ");
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getFont()->getColor()->setARGB('000000');
+        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(/*$porcentaje_dias .*/ "1.5% - Otrosí ­ #1, Incremento por pago a 90 días: ");
 
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-            $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, '=SUM(E' . $E_SUB . ':E' . $E_UBI . ')*0.015');
-            $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
-        }
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+        $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $E, '=SUM(E' . $E_SUB . ':E' . $E_UBI . ')*0.015');
+        $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getNumberFormat()->setFormatCode('"$" #,##0;[Red]("$" #,##0)');
+    }
 }
 
 //VALOR TOTAL
@@ -1185,16 +1190,16 @@ $E = $E + 1;
 $objPHPExcel->setActiveSheetIndex(0)->mergeCells('C' . $C . ':D' . $D);
 //bordes
 $objPHPExcel->getActiveSheet()
-        ->getStyle('C' . $C . ':D' . $D)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('C' . $C . ':D' . $D)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $objPHPExcel->getActiveSheet()
-        ->getStyle('E' . $E)
-        ->getBorders()
-        ->getAllBorders()
-        ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('E' . $E)
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $total_final = $total_presupuesto + $total_incremento;
 

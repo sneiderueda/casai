@@ -57,7 +57,7 @@ class MD_1config {
             $resultado_exi_hijos = $obj_bd->Filas($sql_verifica_hijos);
             if ($resultado_exi_hijos > 0) {
 
-                $div_abre = '<ul class="nav side-menu" style="background: #3498DB">
+                $div_abre = '<ul class="nav side-menu" style="background: #81BEF7">
                               <li><a style="color:black; background: #3498DB; border: 1px solid black" href="#"><i class="' . $row['menu_icono'] . '"></i> ' . utf8_encode($row['menu_nombre']) . ' <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu" id="collapse_' . $row['menu_id'] . '">
                             ';
@@ -68,7 +68,7 @@ class MD_1config {
 
                 while ($row2 = $obj_bd->FuncionFetch($resultado_hijos)) {
                     $url = "'" . $row2['menu_url'] . "','codigo'";
-                    $html_menu .= '<li><a style="color:black" href="#3498DB" onclick="loadingFunctions(' . $url . ')">' . utf8_encode($row2['menu_nombre']) . '</a></li>';
+                    $html_menu .= '<li><a style="color:black" href="#81BEF7" onclick="loadingFunctions(' . $url . ')">' . utf8_encode($row2['menu_nombre']) . '</a></li>';
                     //  $html_menu.='<tr><td><a href="#" onclick="loadingFunctions(' . $url . ')"><span class="glyphicon glyphicon-list-alt text-primary"></span> ' . $row2['configmenuname'] . '</a></td></tr>';
                 }
 
