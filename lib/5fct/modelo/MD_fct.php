@@ -58,7 +58,7 @@ class MD_fct {
                 <td colspan='1'><b>Hasta</b> :<div class='input-group date' id='InicioSeg'  style='width:200px'> <input type='text' id='txtFinFactura' name='txtFinFactura' class='form-control data' readonly required='true'/>
                 <span class='input-group-addon'><span class='glyphicon glyphicon-calendar'></span></span></div></td>   
                 
-                <td colspan='1'><b>IVA %</b> :<div class='input-group date'   style='width:200px'> <input type='text' name='txt_iva' id='txt_iva' maxlength='3' onkeypress='return numeros(event)' class='input-xlarge data' style='width: 100px;' required='true'>
+                <td colspan='1'><b>IVA %</b> :<div class='input-group date'   style='width:200px'> <input type='text' name='txt_iva' id='txt_iva' maxlength='3' onkeypress='return numeros(event)' class='input-xlarge data' style='width: 100px;' required>
                </div></td> 
                
 

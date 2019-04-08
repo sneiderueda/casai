@@ -832,7 +832,7 @@ $total = (float) $subtotal2 + (float) $iva;
     /* CALCULOS DEL RESUMEN DEL ACUMULADO */
     $porcentaje_res_acumulado = round(($subtotal_acumulado / $subtotal) * 100);
 
-    /**/
+    /*
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
@@ -940,7 +940,7 @@ $total = (float) $subtotal2 + (float) $iva;
     $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getFont()->setSize(11);
     $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getFont()->getColor()->setARGB('123D05');
     $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('M' . $F)->setValue("$ " . number_format($cal_ubicacion_fact, 0, ',', '.'));
+    $objPHPExcel->getActiveSheet()->getCell('M' . $F)->setValue("$ " . number_format(0, 0, ',', '.'));
 
 
     //////////////////////////////////// SUBTOTAL + UBICACION //////////////////////////////////////
@@ -1124,7 +1124,7 @@ $total = (float) $subtotal2 + (float) $iva;
     $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getFont()->setSize(11);
     $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $objPHPExcel->getActiveSheet()->setCellValue('K' . $F, '=(J' . $F . ' /G' . $F . ')');
     $objPHPExcel->getActiveSheet()
     ->getStyle('K' . $F)
@@ -1152,6 +1152,19 @@ $total = (float) $subtotal2 + (float) $iva;
     $form = 'ROUND((M'. $subUbi .'+M'. $dias .'),0)';
 
     $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
+
+    //PORCENTAJE
+    $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getFont()->getColor()->setARGB('123D05');
+    $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->setCellValue('N' . $F, '=(J' . $F . ' /G' . $F . ')');
+    $objPHPExcel->getActiveSheet()
+    ->getStyle('N' . $F)
+    ->getNumberFormat()
+    ->applyFromArray([
+        "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+    ]);
 
 
     //////////////////////////////////////////// IVA ////////////////////////////////////////////
@@ -1197,6 +1210,7 @@ $total = (float) $subtotal2 + (float) $iva;
     // declaramos la formula
     $form = 'ROUND((J'. $subDias .'*'.$porcentaje.')/100,0)';
     $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);
+
 
     /************************************** ACUMULADO ********************************************/
     $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
@@ -1244,184 +1258,234 @@ $total = (float) $subtotal2 + (float) $iva;
 
 
     /***************************************** ACTA *********************************************/
-    
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('I' . $F)->setValue("Total: ");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getFont()->getColor()->setARGB('123D05');
+
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
+
+    // declaramos la formula
+    $form = 'ROUND((J'. $subDias .'+J'. $ivaPorc .'),0)';
+    $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);    
 
 
     /************************************** ACUMULADO ********************************************/
-    
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('L' . $F)->setValue("Total: ");
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getFont()->getColor()->setARGB('123D05');
+
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getNumberFormat()->setFormatCode('$#,##0');
+
+    // declaramos la formula
+    $form = 'ROUND((M'. $subDias .'+M'. $ivaPorc .'),0)';
+    $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////// 
+    //                          BORDES CUADRO TOTAL PRESUPUESTO                                 //
+    ////////////////////////////////////////////////////////////////////////////////////////////// 
+
+    /*********************************** PRESUPUESTO *******************************************/
+    $objPHPExcel->getActiveSheet()
+    ->getStyle('F'.$ini.':G'.$lim)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+    /***************************************** ACTA *********************************************/
+    $objPHPExcel->getActiveSheet()
+    ->getStyle('I'.$ini.':J'.$lim)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN); 
+
+    /************************************** ACUMULADO ********************************************/
+
+    $objPHPExcel->getActiveSheet()
+    ->getStyle('L'.$ini.':M'.$lim)
+    ->getBorders()
+    ->getAllBorders()
+    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 
 
 
 
-
-    //BORDES CUADRO TOTAL PRESUPUESTO
-
-$objPHPExcel->getActiveSheet()
-->getStyle('F'.$ini.':G'.$lim)
-->getBorders()
-->getAllBorders()
-->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN); 
+// /**********************RESUMEN A FACTURAR SUBTOTAL ACTAS***************/
 
 
-/**********************RESUMEN A FACTURAR SUBTOTAL ACTAS***************/
+//     //  $objPHPExcel->getActiveSheet()->getCell('L' . $H)->setValue($porcentaje_facturar . "%");
+//     //RESUMEN ACUMULADO
 
 
-    //  $objPHPExcel->getActiveSheet()->getCell('L' . $H)->setValue($porcentaje_facturar . "%");
-    //RESUMEN ACUMULADO
+//     //$objPHPExcel->getActiveSheet()->getCell('O' . $H)->setValue($porcentaje_res_acumulado . "%");
 
 
-    //$objPHPExcel->getActiveSheet()->getCell('O' . $H)->setValue($porcentaje_res_acumulado . "%");
+// $G = $G + 1;
+// $H = $H + 1;
+
+//     //RESUMEN A FACTURAR UBICACION A FACTURAR ACTA
+
+// //eSheet()->getCell('K' . $H)->setValue("$ " . number_format($cal_ubicacion_fact, 0, ',', '.'));
 
 
-$G = $G + 1;
-$H = $H + 1;
+//     /* RESUMEN ACUMULADO UBICACION
+//      */
+//     // $sql_ubi_acumulada = "CALL SP_factura('9','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
+//     // $result_ubi_acumulada = $obj_bd->EjecutaConsulta($sql_ubi_acumulada);
+//     // $data_ubicacion_acm = $obj_bd->FuncionFetch($result_ubi_acumulada);
 
-    //RESUMEN A FACTURAR UBICACION A FACTURAR ACTA
-
-//eSheet()->getCell('K' . $H)->setValue("$ " . number_format($cal_ubicacion_fact, 0, ',', '.'));
-
-
-    /* RESUMEN ACUMULADO UBICACION
-     */
-    // $sql_ubi_acumulada = "CALL SP_factura('9','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
-    // $result_ubi_acumulada = $obj_bd->EjecutaConsulta($sql_ubi_acumulada);
-    // $data_ubicacion_acm = $obj_bd->FuncionFetch($result_ubi_acumulada);
-
-    // $ubicacion_acomulada = $data_ubicacion_acm['ubicacion'];
-    // if ($ubicacion_acomulada == "") {
-    //     $resultado_ubi_acumulada = 0;
-    // }
-    // $resultado_ubi_acumulada = $resultado_ubi_acumulada + $cal_ubicacion_fact;
-    // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    // $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Ubicación 3%");
-    // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
-    // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
-    // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
-    // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
-    // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
-    // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
-    // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
-    // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    // $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($resultado_ubi_acumulada, 0, ',', '.'));
+//     // $ubicacion_acomulada = $data_ubicacion_acm['ubicacion'];
+//     // if ($ubicacion_acomulada == "") {
+//     //     $resultado_ubi_acumulada = 0;
+//     // }
+//     // $resultado_ubi_acumulada = $resultado_ubi_acumulada + $cal_ubicacion_fact;
+//     // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     // $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Ubicación 3%");
+//     // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+//     // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+//     // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
+//     // $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+//     // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
+//     // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
+//     // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
+//     // $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     // $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($resultado_ubi_acumulada, 0, ',', '.'));
 
 
-    // se introduce el campo de % por días en columnas G, J, M
+//     // se introduce el campo de % por días en columnas G, J, M
   
 
-    // columna M 
-    $sql_ubi_acumulada = "CALL SP_factura('9','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
-    $result_ubi_acumulada = $obj_bd->EjecutaConsulta($sql_ubi_acumulada);
-    $data_ubicacion_acm = $obj_bd->FuncionFetch($result_ubi_acumulada);
+//     // columna M 
+//     $sql_ubi_acumulada = "CALL SP_factura('9','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
+//     $result_ubi_acumulada = $obj_bd->EjecutaConsulta($sql_ubi_acumulada);
+//     $data_ubicacion_acm = $obj_bd->FuncionFetch($result_ubi_acumulada);
 
-    $ubicacion_acomulada = $data_ubicacion_acm['ubicacion'];
-    if ($ubicacion_acomulada == "") {
-        $resultado_ubi_acumulada = 0;
-    }
-    $resultado_ubi_acumulada = $resultado_ubi_acumulada + $cal_ubicacion_fact;
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Pago 90 días (1.5%)");
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($resultado_ubi_acumulada, 0, ',', '.'));
+//     $ubicacion_acomulada = $data_ubicacion_acm['ubicacion'];
+//     if ($ubicacion_acomulada == "") {
+//         $resultado_ubi_acumulada = 0;
+//     }
+//     $resultado_ubi_acumulada = $resultado_ubi_acumulada + $cal_ubicacion_fact;
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Pago 90 días (1.5%)");
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($resultado_ubi_acumulada, 0, ',', '.'));
 
-    $G = $G + 1;
-    $H = $H + 1;
+//     $G = $G + 1;
+//     $H = $H + 1;
 
-    //RESUMEN A FACTURAR SUBTOTAL A FACTURAR ACTA
-
-    
-
-    /* RESUMEN VALOR ACUMULADO SUBTOTAL */
-    $subtotal2_acumulado = $resultado_ubi_acumulada + $subtotal_acumulado;
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Subtotal: ");
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($subtotal2_acumulado, 0, ',', '.'));
-
+//     //RESUMEN A FACTURAR SUBTOTAL A FACTURAR ACTA
 
     
 
-
-    //RESUMEN A FACTURAR IVA A FACTURAR ACTA
-
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("IVA " . $porcentaje . "%: ");
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('K' . $H)->setValue("$" . number_format($iva_facturar, 0, ',', '.'));
-
-    /* RESUMEN IVA ACUMULADA */
-    $iva_acumulada = ((float) $subtotal2_acumulado * (float) $porcentaje) / 100;
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("IVA " . $porcentaje . "%: ");
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($iva_acumulada, 0, ',', '.'));
-    /**/
+//     /* RESUMEN VALOR ACUMULADO SUBTOTAL */
+//     $subtotal2_acumulado = $resultado_ubi_acumulada + $subtotal_acumulado;
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Subtotal: ");
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($subtotal2_acumulado, 0, ',', '.'));
 
 
+    
 
-    $G = $G + 1;
-    $F = $F + 1;
 
-    //RESUMEN A FACTURAR TOTAL A FACTURAR ACTA
+//     //RESUMEN A FACTURAR IVA A FACTURAR ACTA
 
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("Total: ");
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('K' . $H)->setValue("$" . number_format($total_facturar, 0, ',', '.'));
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("IVA " . $porcentaje . "%: ");
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('K' . $H)->setValue("$" . number_format($iva_facturar, 0, ',', '.'));
 
-    /* TOTAL ACUMULADO */
-    $total_acumulado_resumen = $subtotal2_acumulado + $iva_acumulada;
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Total: ");
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($total_acumulado_resumen, 0, ',', '.'));
-    /**/
+//     /* RESUMEN IVA ACUMULADA */
+//     $iva_acumulada = ((float) $subtotal2_acumulado * (float) $porcentaje) / 100;
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("IVA " . $porcentaje . "%: ");
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($iva_acumulada, 0, ',', '.'));
+//     /**/
 
-    //BORDES SUBTOTALES
-    $H = $H - 3;
+
+
+//     $G = $G + 1;
+//     $F = $F + 1;
+
+//     //RESUMEN A FACTURAR TOTAL A FACTURAR ACTA
+
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("Total: ");
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('K' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('K' . $H)->setValue("$" . number_format($total_facturar, 0, ',', '.'));
+
+//     /* TOTAL ACUMULADO */
+//     $total_acumulado_resumen = $subtotal2_acumulado + $iva_acumulada;
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+//     $objPHPExcel->getActiveSheet()->getCell('M' . $G)->setValue("Total: ");
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->setBold(true);
+//     $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setName('Calibri');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->setSize(11);
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getFont()->getColor()->setARGB('123D05');
+//     $objPHPExcel->getActiveSheet()->getStyle('N' . $H)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+//     $objPHPExcel->getActiveSheet()->getCell('N' . $H)->setValue("$" . number_format($total_acumulado_resumen, 0, ',', '.'));
+//     /**/
+
+    ///////////////////////////////////////////////////////////////////////////
+    //                          BORDES SUBTOTALES                            //
+    ///////////////////////////////////////////////////////////////////////////
+
+    $H = $H - 1;
 
     $objPHPExcel->getActiveSheet()
     ->getStyle('A8:N' . $H)
@@ -1432,30 +1496,32 @@ $H = $H + 1;
     //CENTRAR TODAS LAS CELDAS VERTICALMENTE
     $objPHPExcel->getActiveSheet()->getStyle('A8:N' . $H)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 
-    ///////////////////////////////////////////////////////////////////////////////////
-    //Actas
+    ///////////////////////////////////////////////////////////////////////////
+    ///                             TABLA DE ACTAS                          ///
+    ///////////////////////////////////////////////////////////////////////////
+    
     $G = $H + 12;
     $border_ini = $G;
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue("ACTAS");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('d60823');
+
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("ACTAS");
+    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("VALOR SIN IVA");
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('d60823');
 
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue("VALOR SIN IVA");
+    $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue("%");
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setSize(11);
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->getColor()->setARGB('d60823');
-
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue("%");
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->getColor()->setARGB('d60823');
 
 
     //VALIDAR SI TIENE ACTAS
@@ -1544,94 +1610,100 @@ $H = $H + 1;
         //Fin de variables de acta
 
         $G = $G + 1;
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('123D05');
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue($acta);
+
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue($acta);
+        $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("$" . number_format($total, 0, ',', '.'));
 
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setName('Calibri');
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setSize(11);
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->getColor()->setARGB('123D05');
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue("$" . number_format($total, 0, ',', '.'));
-
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setName('Calibri');
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setSize(11);
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->getColor()->setARGB('123D05');
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue($porcentaje_facturado);
+        $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($porcentaje_facturado);
 
         //TOTALES
         $G = $G + 1;
-        $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("TOTAL");
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue("TOTAL");
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setBold(true);
+        $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('123D05');
+
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-        $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
         $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
+        $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("$" . number_format($total, 0, ',', '.'));
 
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setName('Calibri');
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setSize(11);
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->getColor()->setARGB('123D05');
         $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue("$" . number_format($total, 0, ',', '.'));
-
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setName('Calibri');
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setSize(11);
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->getColor()->setARGB('123D05');
-        $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue($porcentaje_facturado);
+        $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($porcentaje_facturado);
     }
 
     //OTROS DATOS
     $G = $G + 1;
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("CÓDIGO GOM");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue("CÓDIGO GOM");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('123D05');
+
+    $objPHPExcel->getActiveSheet()->mergeCells('J' . $G . ':K' . $G );
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
-
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('L' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue($codigo_gom);
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue($codigo_gom);
 
     //PEP
     $G = $G + 1;
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("PEP");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue("PEP");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('123D05');
+
+    $objPHPExcel->getActiveSheet()->mergeCells('J' . $G . ':K' . $G );
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
-
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($pep);
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue($pep);
 
     //ORDEN
     $G = $G + 1;
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue("ORDEN");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('I' . $G)->setValue("ORDEN");
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setName('Calibri');
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setSize(11);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->setBold(true);
+    $objPHPExcel->getActiveSheet()->getStyle('I' . $G)->getFont()->getColor()->setARGB('123D05');
+
+    $objPHPExcel->getActiveSheet()->mergeCells('J' . $G . ':K' . $G );
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setName('Calibri');
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->setBold(true);
     $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getFont()->getColor()->setARGB('123D05');
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getCell('J' . $G)->setValue($orden);
 
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setName('Calibri');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->setSize(11);
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getFont()->getColor()->setARGB('123D05');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($orden);
-
-    //bordes
+    ///////////////////////////////////////////////////////////////////////////
+    ///                             BORDES TABLA ACTAS                      ///
+    ///////////////////////////////////////////////////////////////////////////
+    
     $objPHPExcel->getActiveSheet()
-    ->getStyle('J' . $border_ini . ':L' . $G)
+    ->getStyle('I' . $border_ini . ':K' . $G)
     ->getBorders()
     ->getAllBorders()
     ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
