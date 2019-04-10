@@ -379,13 +379,16 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
                     $objPHPExcel->setActiveSheetIndex(1)->setCellValue('D' . $D, $row_act['actividad_gom']);
                     $objPHPExcel->getActiveSheet()->getStyle('D' . $D)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('E' . $E, utf8_encode($row_sub['subactividad_descripcion']));
+                    
                     $objPHPExcel->setActiveSheetIndex(1)->setCellValue('E' . $E, utf8_encode($row_sub['suma_porcentaje']));
                     $objPHPExcel->getActiveSheet()->getStyle('E' . $E)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
                     $objPHPExcel->setActiveSheetIndex(1)->setCellValue('F' . $F, utf8_encode($row_act['actividad_valorservicio']));
+                    $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getNumberFormat()->setFormatCode('$#,##0');
                     $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('G' . $G, utf8_encode($row_sub['suma_valor']));
-                    $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('##0');
                     $objPHPExcel->setActiveSheetIndex(1)->setCellValue('G' . $G, '=E'. $G. '*F'. $G);
+                    $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
                     $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     // $obs = preg_replace("/\s+/", " ", $row_act['presupuesto_obs']);
                     // $objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue(utf8_encode($obs));
@@ -995,7 +998,7 @@ $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((G'. $sub .'+G'. $ubi .'),0)';
+$form = '(G'. $sub .'+G'. $ubi .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=' . $form);
 
@@ -1017,7 +1020,7 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((J'. $sub .'+J'. $ubi .'),0)';
+$form = '(J'. $sub .'+J'. $ubi .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);
 
@@ -1037,7 +1040,7 @@ $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((M'. $sub .'+M'. $ubi .'),0)';
+$form = '(M'. $sub .'+M'. $ubi .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
 
@@ -1060,7 +1063,7 @@ $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
         // declaramos la formula
-$form = 'ROUND((G'. $subUbi .'*0.015),0)';
+$form = '(G'. $subUbi .'*0.015)';
 
 $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=' . $form);
 
@@ -1082,7 +1085,7 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
         // declaramos la formula
-$form = 'ROUND((J'. $subUbi .'*0.015),0)';
+$form = '(J'. $subUbi .'*0.015)';
 
 $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);
 
@@ -1101,7 +1104,7 @@ $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
         // declaramos la formula
-$form = 'ROUND((M'. $subUbi .'*0.015),0)';
+$form = '(M'. $subUbi .'*0.015)';
 
 $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
 
@@ -1125,7 +1128,7 @@ $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((G'. $subUbi .'+G'. $dias .'),0)';
+$form = '(G'. $subUbi .'+G'. $dias .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=' . $form);
 
@@ -1148,7 +1151,7 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((J'. $subUbi .'+J'. $dias .'),0)';
+$form = '(J'. $subUbi .'+J'. $dias .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);
 
@@ -1182,7 +1185,7 @@ $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((M'. $subUbi .'+M'. $dias .'),0)';
+$form = '(M'. $subUbi .'+M'. $dias .')';
 
 $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
 
@@ -1220,7 +1223,7 @@ $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((G'. $subDias .'*'.$porcentaje.')/100,0)';
+$form = '(G'. $subDias .'*'.$porcentaje.')/100';
 $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=' . $form);
 
 $ivaPorc = $G;
@@ -1241,7 +1244,7 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((J'. $subDias .'*'.$porcentaje.')/100,0)';
+$form = '(J'. $subDias .'*'.$porcentaje.')/100';
 $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);
 
 
@@ -1260,7 +1263,7 @@ $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('M' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((M'. $subDias .'*'.$porcentaje.')/100,0)';
+$form = '(M'. $subDias .'*'.$porcentaje.')/100';
 $objPHPExcel->getActiveSheet()->setCellValue('M' . $G, '=' . $form);
 
 
@@ -1284,7 +1287,7 @@ $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((G'. $subDias .'+G'. $ivaPorc .'),0)';
+$form = '(G'. $subDias .'+G'. $ivaPorc .')';
 $objPHPExcel->getActiveSheet()->setCellValue('G' . $G, '=' . $form);    
 
 $lim = $G;
@@ -1305,7 +1308,7 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getAlignment()->setHorizonta
 $objPHPExcel->getActiveSheet()->getStyle('J' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
     // declaramos la formula
-$form = 'ROUND((J'. $subDias .'+J'. $ivaPorc .'),0)';
+$form = '(J'. $subDias .'+J'. $ivaPorc .')';
 $objPHPExcel->getActiveSheet()->setCellValue('J' . $G, '=' . $form);    
 
 
@@ -1678,7 +1681,7 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('AE')->setWidth(25);
 
 $objPHPExcel->getActiveSheet()->getRowDimension('1')->setRowHeight(10);
 
-//TIPO DE LETRA
+//FORMATO
 $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getFont()->setName('Arial');
 $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getFont()->setSize(10);
 $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getFont()->setBold(true);
@@ -1693,6 +1696,18 @@ $objPHPExcel->getActiveSheet()
 ->getBorders()
 ->getAllBorders()
 ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+$objPHPExcel->getActiveSheet()->getStyle('K2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+$objPHPExcel->getActiveSheet()->getStyle('K2')->getFill()->getStartColor()->setARGB('D8E4BC');
+
+$objPHPExcel->getActiveSheet()->getStyle('N2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+$objPHPExcel->getActiveSheet()->getStyle('N2')->getFill()->getStartColor()->setARGB('C0504D');
+
+$objPHPExcel->getActiveSheet()->getStyle('R2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+$objPHPExcel->getActiveSheet()->getStyle('R2')->getFill()->getStartColor()->setARGB('9BBB59');
+
+
+
 
 
 $objPHPExcel->setActiveSheetIndex(0)
@@ -1726,6 +1741,7 @@ $objPHPExcel->getActiveSheet()->setTitle($titulo);
 
 // Establecer el índice de la hoja activa, Hoja que Excel abre como la primera hoja
 $objPHPExcel->setActiveSheetIndex(0);
+
 $sql_resumen = "CALL SP_factura('1','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','','','')";
 
 $resultado_resumen = $obj_bd->EjecutaConsulta($sql_resumen);
@@ -1754,7 +1770,7 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
     // $porc_facturar = ($resumen['valor_porc'] * 100) / $resumen['detallepresupuesto_total'];
     $porc_facturar = ($total * 100) / $resumen['detallepresupuesto_total'];
     $SubL = "$" . number_format($total, 0, ',', '.');
-    $OtH = "$" . number_format($resumen['detallepresupuesto_total'], 0, ',', '.');
+    $OtH = $resumen['detallepresupuesto_total'];
     $ubI = "$" . number_format($resumen['detallepresupuesto_valorincremento'], 0, ',', '.');
     $IvaJ = "$" . number_format($iva_total, 0, ',', '.');
     $totK = "$" . number_format($total_ot, 0, ',', '.');
@@ -1776,14 +1792,27 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $fl, utf8_encode($resumen['ordentrabajo_num']));
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $fl, utf8_encode($resumen['ordentrabajo_gom']));
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $fl, utf8_encode($resumen['ordentrabajo_obs']));
+
+    $objPHPExcel->getActiveSheet()->getStyle('H' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $fl, $OtH);
 
     $objPHPExcel->getActiveSheet()->getStyle('I' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $fl, $ubicacion);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $fl, $IvaJ);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $fl, $totK);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $fl, $SubL);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, $porM);
+
+    $objPHPExcel->getActiveSheet()->getStyle('J' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+    $objPHPExcel->getActiveSheet()->setCellValue('J' . $fl, '=SUM(H'. $fl .':I'. $fl .')*0.015');
+    //$objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $fl, $IvaJ);
+    
+    $objPHPExcel->getActiveSheet()->getStyle('K' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+    $objPHPExcel->getActiveSheet()->setCellValue('K' . $fl, '=SUM(H'. $fl .':J'. $fl .')');
+    // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $fl, $totK);
+    
+    $objPHPExcel->getActiveSheet()->getStyle('L' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+    $objPHPExcel->getActiveSheet()->setCellValue('L' . $fl, '=(K' . $fl . '*' . $porcentaje . ')/100');
+
+    $objPHPExcel->getActiveSheet()->getStyle('M' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+    $objPHPExcel->getActiveSheet()->setCellValue('M' . $fl, '=SUM(K'. $fl .':L'. $fl .')');
+    // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, $porM);
 
 
     //Validar la ubicacion FINALIZADA
@@ -1838,8 +1867,8 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $fl, $subO);
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $ivaP);
     $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $fl, $totalQ);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $fl, $new_acta);
-    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $fl, utf8_encode($resumen['gestor']));
+    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $fl, $new_acta);
+    $objPHPExcel->setActiveSheetIndex(0)->setCellValue('V' . $fl, utf8_encode($resumen['gestor']));
 
     $fl = $fl + 1;
 }
