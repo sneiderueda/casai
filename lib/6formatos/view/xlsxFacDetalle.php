@@ -949,6 +949,13 @@ $total = (float) $subtotal2 + (float) $iva;
     $ubi = $G;
 
 /***************************************ACTA***********************************************/
+$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','". $row['detallepresupuesto_id'] ."','','')";
+
+    $resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+    $rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+    $ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+
 $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 $objPHPExcel->getActiveSheet()->getCell('I' . $F)->setValue("Ubicación 3%");
 $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getFont()->setName('Calibri');
@@ -960,7 +967,8 @@ $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getFont()->setName('Calibri'
 $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getFont()->setSize(11);
 $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getFont()->getColor()->setARGB('123D05');
 $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-$objPHPExcel->getActiveSheet()->getCell('J' . $F)->setValue(1);
+$objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getNumberFormat()->setFormatCode('$#,##0');
+$objPHPExcel->getActiveSheet()->setCellValue('J' . $F, $ubicacion_actas);
 
 
 /***************************ACUMULADO **************************************/    
