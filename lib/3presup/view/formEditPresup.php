@@ -13,20 +13,13 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
 <html lang="en">
     
-
-    </br>
-    
-    <!--<button name="btnListPres" id="btnListPres" class="btn btn-success" style="color: black" type="button" onclick="gritPresupuesto()">Mostrar listado</button>-->
-    </br>
-    </br>
     <form id="frm_DataPresupuesto" class="form-horizontal">    
         
-        <input type="hidden" class="form-control" id="detallepresupuesto_id" name="detallepresupuesto_id">                
+        <input type="hidden" class="form-control" id="detallepresupuesto_id" name="detallepresupuesto_id"> 
         <input type="hidden" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
 
         <fieldset style="color: black">
-            <legend><h1 style=" font-weight: bold">Generar Presupuesto</h1></legend>
-
+            <legend class="titulo">Generar Presupuesto</legend>
 
             <div class="col-sm-6">
                 <?php if ($detallepresupuesto_id != 0) { ?>

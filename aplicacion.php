@@ -75,7 +75,6 @@ $usuario = $_SESSION['Usuario'];
         <!-- sidebar menu -->
         <div id="sidebar-menu" class="nav navbar-nav navbar-right">
             <div class="">
-
                 <!-- mostrar menu-->
                 <div id="menu_sistema"></div>
             </div>
@@ -85,9 +84,9 @@ $usuario = $_SESSION['Usuario'];
     
 
     <!-- page content -->
-    <div class="right_col m-2" role="main">
+    <div class="right_col m-2 fondo1" role="main">
         <div class="contenido" id="codigo">
-            <br><br><br><br>
+            <br><br><br><br><br><br><br><br>
         </div>
 
     </div>
