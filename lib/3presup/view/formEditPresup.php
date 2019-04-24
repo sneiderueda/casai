@@ -20,6 +20,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
     <input type="hidden" class="form-control" id="detallepresupuesto_id" name="detallepresupuesto_id">
     <input type="hidden" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
+    <input type="text" name="modulo_inicial" id="modulo_inicial" value="1"></th>
 
     <fieldset style="color: black">
         <legend class="titulo">Generar Presupuesto</legend>
@@ -33,7 +34,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
             <div class="inline ">
                 <h4>Modulo: </h4>
-                <button title="Agregar" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span></button>
+                <button title="Agregar" class="btn btn-primary" onclick="agregar_modulo();"><span class="glyphicon glyphicon-plus" ></span></button>
                 <button title="Remover" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></button>
             </div>
 
@@ -44,8 +45,34 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
             </div>
         </nav>
 
-        <br>
+        
 
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div role="tabpanel">
+
+                        <ul class="nav nav-tabs" role="tablist" id="agregar_tab">
+                            <li role="presentation" class="active"><a href="#seccion0" aria-controls="seccion0" data-toggle="tab" role="tab">Datos Iniciales</a></li>
+
+                        </ul>
+
+                        <div class="tab-content" id="tab-content">
+                            <div role="tabpanel" class="borde tab-pane active" id="seccion0">
+                            <p>hola 1</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- ------------------------------- -->
+        <br><br><br><br><br><br><br><br><br><br>
         <div class="col-sm-6">
             <?php if ($detallepresupuesto_id != 0) { ?>
                 <div class="form-group">
@@ -122,7 +149,6 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
 
 
         <div class="col-sm-6">
-
 
             <!-- Gestor-->
             <div class="form-group">
@@ -215,10 +241,7 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                     </div>
                 </div>
 
-
-            <?php
-        }
-        ?>
+            <?php } ?>
 
         </div>
 
@@ -233,12 +256,6 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                             <input type="text" style="display: none" class="form-control data" id="txt_modulo" name="txt_modulo" placeholder="Nombre del Modulo" onblur="aMayusculas(this.value, this.id);">
                         </div>
                     </div>-->
-
-
-
-
-
-
 
         <!--Botones guardar-->
         <!-- <div class="form-group" id="btn_presupuesto_detalle">
@@ -297,8 +314,6 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
                 </div>
             </div>
 
-
-
             <!--OBSERVACIONES-->
             <div class="form-group">
                 <label for="lb_objetivo" class="col-sm-3 control-label">Alcance técnico particular:</label>
@@ -327,11 +342,13 @@ $detallepresupuesto_id = htmlspecialchars(strip_tags(trim($_POST['data'])));
         </div>
 
         <!--actividades Agregadas-->
+
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12">
                 <div id="ActividadesPresupuestoAsignadas"></div>
             </div>
         </div>
+
     </fieldset>
 
 </form>

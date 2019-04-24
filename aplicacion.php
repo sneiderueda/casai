@@ -23,7 +23,7 @@ $usuario = $_SESSION['Usuario'];
     <link href="sources/css/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="sources/css/modal-inicio.css" rel="stylesheet">
     <link rel="stylesheet" href="sources/css/multi-select.css">
-    <link rel="stylesheet" href="sources\css\aplicacion.css"
+    <link rel="stylesheet" href="sources\css\aplicacion.css">
     <!-- Font Awesome -->
     <link href="sources/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <!-- Custom Theme Style -->

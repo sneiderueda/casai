@@ -4112,25 +4112,32 @@ textarea.input-group-sm>.input-group-btn>.btn {
 }
 .nav-tabs>li {
     float: left;
-    margin-bottom: -1px
+    /*margin-bottom: -1px*/
+    transform: translateY(3px);
+    color: #ff8c00;
 }
 .nav-tabs>li>a {
     margin-right: 2px;
     line-height: 1.42857143;
-    border: 1px solid transparent;
-    border-radius: 4px 4px 0 0
+    border: 1px solid #ff8c00;
+    border-radius: 5px 5px 0 0
 }
 .nav-tabs>li>a:hover {
-    border-color: #eee #eee #ddd
+    /*border-color: #eee #eee #ddd;*/
+    border: 1px solid #333;
+    color: #ff8c00;
+    font-weight: bold;
+
 }
 .nav-tabs>li.active>a,
 .nav-tabs>li.active>a:focus,
 .nav-tabs>li.active>a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent
+    color: white;
+    cursor: pointer;
+    background-color: #333;
+    border: 1px solid #ff8c00;
+    border-radius: 5px 5px 0 0;
+    border-bottom-color: #dcdcdc;
 }
 .nav-tabs.nav-justified {
     width: 100%;
