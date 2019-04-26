@@ -17,6 +17,13 @@
     border-radius: 5px;
 }
 
+.barFija{
+    position: fixed;
+    top: 0;
+    z-index:2;
+
+}
+
 .fondo1{
     background-color: #dcdcdc;
 }
@@ -58,4 +65,9 @@
 
 .inline{
     display: inline-flex;
+}
+
+.anclar_arriba{
+    position: fixed;
+    top: 0;
 }

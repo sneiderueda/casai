@@ -58,7 +58,7 @@ class MD_1config {
             if ($resultado_exi_hijos > 0) {
 
                 $div_abre = '<ul class="nav navbar-nav" style="background: #333333">
-                              <li><a style="color:#ff8c00; background: #333333; border: 1px solid #ff8c00" href="#"><i style="color:#ff8c00" class="' . $row['menu_icono'] . '"></i> ' . utf8_encode($row['menu_nombre']) . ' <span style="color:#ff8c00" class="fa fa-chevron-down"></span></a>
+                              <li><a style="color:#ff8c00; background: #333333;" href="#"><i style="color:#ff8c00" class="' . $row['menu_icono'] . '"></i> ' . utf8_encode($row['menu_nombre']) . ' <span style="color:#ff8c00" class="fa fa-chevron-down"></span></a>
                                 <ul class="nav" id="collapse_' . $row['menu_id'] . '">
                             ';
 
