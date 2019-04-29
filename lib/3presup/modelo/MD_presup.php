@@ -429,9 +429,9 @@ class MD_presup
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<form id="actividad_presupuesto">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
     <thead>
-    <tr>
+    <tr >
     <th>Actividad</th>
     <th>Subactividad</th> 
     <th>Alcances</th>
@@ -745,9 +745,9 @@ class MD_presup
         </div>';
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<form id="presupuesto_actividades_asoc">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example_buscar">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example_buscar">
         <thead>
-        <tr>
+        <tr class="fondo letraN">
         <th>Sel</th> 
         <th>Modulo</th>
         <th>Labor</th> 
@@ -872,9 +872,9 @@ class MD_presup
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<form id="update_actividad_presupuesto">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
         <thead>
-        <tr>';
+        <tr class="fondo letraN">';
         if ($data['control'] == "1") {
 
             $tabla .= '    
