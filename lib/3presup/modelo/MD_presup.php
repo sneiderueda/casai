@@ -25,7 +25,7 @@ class MD_presup
             visibility: hidden
         }
         </style>";
-        $tabla .= "<fieldset style='color:black'>";
+        $tabla .= "<br><br><br><br><br><br><br><fieldset style='color:black'>";
         $tabla .= "<legend class='titulo'>Presupuestos Registrados</legend>";
         $url = "'lib/3presup/view/formEditPresup.php','contenido','0'";
 

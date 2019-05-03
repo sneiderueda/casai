@@ -23,8 +23,6 @@ require_once '../../0connection/BD.php';
 $obj_bd = new BD();
 
 $objPHPExcel = new PHPExcel();
-$objDrawing = new PHPExcel_Worksheet_Drawing();
-/**/
 
 //variables
 $porcentaje = $_GET['er'];
@@ -32,44 +30,6 @@ $fechaFacturaMes = $_GET['fh'];
 $fechaFacturaFin = $_GET['ff'];
 $abrir = $_GET['ab'];
 
-//Variables de las actas
-$codigo_gom = "";
-$pep = "";
-$orden = "";
-$acta = "";
-$subtotal_sinIva = "";
-$porcentaje_facturado = "";
-//Fin variables acta
-
-
-$arrayFechaFactura = $obj_bd->obtenerFechaEnLetra($fechaFacturaMes);
-$exp_fechaFactura = explode(",", $arrayFechaFactura);
-$mesFactura = $exp_fechaFactura[2];
-$yearFactura = $exp_fechaFactura[3];
-
-//$fechaFacturaMes = '15-03-2015';
-/**/
-
-// Ajustar propiedades del documento
-$objPHPExcel->getProperties()
-  ->setCreator("Casai")
-  ->setLastModifiedBy("Casai")
-  ->setTitle("Presupuesto")
-  ->setSubject("_")
-  ->setDescription("_")
-  ->setKeywords("office 2007 openxml php")
-  ->setCategory("excel");
-/**/
-
-
-/* CABEZERA DEL REPORTE */
-// logo del reporte
-$objDrawing->setName('Logo');
-$objDrawing->setDescription('Logo');
-$objDrawing->setPath('../../../img/logo.jpg');
-$objDrawing->setHeight(40);
-$objDrawing->setCoordinates('A1');
-$objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
 
 
 
@@ -85,6 +45,49 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   $positionInExcel = 0; //esto es para que ponga la nueva pestaña al principio
   $objPHPExcel->createSheet($positionInExcel); //creamos la pestaña
   //
+
+  $objDrawing = new PHPExcel_Worksheet_Drawing();
+  /**/
+
+//Variables de las actas
+  $codigo_gom = "";
+  $pep = "";
+  $orden = "";
+  $acta = "";
+  $subtotal_sinIva = "";
+  $porcentaje_facturado = "";
+//Fin variables acta
+
+
+  $arrayFechaFactura = $obj_bd->obtenerFechaEnLetra($fechaFacturaMes);
+  $exp_fechaFactura = explode(",", $arrayFechaFactura);
+  $mesFactura = $exp_fechaFactura[2];
+  $yearFactura = $exp_fechaFactura[3];
+
+//$fechaFacturaMes = '15-03-2015';
+  /**/
+
+// Ajustar propiedades del documento
+  $objPHPExcel->getProperties()
+  ->setCreator("Casai")
+  ->setLastModifiedBy("Casai")
+  ->setTitle("Presupuesto")
+  ->setSubject("_")
+  ->setDescription("_")
+  ->setKeywords("office 2007 openxml php")
+  ->setCategory("excel");
+  /**/
+
+
+  /* CABEZERA DEL REPORTE */
+// logo del reporte
+  $objDrawing->setName('Logo');
+  $objDrawing->setDescription('Logo');
+  $objDrawing->setPath('../../../img/logo.jpg');
+  $objDrawing->setHeight(40);
+  $objDrawing->setCoordinates('A1');
+  $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+
 
   $resultado_ubi_acumulada = 0;
 
@@ -181,16 +184,16 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
   //BORDES
   $objPHPExcel->getActiveSheet()
-    ->getStyle('L1:N2')
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('L1:N2')
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
   $objPHPExcel->getActiveSheet()
-    ->getStyle('I7:N7')
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('I7:N7')
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
 
@@ -208,32 +211,32 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
   //Agregar valores a las celdas
   $encabezado = 'MEDICION PARCIAL DE AVANCE DE OBRA CODENSA SA ESP' . PHP_EOL . 'DEPARTAMENTO DE PROYECTOS DE REDES ALTA TENSIÓN' . PHP_EOL . ''
-    . 'CONTRATO NO. 5700014501	' . PHP_EOL . 'Nombre Empresa Contratista: AC Energy SAS - NIT: 900114323-9' . PHP_EOL . ''
-    . 'Proyecto: ' . utf8_encode($row['ordentrabajo_obs']) . '' . PHP_EOL . 'Acta N° ' . $new_acta_ot . ': ' . $exp_fecha[2] . '' . PHP_EOL . 'Periodo Facturación: ' . $exp_fecha[2] . ' ' . $exp_fecha[3] . '' . PHP_EOL . '' . $row['ordentrabajo_num'] . '' . PHP_EOL;
+  . 'CONTRATO NO. 5700014501	' . PHP_EOL . 'Nombre Empresa Contratista: AC Energy SAS - NIT: 900114323-9' . PHP_EOL . ''
+  . 'Proyecto: ' . utf8_encode($row['ordentrabajo_obs']) . '' . PHP_EOL . 'Acta N° ' . $new_acta_ot . ': ' . $exp_fecha[2] . '' . PHP_EOL . 'Periodo Facturación: ' . $exp_fecha[2] . ' ' . $exp_fecha[3] . '' . PHP_EOL . '' . $row['ordentrabajo_num'] . '' . PHP_EOL;
 
   $objPHPExcel->setActiveSheetIndex(1)
-    ->setCellValue('A1')
-    ->setCellValue('B1', "ACTA DE AVANCE DE OBRA ")
-    ->setCellValue('A3', $encabezado)
-    ->setCellValue('A8', 'Módulo')
-    ->setCellValue('B8', 'Labor')
-    ->setCellValue('C8', 'Actividad')
-    ->setCellValue('D8', 'Codigo GOM')
-    ->setCellValue('E8', 'Cantidad')
-    ->setCellValue('F8', 'Vr. Unitario')
-    ->setCellValue('L1', utf8_encode($row['ordentrabajo_obs']))
-    ->setCellValue('L2', 'PAG 1 DE 1')
-    ->setCellValue('H3', '2017')
-    ->setCellValue('G8', 'Vr. Total')
-    ->setCellValue('H8', 'Observaciones')
-    ->setCellValue('I7', 'valor ejecutado Acta No. ' . $new_acta_ot . ' ' . $exp_fecha[2])
-    ->setCellValue('I8', 'Cantidad')
-    ->setCellValue('J8', 'Vr. Ejecutado')
-    ->setCellValue('K8', '%')
-    ->setCellValue('L7', 'Valor acumulado')
-    ->setCellValue('L8', 'Cantidad')
-    ->setCellValue('M8', 'Vr. Acumulado')
-    ->setCellValue('N8', '%');
+  ->setCellValue('A1')
+  ->setCellValue('B1', "ACTA DE AVANCE DE OBRA ")
+  ->setCellValue('A3', $encabezado)
+  ->setCellValue('A8', 'Módulo')
+  ->setCellValue('B8', 'Labor')
+  ->setCellValue('C8', 'Actividad')
+  ->setCellValue('D8', 'Codigo GOM')
+  ->setCellValue('E8', 'Cantidad')
+  ->setCellValue('F8', 'Vr. Unitario')
+  ->setCellValue('L1', utf8_encode($row['ordentrabajo_obs']))
+  ->setCellValue('L2', 'PAG 1 DE 1')
+  ->setCellValue('H3', '2017')
+  ->setCellValue('G8', 'Vr. Total')
+  ->setCellValue('H8', 'Observaciones')
+  ->setCellValue('I7', 'valor ejecutado Acta No. ' . $new_acta_ot . ' ' . $exp_fecha[2])
+  ->setCellValue('I8', 'Cantidad')
+  ->setCellValue('J8', 'Vr. Ejecutado')
+  ->setCellValue('K8', '%')
+  ->setCellValue('L7', 'Valor acumulado')
+  ->setCellValue('L8', 'Cantidad')
+  ->setCellValue('M8', 'Vr. Acumulado')
+  ->setCellValue('N8', '%');
   $objPHPExcel->getActiveSheet()->getStyle('A3')->getAlignment()->setWrapText(true);
 
   $objPHPExcel->setActiveSheetIndex(1);
@@ -261,31 +264,31 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
 
   $sql_mod = "SELECT lb.labor_id,
-    md.modulo_descripcion,
-    bm.baremo_item,
-    lb.labor_unidmedida,
-    lb.labor_descripcion,
-    tb.tipobaremo_sigla,
-    pt.baremo_id,
-    pt.tipobaremo_id,
-    pt.detallepresupuesto_id,
-    md.modulo_id,
-    pt.presupuesto_obs,
-    sum(presupuesto_valorporcentaje) as total_actividad
-    FROM pt_presupuesto pt
-    JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
-    JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
-    JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
-    JOIN cf_labor lb ON bm.labor_id=lb.labor_id
-    AND pt.presupuesto_estado=1
-    AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
-    GROUP BY md.modulo_descripcion,
-    pt.baremo_id,
-    pt.tipobaremo_id,
-    pt.detallepresupuesto_id,
-    bm.baremo_item,
-    tb.tipobaremo_descripcion,
-    pt.presupuesto_obs";
+  md.modulo_descripcion,
+  bm.baremo_item,
+  lb.labor_unidmedida,
+  lb.labor_descripcion,
+  tb.tipobaremo_sigla,
+  pt.baremo_id,
+  pt.tipobaremo_id,
+  pt.detallepresupuesto_id,
+  md.modulo_id,
+  pt.presupuesto_obs,
+  sum(presupuesto_valorporcentaje) as total_actividad
+  FROM pt_presupuesto pt
+  JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+  JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+  JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+  JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+  AND pt.presupuesto_estado=1
+  AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+  GROUP BY md.modulo_descripcion,
+  pt.baremo_id,
+  pt.tipobaremo_id,
+  pt.detallepresupuesto_id,
+  bm.baremo_item,
+  tb.tipobaremo_descripcion,
+  pt.presupuesto_obs";
 
   $resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 
@@ -319,28 +322,28 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
     //2. Validar las actividades
     $sql_act = "SELECT pt.presupuesto_porcentaje,
-    	ac.actividad_valorservicio,
-    	pt.presupuesto_valorporcentaje,
-    	pt.presupuesto_id,
-    	pt.baremoactividad_id,
-    	bm.baremo_item,
-    	bm.baremo_id,
-    	ac.actividad_id,
-    	ac.actividad_descripcion,
-    	pt.presupuesto_obs,
-    	ac.actividad_GOM
-    	FROM pt_presupuesto pt
-    	JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
-    	JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
-    	JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
-    	AND pt.baremo_id=" . $row_mod['baremo_id'] . "
-    	AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
-    	AND pt.modulo_id=" . $row_mod['modulo_id'] . "
-    	AND bm.baremo_estado=1
-    	AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
-    	AND pt.presupuesto_estado=1
-    	AND pt.presupuesto_obs='" . $obs . "'
-    	GROUP BY actividad_id";
+    ac.actividad_valorservicio,
+    pt.presupuesto_valorporcentaje,
+    pt.presupuesto_id,
+    pt.baremoactividad_id,
+    bm.baremo_item,
+    bm.baremo_id,
+    ac.actividad_id,
+    ac.actividad_descripcion,
+    pt.presupuesto_obs,
+    ac.actividad_GOM
+    FROM pt_presupuesto pt
+    JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+    JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+    JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+    AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+    AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+    AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+    AND bm.baremo_estado=1
+    AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+    AND pt.presupuesto_estado=1
+    AND pt.presupuesto_obs='" . $obs . "'
+    GROUP BY actividad_id";
 
 
     $result_act = $obj_bd->EjecutaConsulta($sql_act);
@@ -350,23 +353,23 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
       /* 3. CONSULTAR SI LA ACTIVIDAD TIENE SUBACTIVIDADES */
       $sql_sub = " SELECT pt.presupuesto_id,
-    		pt.baremoactividad_id,
-    		pt.detalleactividad_id,
-    		sb.subactividad_descripcion,
-    		pt.presupuesto_porcentaje,
-    		pt.presupuesto_valorporcentaje,
-    		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
-    		SUM(pt.presupuesto_valorporcentaje) as suma_valor
-    		FROM pt_presupuesto pt
-    		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
-    		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
-    		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
-    		AND da.detalleactividad_estado=1
-    		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
-    		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
-    		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
-    		AND pt.presupuesto_estado=1
-    		AND pt.presupuesto_obs='" . $obs . "'";
+      pt.baremoactividad_id,
+      pt.detalleactividad_id,
+      sb.subactividad_descripcion,
+      pt.presupuesto_porcentaje,
+      pt.presupuesto_valorporcentaje,
+      SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+      SUM(pt.presupuesto_valorporcentaje) as suma_valor
+      FROM pt_presupuesto pt
+      JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+      JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+      JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+      AND da.detalleactividad_estado=1
+      AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+      AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+      AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+      AND pt.presupuesto_estado=1
+      AND pt.presupuesto_obs='" . $obs . "'";
 
       $result_sub = $obj_bd->EjecutaConsulta($sql_sub);
       $num_sub = $obj_bd->Filas($sql_sub);
@@ -411,12 +414,12 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
            * @Date: 2019-04-15 11:37:49 
            * @Desc:  Realizar consulta a BD para mostar ultimos porcentajes ingresados
            */          
-          $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
-          $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
-          $data_av = $obj_bd->FuncionFetch($resultado_av);
+           $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
+           $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
+           $data_av = $obj_bd->FuncionFetch($resultado_av);
 
-          $cantidad = $data_av['seguimiento_avance'];
-          if ($cantidad == "") {
+           $cantidad = $data_av['seguimiento_avance'];
+           if ($cantidad == "") {
             $cantidad = 0;
           }
           /*
@@ -436,84 +439,84 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
                       }
                      */
           //cargar campos
-          $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-          $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('I' . $F, $cantidad);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('J' . $F, '=F' . $F . '*I' . $F);
+                      $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                      $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                      $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                      $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+                      $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+                      $objPHPExcel->setActiveSheetIndex(1)->setCellValue('I' . $F, $cantidad);
+                      $objPHPExcel->setActiveSheetIndex(1)->setCellValue('J' . $F, '=F' . $F . '*I' . $F);
           //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, $valor_facturar_form);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, '=J' . $F . '/G' . $F);
+                      $objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, '=J' . $F . '/G' . $F);
           //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $porcent_facturar . "%");
           //}
 
-          /**/
+                      /**/
 
           //CALCULAR ACUMULADO
-          $sql_act_acumulado = "CALL SP_factura('8','','','','','','','','','','','','','','','','','','','" . trim($row_sub['presupuesto_id']) . "','','')";
+                      $sql_act_acumulado = "CALL SP_factura('8','','','','','','','','','','','','','','','','','','','" . trim($row_sub['presupuesto_id']) . "','','')";
 
-          $resultado_act_acumulado = $obj_bd->EjecutaConsulta($sql_act_acumulado);
-          $actividad_acumulado = $obj_bd->Filas($sql_act_acumulado);
-          $data_acumulado = $obj_bd->FuncionFetch($resultado_act_acumulado);
-          $cantidad_acumulado = 0;
-          if ($data_acumulado['porcetaje_aco'] != "") {
+                      $resultado_act_acumulado = $obj_bd->EjecutaConsulta($sql_act_acumulado);
+                      $actividad_acumulado = $obj_bd->Filas($sql_act_acumulado);
+                      $data_acumulado = $obj_bd->FuncionFetch($resultado_act_acumulado);
+                      $cantidad_acumulado = 0;
+                      if ($data_acumulado['porcetaje_aco'] != "") {
 
 
-            $cantidad_acumulado = $data_acumulado['cantidad_aco'] + $cantidad;
-            $total_acumulado = round($data_acumulado['valor_aco'] + $valor_facturar);
-            $porcentaje_valor = $data_acumulado['presupuesto_valorporcentaje'];
-            $porcentaje_acumulado = round(($valor_facturar * 100) / $valor_porcent_total);
+                        $cantidad_acumulado = $data_acumulado['cantidad_aco'] + $cantidad;
+                        $total_acumulado = round($data_acumulado['valor_aco'] + $valor_facturar);
+                        $porcentaje_valor = $data_acumulado['presupuesto_valorporcentaje'];
+                        $porcentaje_acumulado = round(($valor_facturar * 100) / $valor_porcent_total);
             // $porcentaje_acumulado = round(($total_acumulado / $porcentaje_valor) * 100);
-            $total_acumulado_form = "$" . number_format($total_acumulado, 0, ',', '.');
+                        $total_acumulado_form = "$" . number_format($total_acumulado, 0, ',', '.');
 
             //cargar campos
-            $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad_acumulado);
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, $total_acumulado_form);
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $porcentaje_acumulado . "%");
+                        $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad_acumulado);
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, $total_acumulado_form);
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $porcentaje_acumulado . "%");
 
-            $total_actividad_acumulado = $total_actividad_acumulado + $total_acumulado;
-          } else {
-            $total_actividad_acumulado = $total_actividad_acumulado + $valor_facturar;
+                        $total_actividad_acumulado = $total_actividad_acumulado + $total_acumulado;
+                      } else {
+                        $total_actividad_acumulado = $total_actividad_acumulado + $valor_facturar;
             //cargar campos
-            $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-            $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-            $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad);
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, '=F' . $F . '*I' . $F);
-            $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, '=M' . $F . '/G' . $F);
+                        $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                        $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+                        $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad);
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, '=F' . $F . '*I' . $F);
+                        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, '=M' . $F . '/G' . $F);
             // $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $valor_facturar_form);
             //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('O' . $F, $porcent_facturar . "%");
-          }
+                      }
 
 
-          /**/
+                      /**/
 
-          $D = $D + 1;
-          $E = $E + 1;
-          $F = $F + 1;
-          $G = $G + 1;
-          $H = $H + 1;
+                      $D = $D + 1;
+                      $E = $E + 1;
+                      $F = $F + 1;
+                      $G = $G + 1;
+                      $H = $H + 1;
 
-          if ($I_com == 8) {
-            $I_com = $I_com + 1;
-            $C_com = $C_com + 1;
-          }
-        }
+                      if ($I_com == 8) {
+                        $I_com = $I_com + 1;
+                        $C_com = $C_com + 1;
+                      }
+                    }
 
-        if ($num_sub == 1) {
-          $I_com = $I_com;
-          $C_com = $C_com;
-        } else {
+                    if ($num_sub == 1) {
+                      $I_com = $I_com;
+                      $C_com = $C_com;
+                    } else {
 
-          $I_com = $I_com + 1;
-          $C_com = $C_com + 1;
-        }
+                      $I_com = $I_com + 1;
+                      $C_com = $C_com + 1;
+                    }
         // //Observaciones - combinar campo
         // $objPHPExcel->setActiveSheetIndex(1)->mergeCells('H' . $C . ':H' . $C_com);
         // $obs = preg_replace("/\s+/", " ", $row_act['presupuesto_obs']);
@@ -521,73 +524,73 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
         // $objPHPExcel->getActiveSheet()->getStyle('H' . $C)->getAlignment()->setWrapText(true);
 
         //Actividad
-        $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
-        $act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
-        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
-        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
+                    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
+                    $act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
+                    $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
+                    $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
 
-        $I = $I_com + 1;
-        $C = $C_com + 1;
-        $C_com = $C;
-        $I_com = $I;
-        $num_act_com = $num_act_com + $num_sub;
-      } else {
-        if ($I_com == 8) {
-          $I_com = $I_com + 1;
-          $C_com = $C_com + 1;
-        }
+                    $I = $I_com + 1;
+                    $C = $C_com + 1;
+                    $C_com = $C;
+                    $I_com = $I;
+                    $num_act_com = $num_act_com + $num_sub;
+                  } else {
+                    if ($I_com == 8) {
+                      $I_com = $I_com + 1;
+                      $C_com = $C_com + 1;
+                    }
         //GOM
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('D' . $D, $row_act['actividad_gom']);
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValue('D' . $D, $row_act['actividad_gom']);
 
 
         //CAMPO SUBACTIVIDAD
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('E' . $E, '');
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValue('E' . $E, '');
         //$objPHPExcel->getActiveSheet()->getCell('E' . $E)->setValue('');
         //CATIDAD
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('F' . $F, utf8_encode($row_act['presupuesto_porcentaje']));
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValue('F' . $F, utf8_encode($row_act['presupuesto_porcentaje']));
 
         //VR. UNITARIO
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('G' . $G, utf8_encode($row_act['actividad_valorservicio']));
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValue('G' . $G, utf8_encode($row_act['actividad_valorservicio']));
 
         //VR. TOTAL
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('H' . $H, utf8_encode($row_act['presupuesto_valorporcentaje']));
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValue('H' . $H, utf8_encode($row_act['presupuesto_valorporcentaje']));
 
         // Observaciones - combinar campo
-        $objPHPExcel->setActiveSheetIndex(1)->mergeCells('h' . $I . ':h' . $I_com);
-        $obs = preg_replace("/\s+/", " ", $row_act['presupuesto_obs']);
-        $objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue(utf8_encode($obs));
-        $objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getAlignment()->setWrapText(true);
+                    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('h' . $I . ':h' . $I_com);
+                    $obs = preg_replace("/\s+/", " ", $row_act['presupuesto_obs']);
+                    $objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue(utf8_encode($obs));
+                    $objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getAlignment()->setWrapText(true);
 
         //Actividad
-        $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
-        $act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
-        $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
-        $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
+                    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
+                    $act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
+                    $objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
+                    $objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
 
 
         //VALIDAR AVANCE DE LA ACTIVIDAD PARA FACTURAR
-        $cantidad = 0;
-        $sql_act_facturar = "CALL SP_factura('7','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
-        $resultado_act_facturar = $obj_bd->EjecutaConsulta($sql_act_facturar);
-        $actividad_facturar = $obj_bd->Filas($sql_act_facturar);
+                    $cantidad = 0;
+                    $sql_act_facturar = "CALL SP_factura('7','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
+                    $resultado_act_facturar = $obj_bd->EjecutaConsulta($sql_act_facturar);
+                    $actividad_facturar = $obj_bd->Filas($sql_act_facturar);
 
         // if ($actividad_facturar > 0) {
-        $data_facturar = $obj_bd->FuncionFetch($resultado_act_facturar);
+                    $data_facturar = $obj_bd->FuncionFetch($resultado_act_facturar);
 
            /** 
            * @Author: Daniel Rueda
            * @Date: 2019-04-15 11:37:49 
            * @Desc:  Realizar consulta a BD para mostar ultimos porcentajes ingresados
            */
-        $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
-        $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
-        $data_av = $obj_bd->FuncionFetch($resultado_av);
+           $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
+           $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
+           $data_av = $obj_bd->FuncionFetch($resultado_av);
 
-        $cantidad = $data_av['seguimiento_avance'];
+           $cantidad = $data_av['seguimiento_avance'];
 
-        if ($cantidad == "") {
-          $cantidad = 0;
-        }
+           if ($cantidad == "") {
+            $cantidad = 0;
+          }
         /*
                   $valor_unitario = $data_facturar['actividad_valorservicio'];
                   $valor_porcent_total = $data_facturar['presupuesto_valorporcentaje'];
@@ -601,109 +604,109 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
                   $porcent_facturar = round(($valor_facturar * 100) / $valor_porcent_total);
                   } else {
                   $porcent_facturar = 0;
-              } */
+                } */
 
         //cargar campos
-        $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-        $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('I' . $F, $cantidad);
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('J' . $F, '=G' . $F . '*J' . $F);
-        $objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, '=K' . $F . '/H' . $F);
+                $objPHPExcel->getActiveSheet()->getStyle('I' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objPHPExcel->getActiveSheet()->getStyle('J' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+                $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+                $objPHPExcel->setActiveSheetIndex(1)->setCellValue('I' . $F, $cantidad);
+                $objPHPExcel->setActiveSheetIndex(1)->setCellValue('J' . $F, '=G' . $F . '*J' . $F);
+                $objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, '=K' . $F . '/H' . $F);
         //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('K' . $F, $valor_facturar_form);
         //$objPHPExcel->getActiveSheet()->setCellValue('B'.($filava+1),'=SUM(B6:B' .$filava .')');
         //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $porcent_facturar . "%");
         //  }
         //CALCULAR ACUMULADO
-        $sql_act_acumulado = "CALL SP_factura('8','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
+                $sql_act_acumulado = "CALL SP_factura('8','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
 
-        $resultado_act_acumulado = $obj_bd->EjecutaConsulta($sql_act_acumulado);
-        $actividad_acumulado = $obj_bd->Filas($sql_act_acumulado);
-        $data_acumulado = $obj_bd->FuncionFetch($resultado_act_acumulado);
-        if ($data_acumulado['porcetaje_aco'] != "") {
+                $resultado_act_acumulado = $obj_bd->EjecutaConsulta($sql_act_acumulado);
+                $actividad_acumulado = $obj_bd->Filas($sql_act_acumulado);
+                $data_acumulado = $obj_bd->FuncionFetch($resultado_act_acumulado);
+                if ($data_acumulado['porcetaje_aco'] != "") {
 
 
-          $cantidad_acumulado = $data_acumulado['cantidad_aco'] + $cantidad;
-          $total_acumulado = round($data_acumulado['valor_aco'] + $valor_facturar);
-          $porcentaje_valor = $data_acumulado['presupuesto_valorporcentaje'];
-          $porcentaje_acumulado = round(($total_acumulado / $porcentaje_valor) * 100);
-          $total_acumulado_form = "$" . number_format($total_acumulado, 0, ',', '.');
+                  $cantidad_acumulado = $data_acumulado['cantidad_aco'] + $cantidad;
+                  $total_acumulado = round($data_acumulado['valor_aco'] + $valor_facturar);
+                  $porcentaje_valor = $data_acumulado['presupuesto_valorporcentaje'];
+                  $porcentaje_acumulado = round(($total_acumulado / $porcentaje_valor) * 100);
+                  $total_acumulado_form = "$" . number_format($total_acumulado, 0, ',', '.');
 
           //cargar campos
-          $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad_acumulado);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, $total_acumulado_form);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $porcentaje_acumulado . "%");
+                  $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad_acumulado);
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, $total_acumulado_form);
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $porcentaje_acumulado . "%");
 
-          $total_actividad_acumulado = $total_actividad_acumulado + $total_acumulado;
-        } else {
-          $total_actividad_acumulado = $total_actividad_acumulado + $valor_facturar;
+                  $total_actividad_acumulado = $total_actividad_acumulado + $total_acumulado;
+                } else {
+                  $total_actividad_acumulado = $total_actividad_acumulado + $valor_facturar;
           //cargar campos
-          $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-          $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-          $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, '=G' . $F . '*J' . $F);
-          $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, '=K' . $F . '/H' . $F);
+                  $objPHPExcel->getActiveSheet()->getStyle('L' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                  $objPHPExcel->getActiveSheet()->getStyle('M' . $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+                  $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $cantidad);
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('M' . $F, '=G' . $F . '*J' . $F);
+                  $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, '=K' . $F . '/H' . $F);
           // $objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $F, $valor_facturar_form);
           //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('O' . $F, $porcent_facturar . "%");
-        }
-        /**/
+                }
+                /**/
 
-        $D = $D + 1;
-        $E = $E + 1;
-        $F = $F + 1;
-        $G = $G + 1;
-        $H = $H + 1;
+                $D = $D + 1;
+                $E = $E + 1;
+                $F = $F + 1;
+                $G = $G + 1;
+                $H = $H + 1;
 
-        $I = $I_com + 1;
-        $C = $C_com + 1;
-        $C_com = $C;
-        $I_com = $I;
-        $num_act_com = $num_act;
-      }
-    }
+                $I = $I_com + 1;
+                $C = $C_com + 1;
+                $C_com = $C;
+                $I_com = $I;
+                $num_act_com = $num_act;
+              }
+            }
 
     //HACER LA SUMATORIA DE LOS TOTALES DE LAS ACTIVIDADES EN EL ACTA
-    $subtotal_facturar = $subtotal_facturar + $total_facturar_tarea;
-    /**/
+            $subtotal_facturar = $subtotal_facturar + $total_facturar_tarea;
+            /**/
 
-    /* SUBTOTAL DE LA ACTIVIDADES PARA EL ACUMULADO */
-    $subtotal_acumulado = $subtotal_acumulado + $total_actividad_acumulado;
-    /**/
+            /* SUBTOTAL DE LA ACTIVIDADES PARA EL ACUMULADO */
+            $subtotal_acumulado = $subtotal_acumulado + $total_actividad_acumulado;
+            /**/
 
     //LABOR
-    if ($B_com == 8) {
-      $B_com = $B_com + $num_act_com + 2;
-    } else {
-      $B_com = $B_com + $num_act_com + 1;
-    }
+            if ($B_com == 8) {
+              $B_com = $B_com + $num_act_com + 2;
+            } else {
+              $B_com = $B_com + $num_act_com + 1;
+            }
 
-    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('B' . $B . ':B' . $B_com);
+            $objPHPExcel->setActiveSheetIndex(1)->mergeCells('B' . $B . ':B' . $B_com);
     //$objPHPExcel->getActiveSheet()->mergeCells('B' . $B . ':B' . $B_com);
-    $labor = preg_replace("/\s+/", " ", $row_mod['baremo_item']);
-    $sigla = preg_replace("/\s+/", " ", $row_mod['tipobaremo_sigla']);
-    $medida = preg_replace("/\s+/", " ", $row_mod['labor_unidmedida']);
-    $objPHPExcel->getActiveSheet()->getCell('B' . $B)->setValue(utf8_encode($sigla . "-" . $labor . " " . $row_mod['labor_descripcion'] . " - UNIDAD DE MEDIDA " . $medida));
-    $objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getAlignment()->setWrapText(true);
+            $labor = preg_replace("/\s+/", " ", $row_mod['baremo_item']);
+            $sigla = preg_replace("/\s+/", " ", $row_mod['tipobaremo_sigla']);
+            $medida = preg_replace("/\s+/", " ", $row_mod['labor_unidmedida']);
+            $objPHPExcel->getActiveSheet()->getCell('B' . $B)->setValue(utf8_encode($sigla . "-" . $labor . " " . $row_mod['labor_descripcion'] . " - UNIDAD DE MEDIDA " . $medida));
+            $objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getAlignment()->setWrapText(true);
 
     //MODULO
-    if ($A_com == 8) {
-      $A_com = $A_com + $num_act_com + 2;
-    } else {
-      $A_com = $A_com + $num_act_com + 1;
-    }
-    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('A' . $A . ':A' . $A_com);
+            if ($A_com == 8) {
+              $A_com = $A_com + $num_act_com + 2;
+            } else {
+              $A_com = $A_com + $num_act_com + 1;
+            }
+            $objPHPExcel->setActiveSheetIndex(1)->mergeCells('A' . $A . ':A' . $A_com);
     // $objPHPExcel->getActiveSheet()->mergeCells('A' . $A . ':A' . $A_com);
-    $modulo = preg_replace("/\s+/", " ", $row_mod['modulo_descripcion']);
-    $objPHPExcel->getActiveSheet()->getCell('A' . $A)->setValue(utf8_encode($modulo));
-    $objPHPExcel->getActiveSheet()->getStyle('A' . $A)->getAlignment()->setWrapText(true);
+            $modulo = preg_replace("/\s+/", " ", $row_mod['modulo_descripcion']);
+            $objPHPExcel->getActiveSheet()->getCell('A' . $A)->setValue(utf8_encode($modulo));
+            $objPHPExcel->getActiveSheet()->getStyle('A' . $A)->getAlignment()->setWrapText(true);
 
     // //OBSERVACIONES
     // if ($A_com == 8) {
@@ -711,105 +714,105 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
     // } else {
     //     $A_com = $A_com + $num_act_com + 1;
     // }
-    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('H' . $A . ':H' . $A_com);
+            $objPHPExcel->setActiveSheetIndex(1)->mergeCells('H' . $A . ':H' . $A_com);
     // $objPHPExcel->getActiveSheet()->mergeCells('A' . $A . ':A' . $A_com);
-    $modulo = preg_replace("/\s+/", " ", $row_mod['presupuesto_obs']);
-    $objPHPExcel->getActiveSheet()->getCell('H' . $A)->setValue(utf8_encode($modulo));
-    $objPHPExcel->getActiveSheet()->getStyle('H' . $A)->getAlignment()->setWrapText(true);
+            $modulo = preg_replace("/\s+/", " ", $row_mod['presupuesto_obs']);
+            $objPHPExcel->getActiveSheet()->getCell('H' . $A)->setValue(utf8_encode($modulo));
+            $objPHPExcel->getActiveSheet()->getStyle('H' . $A)->getAlignment()->setWrapText(true);
 
 
     //SUBTOTAL
-    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $A_com . ':D' . $A_com);
-    $objPHPExcel->getActiveSheet()->getCell('C' . $A_com)->setValue(utf8_encode("Subtotal Labor No " . $row_mod['labor_id']));
+            $objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $A_com . ':D' . $A_com);
+            $objPHPExcel->getActiveSheet()->getCell('C' . $A_com)->setValue(utf8_encode("Subtotal Labor No " . $row_mod['labor_id']));
 
-    $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-    $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFill()->getStartColor()->setARGB('1F497D');
-    $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+            $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+            $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFill()->getStartColor()->setARGB('1F497D');
+            $objPHPExcel->getActiveSheet()->getStyle('C' . $A_com . ':D' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
 
     //TOTAL ACTIVIDAD
-    $objPHPExcel->setActiveSheetIndex(1)->mergeCells('E' . $A_com . ':G' . $A_com);
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFill()->getStartColor()->setARGB('E26B0A');
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
-    $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com)->getNumberFormat()->setFormatCode('$#,##0');
-    $sum_agrupada_hasta = (int)$B_com - 1;
-    $objPHPExcel->getActiveSheet()->setCellValue('E' . $A_com, '=SUM(G' . $B . ':G' . $sum_agrupada_hasta . ')');
+            $objPHPExcel->setActiveSheetIndex(1)->mergeCells('E' . $A_com . ':G' . $A_com);
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFill()->getStartColor()->setARGB('E26B0A');
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com . ':G' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+            $objPHPExcel->getActiveSheet()->getStyle('E' . $A_com)->getNumberFormat()->setFormatCode('$#,##0');
+            $sum_agrupada_hasta = (int)$B_com - 1;
+            $objPHPExcel->getActiveSheet()->setCellValue('E' . $A_com, '=SUM(G' . $B . ':G' . $sum_agrupada_hasta . ')');
 
     // $objPHPExcel->getActiveSheet()->getCell('E' . $A_com)->setValue("$" . number_format($row_mod['total_actividad'], 0, ',', '.'));
 
 
 
     //VALORES A FACTURAR
-    if ($row_mod['total_actividad'] > 0) {
-      $porcentaje_facturado = round(($total_facturar_tarea / $row_mod['total_actividad']) * 100);
-    } else {
-      $porcentaje_facturado = 0;
-    }
+            if ($row_mod['total_actividad'] > 0) {
+              $porcentaje_facturado = round(($total_facturar_tarea / $row_mod['total_actividad']) * 100);
+            } else {
+              $porcentaje_facturado = 0;
+            }
 
-    $sum_agrupada_hasta = (int)$B_com - 1;
+            $sum_agrupada_hasta = (int)$B_com - 1;
 
-    $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+            $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
     // $objPHPExcel->getActiveSheet()->getCell('k' . $A_com)->setValue("$ " . number_format($total_facturar_tarea, 0, ',', '.'));
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
-    $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-    $objPHPExcel->getActiveSheet()->setCellValue('J' . $A_com, '=SUM(J' . $B . ':J' . $sum_agrupada_hasta . ')');
-    $objPHPExcel->getActiveSheet()->setCellValue('K' . $A_com, '=SUM(K' . $B . ':K' . $sum_agrupada_hasta . ')');
+            $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
+            $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+            $objPHPExcel->getActiveSheet()->setCellValue('J' . $A_com, '=SUM(J' . $B . ':J' . $sum_agrupada_hasta . ')');
+            $objPHPExcel->getActiveSheet()->setCellValue('K' . $A_com, '=SUM(K' . $B . ':K' . $sum_agrupada_hasta . ')');
 
     //$objPHPExcel->getActiveSheet()->getCell('L' . $A_com)->setValue($porcentaje_facturado . "%");
-    $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->setBold(true);
-    $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-    $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->getStartColor()->setARGB('E26B0A');
-    $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+            $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->setBold(true);
+            $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+            $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->getStartColor()->setARGB('E26B0A');
+            $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
 
     //CAULCULAR TOTALES DE ACTIVIDADES ACUMULADO
-    if ($row_mod['total_actividad'] > 0) {
-      $porcentaje_acumulado = round(($total_actividad_acumulado / $row_mod['total_actividad']) * 100);
-    } else {
-      $porcentaje_acumulado = 0;
-    }
+            if ($row_mod['total_actividad'] > 0) {
+              $porcentaje_acumulado = round(($total_actividad_acumulado / $row_mod['total_actividad']) * 100);
+            } else {
+              $porcentaje_acumulado = 0;
+            }
 
 
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    $objPHPExcel->getActiveSheet()->getStyle('M' . $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
-    $objPHPExcel->getActiveSheet()->getStyle('N' . $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-    $objPHPExcel->getActiveSheet()->setCellValue('M' . $A_com, '=SUM(M' . $B . ':M' . $sum_agrupada_hasta . ')');
-    $objPHPExcel->getActiveSheet()->setCellValue('N' . $A_com, '=SUM(N' . $B . ':N' . $sum_agrupada_hasta . ')');
+            $objPHPExcel->getActiveSheet()->getStyle('M' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objPHPExcel->getActiveSheet()->getStyle('N' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objPHPExcel->getActiveSheet()->getStyle('M' . $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
+            $objPHPExcel->getActiveSheet()->getStyle('N' . $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+            $objPHPExcel->getActiveSheet()->setCellValue('M' . $A_com, '=SUM(M' . $B . ':M' . $sum_agrupada_hasta . ')');
+            $objPHPExcel->getActiveSheet()->setCellValue('N' . $A_com, '=SUM(N' . $B . ':N' . $sum_agrupada_hasta . ')');
     // $objPHPExcel->getActiveSheet()->getCell('N' . $A_com, '=SUM(N' . $B. ':N' . $sum_agrupada_hasta . ')');
     //$objPHPExcel->setActiveSheetIndex(1)->setCellValue('N' . $A_com. '=SUMA(N' . $A_com-$num_sub . ':N' . $A_com-1  .')');
     //$objPHPExcel->getActiveSheet()->getCell('N' . $A_com)->setValue("$ " . $B);
     //$objPHPExcel->getActiveSheet()->getCell('N' . $A_com)->setValue("$ " . number_format($total_actividad_acumulado, 0, ',', '.'));
-    $objPHPExcel->getActiveSheet()->getCell('N' . $A_com)->setValue($porcentaje_facturado . "%");
+            $objPHPExcel->getActiveSheet()->getCell('N' . $A_com)->setValue($porcentaje_facturado . "%");
 
-    $A = $A_com + 1;
-    $A_com = $A;
-    $B = $B_com + 1;
-    $B_com = $B;
-    $sig_fil = $A;
+            $A = $A_com + 1;
+            $A_com = $A;
+            $B = $B_com + 1;
+            $B_com = $B;
+            $sig_fil = $A;
 
-    $D = $sig_fil;
-    $E = $sig_fil;
-    $F = $sig_fil;
-    $G = $sig_fil;
-    $H = $sig_fil;
-    $C = $sig_fil;
-    $I = $sig_fil;
-    $C_com = $sig_fil;
-    $I_com = $sig_fil;
-  }
+            $D = $sig_fil;
+            $E = $sig_fil;
+            $F = $sig_fil;
+            $G = $sig_fil;
+            $H = $sig_fil;
+            $C = $sig_fil;
+            $I = $sig_fil;
+            $C_com = $sig_fil;
+            $I_com = $sig_fil;
+          }
   //total del presupuesto
 
 
-  $subtotal = $row['detallepresupuesto_total'];
-  $ubicacion = $row['detallepresupuesto_valorincremento'];
-  $subtotal2 = $subtotal + $ubicacion;
-  $iva = ((float)$subtotal2 * (float)$porcentaje) / 100;
-  $total = (float)$subtotal2 + (float)$iva;
+          $subtotal = $row['detallepresupuesto_total'];
+          $ubicacion = $row['detallepresupuesto_valorincremento'];
+          $subtotal2 = $subtotal + $ubicacion;
+          $iva = ((float)$subtotal2 * (float)$porcentaje) / 100;
+          $total = (float)$subtotal2 + (float)$iva;
 
 
   //calcular ubicacion a facturar resumen del acta
@@ -860,7 +863,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
     /////////////////////////////////// LINEA DE SUBTOTAL //////////////////////////////////////
 
-    /************************************ PRESUPUESTO *****************************************/
+  /************************************ PRESUPUESTO *****************************************/
   $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
   $objPHPExcel->getActiveSheet()->getCell('F' . $F)->setValue("Subtotal:");
   $objPHPExcel->getActiveSheet()->getStyle('F' . $F)->getFont()->setName('Calibri');
@@ -924,12 +927,12 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
   //consulta para sumar solo las labores que tengan levantamiento
   $sqlUbi = " SELECT sum(pt.presupuesto_valorporcentaje)*0.03 as porcentaje
-    FROM pt_presupuesto pt
-    JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
-    JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
-    AND sb.subactividad_id=1
-    AND pt.presupuesto_estado=1
-    WHERE pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . ";";
+  FROM pt_presupuesto pt
+  JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+  JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+  AND sb.subactividad_id=1
+  AND pt.presupuesto_estado=1
+  WHERE pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . ";";
 
   $resUbi = $obj_bd->EjecutaConsulta($sqlUbi);
   $rowUbi = $obj_bd->FuncionFetch($resUbi);
@@ -1174,11 +1177,11 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   $objPHPExcel->getActiveSheet()->getStyle('K' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
   $objPHPExcel->getActiveSheet()->setCellValue('K' . $F, '=(J' . $F . ' /G' . $F . ')');
   $objPHPExcel->getActiveSheet()
-    ->getStyle('K' . $F)
-    ->getNumberFormat()
-    ->applyFromArray([
-      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-    ]);
+  ->getStyle('K' . $F)
+  ->getNumberFormat()
+  ->applyFromArray([
+    "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+  ]);
 
 
   /************************************** ACUMULADO ********************************************/
@@ -1208,11 +1211,11 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   $objPHPExcel->getActiveSheet()->getStyle('N' . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
   $objPHPExcel->getActiveSheet()->setCellValue('N' . $F, '=(J' . $F . ' /G' . $F . ')');
   $objPHPExcel->getActiveSheet()
-    ->getStyle('N' . $F)
-    ->getNumberFormat()
-    ->applyFromArray([
-      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-    ]);
+  ->getStyle('N' . $F)
+  ->getNumberFormat()
+  ->applyFromArray([
+    "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+  ]);
 
 
   //////////////////////////////////////////// IVA ////////////////////////////////////////////
@@ -1349,25 +1352,25 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
   /*********************************** PRESUPUESTO *******************************************/
   $objPHPExcel->getActiveSheet()
-    ->getStyle('F' . $ini . ':G' . $lim)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('F' . $ini . ':G' . $lim)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
   /***************************************** ACTA *********************************************/
   $objPHPExcel->getActiveSheet()
-    ->getStyle('I' . $ini . ':J' . $lim)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('I' . $ini . ':J' . $lim)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
   /************************************** ACUMULADO ********************************************/
 
   $objPHPExcel->getActiveSheet()
-    ->getStyle('L' . $ini . ':M' . $lim)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('L' . $ini . ':M' . $lim)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 
   ///////////////////////////////////////////////////////////////////////////
@@ -1377,10 +1380,10 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   $H = $H - 1;
 
   $objPHPExcel->getActiveSheet()
-    ->getStyle('A8:N' . $H)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('A8:N' . $H)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
   //CENTRAR TODAS LAS CELDAS VERTICALMENTE
   $objPHPExcel->getActiveSheet()->getStyle('A8:N' . $H)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
@@ -1477,11 +1480,11 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
     // $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue($sum_porcentaje . "%");
     $objPHPExcel->getActiveSheet()->setCellValue('K' . $G, '=(J' . $G . ' /G' . $subDias . ')');
     $objPHPExcel->getActiveSheet()
-      ->getStyle('K' . $G)
-      ->getNumberFormat()
-      ->applyFromArray([
-        "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-      ]);
+    ->getStyle('K' . $G)
+    ->getNumberFormat()
+    ->applyFromArray([
+      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+    ]);
   } else {
     //variables de acta
     /* VALIDAR FACTURAS PARCIALES */
@@ -1533,11 +1536,11 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
     // $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($porcentaje_facturado);
     $objPHPExcel->getActiveSheet()->setCellValue('K' . $G, '=(J' . $G . ' /G' . $subDias . ')');
     $objPHPExcel->getActiveSheet()
-      ->getStyle('K' . $G)
-      ->getNumberFormat()
-      ->applyFromArray([
-        "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-      ]);
+    ->getStyle('K' . $G)
+    ->getNumberFormat()
+    ->applyFromArray([
+      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+    ]);
 
     //TOTALES
     $G = $G + 1;
@@ -1566,11 +1569,11 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
     $objPHPExcel->getActiveSheet()->getStyle('K' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
     $objPHPExcel->getActiveSheet()->setCellValue('K' . $G, '=(J' . $G . ' /G' . $subDias . ')');
     $objPHPExcel->getActiveSheet()
-      ->getStyle('K' . $G)
-      ->getNumberFormat()
-      ->applyFromArray([
-        "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-      ]);
+    ->getStyle('K' . $G)
+    ->getNumberFormat()
+    ->applyFromArray([
+      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+    ]);
     // $objPHPExcel->getActiveSheet()->getCell('K' . $G)->setValue($porcentaje_facturado);
   }
 
@@ -1631,15 +1634,15 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   ///////////////////////////////////////////////////////////////////////////
 
   $objPHPExcel->getActiveSheet()
-    ->getStyle('I' . $border_ini . ':K' . $G)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('I' . $border_ini . ':K' . $G)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-  $titulo = $row['ordentrabajo_num'];
   /**/
 
   ///////////////////////////// NOMBRE DE LA HOJA ///////////////////////////
+  $titulo = $row['ordentrabajo_num'];
   $objPHPExcel->getActiveSheet()->setTitle($titulo);
 
   // Establecer el índice de la hoja activa, Hoja que Excel abre como la primera hoja
@@ -1696,7 +1699,6 @@ $objPHPExcel->getActiveSheet()->getColumnDimension('AE')->setWidth(25);
 
 
 //ANCHO DE FILAS
-
 $objPHPExcel->getActiveSheet()->getRowDimension('1')->setRowHeight(10);
 
 //FORMATO
@@ -1710,10 +1712,10 @@ $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getAlignment()->setVertical(P
 $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 $objPHPExcel->getActiveSheet()->getStyle('B2:V2')->getFill()->getStartColor()->setARGB('FFFF00');
 $objPHPExcel->getActiveSheet()
-  ->getStyle('B2:V2')
-  ->getBorders()
-  ->getAllBorders()
-  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+->getStyle('B2:V2')
+->getBorders()
+->getAllBorders()
+->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 $objPHPExcel->getActiveSheet()->getStyle('K2')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
 $objPHPExcel->getActiveSheet()->getStyle('K2')->getFill()->getStartColor()->setARGB('D8E4BC');
@@ -1725,32 +1727,29 @@ $objPHPExcel->getActiveSheet()->getStyle('R2')->getFill()->setFillType(PHPExcel_
 $objPHPExcel->getActiveSheet()->getStyle('R2')->getFill()->getStartColor()->setARGB('9BBB59');
 
 
-
-
-
 $objPHPExcel->setActiveSheetIndex(0)
 
-  ->setCellValue('B2', 'PEP')
-  ->setCellValue('C2', 'ORDEN PRESUPUESTAL')
-  ->setCellValue('D2', 'SUBESTACIÓN')
-  ->setCellValue('E2', 'ORDEN')
-  ->setCellValue('F2', 'CÓDIGO GOM')
-  ->setCellValue('G2', 'PROYECTO')
-  ->setCellValue('H2', 'Valor SubTotal OT (antes de IVA)')
-  ->setCellValue('I2', 'Ubicación 3 %')
-  ->setCellValue('J2', 'Pago a 90 dias (1.5%)')
-  ->setCellValue('K2', 'Valor Subtotal a facturar (antes de IVA) + incremento + pago a 90 dias (1.5%)')
-  ->setCellValue('L2', 'IVA (' . $porcentaje . '%)')
-  ->setCellValue('M2', 'Valor TOTAL OT (IVA INCLUIDO)')
-  ->setCellValue('N2', 'Valor Subtotal a facturar (antes de IVA)')
-  ->setCellValue('O2', '% a Facturar')
-  ->setCellValue('P2', 'Ubicación 3 %')
-  ->setCellValue('Q2', 'Pago a 90 dias (1.5%)')
-  ->setCellValue('R2', 'Valor Subtotal a facturar (antes de IVA) + incremento + pago a 90 dias (1.5%)')
-  ->setCellValue('S2', 'IVA (' . $porcentaje . '%)')
-  ->setCellValue('T2', 'TOTAL A FACTURAR (IVA INCLUIDO)')
-  ->setCellValue('U2', 'ACTA N° ')
-  ->setCellValue('V2', 'OBSERVACIONES');
+->setCellValue('B2', 'PEP')
+->setCellValue('C2', 'ORDEN PRESUPUESTAL')
+->setCellValue('D2', 'SUBESTACIÓN')
+->setCellValue('E2', 'ORDEN')
+->setCellValue('F2', 'CÓDIGO GOM')
+->setCellValue('G2', 'PROYECTO')
+->setCellValue('H2', 'Valor SubTotal OT (antes de IVA)')
+->setCellValue('I2', 'Ubicación 3 %')
+->setCellValue('J2', 'Pago a 90 dias (1.5%)')
+->setCellValue('K2', 'Valor Subtotal a facturar (antes de IVA) + incremento + pago a 90 dias (1.5%)')
+->setCellValue('L2', 'IVA (' . $porcentaje . '%)')
+->setCellValue('M2', 'Valor TOTAL OT (IVA INCLUIDO)')
+->setCellValue('N2', 'Valor Subtotal a facturar (antes de IVA)')
+->setCellValue('O2', '% a Facturar')
+->setCellValue('P2', 'Ubicación 3 %')
+->setCellValue('Q2', 'Pago a 90 dias (1.5%)')
+->setCellValue('R2', 'Valor Subtotal a facturar (antes de IVA) + incremento + pago a 90 dias (1.5%)')
+->setCellValue('S2', 'IVA (' . $porcentaje . '%)')
+->setCellValue('T2', 'TOTAL A FACTURAR (IVA INCLUIDO)')
+->setCellValue('U2', 'ACTA N° ')
+->setCellValue('V2', 'OBSERVACIONES');
 
 $titulo1 = "RESUMEN";
 /**/
@@ -1765,209 +1764,178 @@ $sql_resumen = "CALL SP_factura('1','','','','','','','','" . $fechaFacturaMes .
 $resultado_resumen = $obj_bd->EjecutaConsulta($sql_resumen);
 
 $fl = 3;
-// $n = 0;
+$s = 1;
 
 while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 
-
-
-  /* VALIDAR FACTURAS PARCIALES */
-  $valor_parciales = 0;
-  $sql_parciales = "CALL SP_factura('17','','','','','','','','','','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','')";
-  $resultado_parciales = $obj_bd->EjecutaConsulta($sql_parciales);
-  $data_parciales = $obj_bd->FuncionFetch($resultado_parciales);
-  $valor_parciales = round($data_parciales['factura_parcial']);
-  /**/
-
-  /* suma de actividades parciales y finales */
-  $total = (int)$valor_parciales + (int)$resumen['valor_porc'];
-  /**/
-
-  // $n = $n + 1;
-  $iva_total = ((int)$resumen['detallepresupuesto_total'] * (int)$porcentaje) / 100;
-  $total_ot = $iva_total + $resumen['detallepresupuesto_total'] + $resumen['detallepresupuesto_valorincremento'];
-
-  // $porc_facturar = ($resumen['valor_porc'] * 100) / $resumen['detallepresupuesto_total'];
-  $porc_facturar = ($total * 100) / $resumen['detallepresupuesto_total'];
-  $SubL = "$" . number_format($total, 0, ',', '.');
-  $OtH = $resumen['detallepresupuesto_total'];
-  $ubI = "$" . number_format($resumen['detallepresupuesto_valorincremento'], 0, ',', '.');
-  $IvaJ = "$" . number_format($iva_total, 0, ',', '.');
-  $totK = "$" . number_format($total_ot, 0, ',', '.');
-  $porM = round($porc_facturar) . "%";
 
   $objPHPExcel->getActiveSheet()->getStyle('B' . $fl . ':V' . $fl)->getAlignment()->setWrapText(true);
   $objPHPExcel->getActiveSheet()->getStyle('B' . $fl . ':V' . $fl)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
   $objPHPExcel->getActiveSheet()->getStyle('B' . $fl . ':V' . $fl)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
   $objPHPExcel->getActiveSheet()
-    ->getStyle('B' . $fl . ':V' . $fl)
-    ->getBorders()
-    ->getAllBorders()
-    ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  ->getStyle('B' . $fl . ':V' . $fl)
+  ->getBorders()
+  ->getAllBorders()
+  ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+  
+  $pep = utf8_encode($resumen['ordentrabajo_pep']);
+  $orden = utf8_encode($resumen['ordentrabajo_num']);
+  $codigo_gom = utf8_encode($resumen['ordentrabajo_gom']);
 
 
-  $sheetOT = $objPHPExcel->setActiveSheetIndexByName($titulo);
-
-  $pep = $sheetOT->getCell('J' . $pep)->getValue();
-  $orden = $sheetOT->getCell('J' . $orden)->getValue();
-  $gom = $sheetOT->getCell('J' . $gom)->getValue();
-
-
-  $sub_pres = $sheetOT->getCell('G' . $sub)->getCalculatedValue();
-  $ubi_pres = $sheetOT->getCell('G' . $ubi)->getCalculatedValue();
-  $dias_pres = $sheetOT->getCell('G' . $dias)->getCalculatedValue();
-  $subDias_pres = $sheetOT->getCell('G' . $subDias)->getCalculatedValue();
-  $iva_pres = $sheetOT->getCell('G' . $ivaPorc)->getCalculatedValue();
-  $total_pres = $sheetOT->getCell('G' . $lim)->getCalculatedValue();
-
-
-  $sub_actas = $sheetOT->getCell('J' . $sub)->getCalculatedValue();
-  $ubi_actas = $sheetOT->getCell('J' . $ubi)->getCalculatedValue();
-  $dias_actas = $sheetOT->getCell('J' . $dias)->getCalculatedValue();
-  $subDias_actas = $sheetOT->getCell('J' . $subDias)->getCalculatedValue();
-  $porc_actas = $sheetOT->getCell('K' . $subDias)->getCalculatedValue();
-  $iva_actas = $sheetOT->getCell('J' . $ivaPorc)->getCalculatedValue();
-  $total_actas = $sheetOT->getCell('J' . $lim)->getCalculatedValue();
-
-
-  $objPHPExcel->setActiveSheetIndex(0);
-  // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $fl, $n);
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('A' . $fl, $resumen['detallepresupuesto_id']);
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('B' . $fl, $pep);
-  $objPHPExcel->getActiveSheet()->getStyle('B' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  // $objPHPExcel->getActiveSheet()->getStyle('B' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('D' . $fl, utf8_encode($resumen['subestacion_nombre']));
 
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('E' . $fl, $orden);
-  $objPHPExcel->getActiveSheet()->getStyle('E' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  // $objPHPExcel->getActiveSheet()->getStyle('E' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $fl, $gom);
-  $objPHPExcel->getActiveSheet()->getStyle('F' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('F' . $fl, $codigo_gom);
+  // $objPHPExcel->getActiveSheet()->getStyle('F' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('G' . $fl, utf8_encode($resumen['ordentrabajo_obs']));
+  
 
+  /*Traemos el valor total del presupuesto desde la base de datos*/
+  $sqlSub="SELECT sum(pt.presupuesto_valorporcentaje) as total
+  FROM pt_presupuesto pt
+  JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+  JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+  JOIN dt_detalle_presupuesto dp ON pt.detallepresupuesto_id=dp.detallepresupuesto_id
+  AND pt.presupuesto_estado=1
+  AND pt.detallepresupuesto_id=" . $resumen['detallepresupuesto_id'] . ";";
+
+  $resSub = $obj_bd->EjecutaConsulta($sqlSub);
+  $rowSub = $obj_bd->FuncionFetch($resSub);
+  $sub_pres = $rowSub['total'];
+  /*asignamos el valor recibido de la base de datos a la celda*/
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $fl, $sub_pres);
   $objPHPExcel->getActiveSheet()->getStyle('H' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  /*Cierre*/
+  
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $fl, $ubi_pres);
+
+  /*Traemos de la base de datos el valor del % por ubicacion*/    
+  $sqlUbi = " SELECT sum(pt.presupuesto_valorporcentaje)*0.03 as porcentaje
+  FROM pt_presupuesto pt
+  JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+  JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+  AND sb.subactividad_id=1
+  AND pt.presupuesto_estado=1
+  WHERE pt.detallepresupuesto_id=" . $resumen['detallepresupuesto_id'] . ";";
+
+  $resUbi = $obj_bd->EjecutaConsulta($sqlUbi);
+  $rowUbi = $obj_bd->FuncionFetch($resUbi);
+  $ubicacion = $rowUbi['porcentaje'];
+  /*asignamos el valor recibido de la base de datos a la celda*/
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $fl, $ubicacion);
   $objPHPExcel->getActiveSheet()->getStyle('I' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  /*Cierre*/
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $fl, $dias_pres);
+  
+  $formula = 0;
+  $formula='SUM(H'.$fl.':I'.$fl.')*0.015';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('J' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $fl, $subDias_pres);
+
+  $formula = 0;
+  $formula='SUM(H'.$fl.':J'.$fl.')';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('K' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $fl, $iva_pres);
+
+  $formula = 0;
+  $formula='(K'.$fl.')*'.$porcentaje.'/100';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('L' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('L' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, $total_pres);
+
+  $formula = 0;
+  $formula='K'.$fl.'+L'.$fl;
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('M' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('H' . $fl, $sub_pres);
-  // $objPHPExcel->getActiveSheet()->getStyle('H' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-
-  // $objPHPExcel->getActiveSheet()->getStyle('I' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-  // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('I' . $fl, $ubicacion);
-
-  // $objPHPExcel->getActiveSheet()->getStyle('J' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-  // $objPHPExcel->getActiveSheet()->setCellValue('J' . $fl, '=SUM(H'. $fl .':I'. $fl .')*0.015');
-  // //$objPHPExcel->setActiveSheetIndex(0)->setCellValue('J' . $fl, $IvaJ);
-
-  // $objPHPExcel->getActiveSheet()->getStyle('K' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-  // $objPHPExcel->getActiveSheet()->setCellValue('K' . $fl, '=SUM(H'. $fl .':J'. $fl .')');
-  // // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('K' . $fl, $totK);
-
-  // $objPHPExcel->getActiveSheet()->getStyle('L' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-  // $objPHPExcel->getActiveSheet()->setCellValue('L' . $fl, '=(K' . $fl . '*' . $porcentaje . ')/100');
-
-  // $objPHPExcel->getActiveSheet()->getStyle('M' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
-  // $objPHPExcel->getActiveSheet()->setCellValue('M' . $fl, '=SUM(K'. $fl .':L'. $fl .')');
-  // // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, $porM);
-
-
-  //Validar la ubicacion FINALIZADA
-  if ($resumen['detallepresupuesto_tipoincremento'] == '1') { // actividades de levantamiento
-    $cal_ubicacion_fact_res = 0;
-    $sql_lev_res = "CALL SP_factura('2','','','','','','','','','','','','','','','','','','','" . trim($resumen['detallepresupuesto_id']) . "','','')";
-    $resultado_lev_res = $obj_bd->EjecutaConsulta($sql_lev_res);
-    $num_levantamientos_res = $obj_bd->Filas($sql_lev_res);
-
-    if ($num_levantamientos_res != 0) {
-      $cal_ubicacion_fact_res = ($num_levantamientos_res *
-        $resumen['detallepresupuesto_valorincremento']) / $resumen['levantamiento_pt'];
-    } else {
-      $cal_ubicacion_fact_res = 0;
-    }
-  } else if ($resumen['detallepresupuesto_tipoincremento'] == '2') { //validar incremento por presupuesto
-    $cal_ubicacion_fact_res = 0;
-    $sql_tot_actividades_res = "CALL SP_factura('3','','','','','','','','','','','','','','','','','','','" . trim($resumen['detallepresupuesto_id']) . "','','')";
-
-    $resultado_tot_actividades_res = $obj_bd->EjecutaConsulta($sql_tot_actividades_res);
-    $num_actividades_resueltas_res = $obj_bd->Filas($sql_tot_actividades_res);
-    if ($num_actividades_resueltas_res != 0) {
-      $cal_ubicacion_fact_res = ($num_actividades_resueltas_res *
-        $resumen['detallepresupuesto_valorincremento']) / $resumen['total_actividades'];
-    } else {
-      $cal_ubicacion_fact_res = 0;
-    }
-  } else {
-    $cal_ubicacion_fact_res = 0;
-  }
-
-  //Calcular IVA a facturar
-  $iva_facturar = ((float)$total * (float)$porcentaje) / 100;
-  $total_facturar = $iva_facturar + $total + $cal_ubicacion_fact_res;
-  //$total_facturar = $iva_facturar + $resumen['valor_porc'] + $cal_ubicacion_fact_res;
-  //validar numero de acta
-  $sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($resumen['ordentrabajo_id']) . "','')";
+   $sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($resumen['ordentrabajo_id']) . "','')";
 
   $resultado_acta = $obj_bd->EjecutaConsulta($sql_acta);
   $num_acta = $obj_bd->FuncionFetch($resultado_acta);
   $new_acta = $num_acta['acta'] + 1;
 
-  //subtotal
-  // $sub1 = $total + $cal_ubicacion_fact_res;
-  //$sub1 = $resumen['valor_porc'] + $cal_ubicacion_fact_res;
-  $UbiN = "$" . number_format($cal_ubicacion_fact_res, 0, ',', '.');
-  $subO = "$" . number_format($sub, 0, ',', '.');
-  $ivaP = "$" . number_format($iva_facturar, 0, ',', '.');
-  $totalQ = "$" . number_format($total_facturar, 0, ',', '.');
+  
+  $objPHPExcel->setActiveSheetIndex(0);
 
+  /**/
+  $sqlSub_actas = "CALL SP_factura('20','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','')";
+
+  $resSub_actas = $obj_bd->EjecutaConsulta($sqlSub_actas);
+  $rowSub_actas = $obj_bd->FuncionFetch($resSub_actas);
+  $sub_actas = $rowSub_actas['total_porc'];
 
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('N' . $fl, $sub_actas);
   $objPHPExcel->getActiveSheet()->getStyle('N' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  /*CIERRE*/
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $fl, $porc_actas);
-  $objPHPExcel->getActiveSheet()
-    ->getStyle('O' . $fl)
-    ->getNumberFormat()
-    ->applyFromArray([
-      "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
-    ]);
 
-  $objPHPExcel->setActiveSheetIndex(0);
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $ubi_actas);
+  /*Traemos el valor por ubicacion del acta*/
+  /*Abre*/
+  $sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','')";
+
+  $resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+  $rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+  $ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+  if ($ubicacion_actas == '') {
+    $ubicacion_actas = 0;
+  }
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $ubicacion_actas);
   $objPHPExcel->getActiveSheet()->getStyle('P' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
+  /*Cierra*/
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $fl, $dias_actas);
+
+  $formula = 0;
+  $formula='R'.$fl.'/K'.$fl;
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('O' . $fl, '='.$formula);
+  $objPHPExcel->getActiveSheet()
+  ->getStyle('O' . $fl)
+  ->getNumberFormat()
+  ->applyFromArray([
+    "code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
+  ]);
+
+
+  $formula = 0;
+  $formula='(N'.$fl.'+P'.$fl.')*0.015';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $fl, '='.$formula);  
   $objPHPExcel->getActiveSheet()->getStyle('Q' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $fl, $subDias_actas);
+  $formula = 0;
+  $formula='SUM(N'.$fl.'+P'.$fl.'+Q'.$fl.')';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('R' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('R' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $fl, $iva_actas);
+  $formula = 0;
+  $formula='(R'.$fl.')*'.$porcentaje.'/100';
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('S' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('S' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $fl, $total_actas);
+  $formula = 0;
+  $formula='R'.$fl.'+S'.$fl;
+  $objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $fl, '='.$formula);
   $objPHPExcel->getActiveSheet()->getStyle('T' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-  // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $ivaP);
-  // $objPHPExcel->setActiveSheetIndex(0)->setCellValue('Q' . $fl, $totalQ);
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $fl, $new_acta);
   $objPHPExcel->setActiveSheetIndex(0)->setCellValue('V' . $fl, utf8_encode($resumen['gestor']));
 
+  
   $fl = $fl + 1;
+  $s = $s + 1;
+
 }
+
 /* FIN RESUMEN */
 //    $objPHPExcel->getSheetByName('Worksheet 1')
 //    ->setSheetState(PHPExcel_Worksheet::SHEETSTATE_HIDDEN);
@@ -1977,7 +1945,7 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename="FACTURA' . $mesFactura . '' . $yearFactura . '.xlsx"');
+header('Content-Disposition: attachment;filename="Consolidado ' . $mesFactura . ' ' . $yearFactura . '.xlsx"');
 header('Cache-Control: max-age=0');
 header("Pragma: no-cache");
 header("Expires: 0");

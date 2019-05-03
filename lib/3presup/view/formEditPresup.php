@@ -19,6 +19,7 @@
   	<input type="hidden" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
   	<input type="hidden" name="modulo_inicial" id="modulo_inicial" value="1"></th>
 
+    <br><br><br><br><br><br><br>
   	<fieldset style="color: black">
   		<legend class="titulo">Generar Presupuesto</legend>
 
