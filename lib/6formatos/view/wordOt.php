@@ -368,7 +368,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
                 AND bm.baremo_estado=1
                 AND pt.detallepresupuesto_id=$det_pret
                 AND pt.presupuesto_estado=1
-                group by presupuesto_obs";
+                group by presupuesto_obs, ac.actividad_id";
 //echo '<pre>';
 //var_dump($sql4);
 //echo '</pre>';

@@ -46,9 +46,9 @@
             <!-- Siguiente div contiene as tabs -->
             <div class="container">
             	<div class="row">
-            		<div class="col-md-12">
-            			<div role="tabpanel">
-            				<ul class="nav nav-tabs" role="tablist" id="agregar_tab">
+            		<div class="col-md-12 ">
+            			<div role="tabpanel" class="">
+            				<ul class="nav nav-tabs borde_inf" role="tablist" id="agregar_tab">
             					<li role="presentation" id="tab0" class="active"><a href="#seccion0" aria-controls="seccion0" data-toggle="tab" role="tab">Informacion General</a></li>
             					<li role="presentation" id="tab1" class=""><a href="#seccion1" aria-controls="seccion1" data-toggle="tab" role="tab">Agregar Actividades</a></li>
             					<li role="presentation" id="tab2" class=""><a href="#seccion2" aria-controls="seccion2" data-toggle="tab" role="tab">Actividades Asignadas</a></li>
@@ -67,7 +67,7 @@
             							</div>
             							
             							<div class="inline ">
-            								<button name="btnNew" id="btnNew" class="btn btn-info letraBl" type="button" onclick="agregar_actividad();">Nueva Actividad</button>
+            								<button name="btnNew" id="btnNew" class="btn btn-info letraBl" type="button" onclick="agregar_actividad();" style="font-weight: bold;">Nueva Actividad</button>
             							</div>
 
 										<?php
@@ -147,21 +147,6 @@
             										<textarea class="form-control" id="txt_alcance" name="txt_alcance" rows="5" cols="40" placeholder="Alcance del Proyecto por Modulos"></textarea>
             									</div>
             								</div>
-
-            								<?php
-            								if ($detallepresupuesto_id != 0) {
-            									?>
-
-            									<div class="form-group">
-            										<label for="lb_tot_pres" class="col-sm-3 control-label"></label>
-            										<div class="col-sm-8">
-            											<button id="subirDocumentos" name="subirDocumentos" class="btn btn-warning" type="" onclick="agregarDocumento()" style="color:black"><span class="glyphicon glyphicon-upload"></span><strong> Subir Documentos</strong></button>
-            										</div>
-            									</div>
-
-            									<?php
-            								}
-            								?>
             							</div>
 
             							<div class="col-sm-6">

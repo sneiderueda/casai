@@ -3,6 +3,11 @@
     border-radius: 5px;
 }
 
+.borde_inf{
+    border-bottom: 3px solid #ff8c00;
+    border-radius: 2px;
+}
+
 .contenido{
     margin: 16px;
 }
@@ -20,7 +25,7 @@
 .barFija{
     position: fixed;
     top: 0;
-    z-index:2;
+    z-index:1;
 
 }
 
