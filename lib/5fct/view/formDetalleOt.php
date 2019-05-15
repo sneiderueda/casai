@@ -22,7 +22,6 @@
             </div>
         </div>
 
-
     <fieldset style="color:black;">
 
         <legend class="titulo">Datos Presupuesto</legend>            
@@ -55,7 +54,9 @@
         <br>
 
 
-        <legend class="titulo">Orden de Trabajo</legend>            
+        <legend class="titulo">Orden de Trabajo</legend> 
+
+
         <!--NUMERO OT-->
         <div class="form-group">
             <label for="lb_numero" class="col-sm-3 control-label">No. Orden:</label>

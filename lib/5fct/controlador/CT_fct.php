@@ -38,3 +38,16 @@ if ($opcion == 'ListCerradas') {
     $retorno = $obj_factura->ListCerradas($_POST);
     echo $retorno;
 }
+
+
+/** 
+* @Author: Daniel Rueda
+* @Email: sneider.rueda@gmail.com
+* @Date: 2019-05-09 
+* @Desc:  Agregar registros base de datos para actas
+*/
+
+if ($opcion == 'agregar_conciliacion') {
+    $retorno = $obj_factura->agregar_conciliacion($_POST);
+    echo $retorno;
+}
