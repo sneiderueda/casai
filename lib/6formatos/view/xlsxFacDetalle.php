@@ -359,13 +359,6 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   $I_com = 8;
   /**/
 
-  /*
-  COLUMNAS
-   */
-  $col_I = 8;
-  $col_J = 9;
-  $col_K = 10;
-  /**/
 
 
   $subtotal_facturar = 0;
@@ -432,11 +425,18 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		  		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
 		  		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
 		  		AND pt.presupuesto_estado=1
-		  		AND pt.presupuesto_obs='" . $obs . "'";
+		  		AND pt.presupuesto_obs='" . $obs . "';";
 
 		  		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
 		  		$num_sub = $obj_bd->Filas($sql_sub);
 		        /**/
+  /*
+  COLUMNAS
+   */
+  $col_I = 8;
+  $col_J = 9;
+  $col_K = 10;
+  /**/
 
 		        if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
 		      	    while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
@@ -458,36 +458,27 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		          		$objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 		          		$objPHPExcel->getActiveSheet()->getStyle('G' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-		            //   	//VALIDAR AVANCE DE LA ACTIVIDAD PARA FACTURAR
-		          		// $cantidad = 0;
-		          		// $valor_facturar = 0;
-		          		// $sql_act_facturar = "CALL SP_factura('7','','','','','','','','','','','','','','','','','','','" . trim($row_sub['presupuesto_id']) . "','','')";
+		              	// VALIDAR AVANCE DE LA ACTIVIDAD PARA FACTURAR //
+		          		$sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
+		                $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
+		                $data_av = $obj_bd->FuncionFetch($resultado_av);
 
-		          		// $resultado_act_facturar = $obj_bd->EjecutaConsulta($sql_act_facturar);
-		          		// $actividad_facturar = $obj_bd->Filas($sql_act_facturar);
-		          		// $data_facturar = $obj_bd->FuncionFetch($resultado_act_facturar);
+		                $cantidad = $data_av['seguimiento_avance'];
+		                if ($cantidad == "") {
+		                	$cantidad = 0;
+		                }
 
+		                //cargar campos
+		                $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		                $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $F, $cantidad);
 
-		            //     $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
-		            //     $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
-		            //     $data_av = $obj_bd->FuncionFetch($resultado_av);
+		                $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		                $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+		                $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $F, '=F' . $F . '*I' . $F);
 
-		            //     $cantidad = $data_av['seguimiento_avance'];
-		            //     if ($cantidad == "") {
-		            //     	$cantidad = 0;
-		            //     }
-
-		            //     //cargar campos
-		            //     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		            //     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $F, $cantidad);
-
-		            //     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		            //     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-		            //     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $F, '=F' . $F . '*I' . $F);
-
-		            //     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		            //     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-		            //     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $F, '=J' . $F . '/G' . $F);
+		                $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		                $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+		                $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $F, '=J' . $F . '/G' . $F);
 		  
 
 
@@ -574,6 +565,12 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 				  		$C_com = $C_com + 1;
 				  	}
 
+				    //ACTIVIDAD
+				  	$objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
+				  	$act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
+				  	$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
+				  	$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
+				    
 				    //GOM
 				  	$objPHPExcel->setActiveSheetIndex(1)->setCellValue('D' . $D, $row_act['actividad_gom']);
 
@@ -595,45 +592,52 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 				  	$objPHPExcel->getActiveSheet()->getCell('H' . $H)->setValue(utf8_encode($obs));
 				  	$objPHPExcel->getActiveSheet()->getStyle('H' . $H)->getAlignment()->setWrapText(true);
 
-				    //ACTIVIDAD
-				  	$objPHPExcel->setActiveSheetIndex(1)->mergeCells('C' . $C . ':C' . $C_com);
-				  	$act = preg_replace("/\s+/", " ", $row_act['actividad_descripcion']);
-				  	$objPHPExcel->getActiveSheet()->getCell('C' . $C)->setValue(utf8_encode($act));
-				  	$objPHPExcel->getActiveSheet()->getStyle('C' . $C)->getAlignment()->setWrapText(true);
+				  	// CONSULTA ACTAS //
+	   	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+		$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+		$stop = $obj_bd->Filas($sql_actas);
+		$row_actas = $obj_bd->FuncionFetch($resultado_actas);
+	
+		// COLUMNAS //
+		$col_I = 8;
+		$col_J = 9;
+		$col_K = 10;
 
-				   //  //VALIDAR AVANCE DE LA ACTIVIDAD PARA FACTURAR
-				  	// $cantidad = 0;
-				  	// $sql_act_facturar = "CALL SP_factura('7','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
-				  	// $resultado_act_facturar = $obj_bd->EjecutaConsulta($sql_act_facturar);
-				  	// $actividad_facturar = $obj_bd->Filas($sql_act_facturar);
 
-				   //      // if ($actividad_facturar > 0) {
-				  	// $data_facturar = $obj_bd->FuncionFetch($resultado_act_facturar);
+		for ($i=0; $i < $stop ; $i++) {
 
-		                    
-			    //     $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
-			    //     $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
-			    //     $data_av = $obj_bd->FuncionFetch($resultado_av);
 
-			    //     $cantidad = $data_av['seguimiento_avance'];
 
-			    //     if ($cantidad == "") {
-			    //       	$cantidad = 0;
-			    //     }
+				   //VALIDAR AVANCE DE LA ACTIVIDAD PARA FACTURAR
+			        $sql_av = "CALL SP_factura('19','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $row_act['presupuesto_id'] . "','','')";
+			        $resultado_av = $obj_bd->EjecutaConsulta($sql_av);
+			        $data_av = $obj_bd->FuncionFetch($resultado_av);
 
-			    //     //cargar campos
-		     //        $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		     //        $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $F, $cantidad);
+			        $cantidad = $data_av['seguimiento_avance'];
 
-		     //        $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		     //        $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getNumberFormat()->setFormatCode('$#,##0.00');
-		     //        $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $F, '=F' . $F . '*I' . $F);
+			        if ($cantidad == "") {
+			          	$cantidad = 0;
+			        }
 
-		     //        $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		     //        $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-		     //        $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $F, '=J' . $F . '/G' . $F);
+			        //cargar campos
+		            $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		            $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $F, $cantidad);
 
-		     //       	$objPHPExcel->setActiveSheetIndex(1)->setCellValue('L' . $F, $porcent_facturar . "%");
+		            $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		            $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $F)->getNumberFormat()->setFormatCode('$#,##0.00');
+		            $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $F, '=F' . $F . '*I' . $F);
+
+		            $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		            $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $F)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+		            $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $F, '=J' . $F . '/G' . $F);
+
+		
+		   	// CONTADOR COLUMNAS //
+		   	$col_I = $col_I + 3;
+			$col_J = $col_J + 3;
+			$col_K = $col_K + 3;
+
+		}//FIN FOR 
 
 			    //     //CALCULAR ACUMULADO
 			    //     $sql_act_acumulado = "CALL SP_factura('8','','','','','','','','','','','','','','','','','','','" . trim($row_act['presupuesto_id']) . "','','')";
@@ -755,30 +759,57 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	   	$sum_agrupada_hasta = (int)$B_com - 1;
 	   	$objPHPExcel->getActiveSheet()->setCellValue('E' . $A_com, '=SUM(G' . $B . ':G' . $sum_agrupada_hasta . ')');
 
+									   	//////////////////////////////////
+	   									// SUMA VALORES PARCIALES ACTAS //
+									   	//////////////////////////////////
 
-	    // //VALORES A FACTURAR
-	   	// if ($row_mod['total_actividad'] > 0) {
-	   	// 	$porcentaje_facturado = round(($total_facturar_tarea / $row_mod['total_actividad']) * 100);
-	   	// } else {
-	   	// 	$porcentaje_facturado = 0;
-	   	// }
-
-	   	// $sum_agrupada_hasta = (int)$B_com - 1;
-
-	   	// $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-
-	   	// $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	   	// $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	   	// $objPHPExcel->getActiveSheet()->getStyle('J' . $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
-	   	// $objPHPExcel->getActiveSheet()->getStyle('K' . $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-	   	// $objPHPExcel->getActiveSheet()->setCellValue('J' . $A_com, '=SUM(J' . $B . ':J' . $sum_agrupada_hasta . ')');
-	   	// $objPHPExcel->getActiveSheet()->setCellValue('K' . $A_com, '=SUM(K' . $B . ':K' . $sum_agrupada_hasta . ')');
+	   	// CONSULTA ACTAS //
+	   	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+		$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+		$stop = $obj_bd->Filas($sql_actas);
+		$row_actas = $obj_bd->FuncionFetch($resultado_actas);
+	
+		// COLUMNAS //
+		$col_I = 8;
+		$col_J = 9;
+		$col_K = 10;
 
 
-	   	// $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->setBold(true);
-	   	// $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-	   	// $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFill()->getStartColor()->setARGB('E26B0A');
-	   	// $objPHPExcel->getActiveSheet()->getStyle('I' . $A_com . ':N' . $A_com)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		for ($i=0; $i < $stop ; $i++) {
+	    
+			// LETRAS DE LAS COLUMNAS //
+		   	$I = PHPExcel_Cell::stringFromColumnIndex($col_I);
+		   	$J = PHPExcel_Cell::stringFromColumnIndex($col_J);
+		   	$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
+
+		   	$sum_agrupada_hasta = (int)$B_com - 1;
+
+		   	// VALORES CELDAS //
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+		   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_J,$A_com, '=SUM('. $J . $B . ':'. $J . $sum_agrupada_hasta . ')');
+		   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_K, $A_com, '=SUM('. $K . $B . ':'. $K . $sum_agrupada_hasta . ')');
+
+		   	// ESTILOS CELDAS //		   	
+		   	$merge = "$I{$A_com}:$K{$A_com}";
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setBold(true);
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->getStartColor()->setARGB('E26B0A');
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+
+		   	
+
+		   	// CONTADOR COLUMNAS //
+		   	$col_I = $col_I + 3;
+			$col_J = $col_J + 3;
+			$col_K = $col_K + 3;
+
+		}//FIN FOR
+
 
 	    // //CAULCULAR TOTALES DE ACTIVIDADES ACUMULADO
 	   	// if ($row_mod['total_actividad'] > 0) {
@@ -838,11 +869,14 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
 	$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
 	$stop = $obj_bd->Filas($sql_actas);
+	$row_actas = $obj_bd->FuncionFetch($resultado_actas);
 	
-	while ($row_actas = $obj_bd->FuncionFetch($resultado_actas)) {
+	$num = 1;
+
+	for ($i=0; $i < $stop ; $i++) {
 		
 		// VARIABLES //
-		$cantidad = $row_actas['factura_actanum'];
+		$acta_num = $i + 1; 
 
 		// LETRAS DE LAS COLUMNAS //
 	   	$I = PHPExcel_Cell::stringFromColumnIndex($col_I);
@@ -861,7 +895,8 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		->getAllBorders()
 		->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
-		$merge = "$I{$row8}:$K{$row8}";
+		$com = $A_com - 1;
+		$merge = "$I{$row8}:$K{$com}";
 		$objPHPExcel->getActiveSheet()
 		->getStyle($merge)
 		->getBorders()
@@ -886,26 +921,152 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row8)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
   		// TIPO DE LETRA //
-		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setName('Calibri');
-		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setSize(11);
-		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setBold(true);
-		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->getColor()->setARGB('123D05');  		
-
+  		$merge = "$I{$row8}:$K{$row8}";
+		$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setName('Calibri');
+		$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setSize(11);
+		$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setBold(true);
+		$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->getColor()->setARGB('123D05');  		
 
   		// VALORES CELDAS //
-	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row7, 'Valor Ejecutado Acta No. '. $cantidad);
+	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row7, 'Valor Ejecutado Acta No. '. $acta_num);
 	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row8, 'Cantidad');
 	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row8, 'Vr. Ejecutado');
 	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row8, '%');
+		
 
-	   	
+		// for ($x=0; $x < 20 ; $x++) { 
+		// 	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $num);
 
-	   	// CONTADORES //
-	   	$col_I = $col_I + 3;
-	   	$col_J = $col_J + 3;
-	   	$col_K = $col_K + 3;
+		// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getNumberFormat()->setFormatCode('$#,##0.00');
+		//     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*'. $I . $row9);
 
-	}//FIN WHILE
+		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+		//     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
+
+		    
+		// 	$num = $num + 1;
+		// 	$row9 = $row9 + 1;
+		// }
+
+
+		$row9 = 9;
+		$num = 1;
+		$col_I = $col_I + 3;
+		$col_J = $col_J + 3;
+		$col_K = $col_K + 3;
+	}
+	
+	// while ($row_actas = $obj_bd->FuncionFetch($resultado_actas)) {
+		
+	// 	// VARIABLES //
+	// 	$acta_num = $row_actas['factura_actanum'];
+
+	// 	// LETRAS DE LAS COLUMNAS //
+	//    	$I = PHPExcel_Cell::stringFromColumnIndex($col_I);
+	//    	$J = PHPExcel_Cell::stringFromColumnIndex($col_J);
+	//    	$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
+		
+	//    	// COMBINACION CELDAS //
+	//    	$merge = "$I{$row7}:$K{$row7}";
+	// 	$objPHPExcel->getActiveSheet()->mergeCells($merge);
+
+	// 	// BORDES //
+	// 	$merge = "$I{$row7}:$K{$row7}";
+	// 	$objPHPExcel->getActiveSheet()
+	// 	->getStyle($merge)
+	// 	->getBorders()
+	// 	->getAllBorders()
+	// 	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	// 	$merge = "$I{$row8}:$K{$row8}";
+	// 	$objPHPExcel->getActiveSheet()
+	// 	->getStyle($merge)
+	// 	->getBorders()
+	// 	->getAllBorders()
+	// 	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+  
+	// 	// COLOR CELDAS //
+	// 	$merge = "$I{$row7}:$K{$row7}";
+	// 	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+ //  		$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->getStartColor()->setARGB('FFFF00');		
+
+	// 	// TAMAÑO DE LAS COLUMNAS //
+	// 	$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($col_I)->setWidth(25);
+ //  		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($col_J)->setWidth(20);
+ //  		$objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($col_K)->setWidth(20);
+
+ //  		// ALINEACION DE LAS COLUMNAS //
+ //  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row7)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+ //  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row7)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+ //  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+ //  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row8)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+ //  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row8)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+ //  		// TIPO DE LETRA //
+	// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setName('Calibri');
+	// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setSize(11);
+	// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->setBold(true);
+	// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row8)->getFont()->getColor()->setARGB('123D05');  		
+
+ //  		// VALORES CELDAS //
+	//    	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row7, 'Valor Ejecutado Acta No. '. $acta_num);
+	//    	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row8, 'Cantidad');
+	//    	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row8, 'Vr. Ejecutado');
+	//    	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row8, '%');
+
+
+
+
+	//    	$sql_tabla = "SELECT 
+	// 			pt.presupuesto_id,
+	// 	  		pt.baremoactividad_id,
+	// 	  		mo.modulo_id,
+ //                ac.actividad_id,
+ //                ot.ordentrabajo_num,
+ //                ac.actividad_GOM,
+	// 	  		sb.subactividad_descripcion,
+	// 	  		sum(pt.presupuesto_porcentaje),
+ //                ft.factura_porcentajeactual,
+	// 	  		sum(pt.presupuesto_valorporcentaje)
+	// 	FROM pt_presupuesto pt
+	// 	JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	// 	JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+	// 	JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+	// 	join cf_actividad ac on da.actividad_id = ac.actividad_id
+	// 	join pt_baremo br on pt.baremo_id = br.baremo_id
+	// 	join cf_modulo mo on pt.modulo_id = mo.modulo_id
+	// 	join pt_orden_trabajo ot on pt.detallepresupuesto_id = ot.detallepresupuesto_id
+	// 	join dt_factura ft on ot.ordentrabajo_id = ft.ordentrabajo_id
+	// 	AND da.detalleactividad_estado=1
+	// 	AND pt.presupuesto_estado=1
+	// 	and mo.modulo_id = '" . $row_mod['modulo_id'] . "'
+	// 	and pt.baremoactividad_id = '" . $row_act['baremoactividad_id'] . "'
+	// 	and ft.factura_actanum = '".$acta_num."'
+	// 	and pt.detallepresupuesto_id = '" . $row['detallepresupuesto_id'] . "';";
+
+	// 	$resultado_tabla = $obj_bd->EjecutaConsulta($sql_tabla);
+	// 	$stop = $obj_bd->Filas($sql_tabla);
+	
+	// 	while ($row_tabla = $obj_bd->FuncionFetch($resultado_tabla)) {
+
+	// 		$cantidad = $row_tabla['factura_porcentajeactual'];
+
+	// 		if ($cantidad == "") {
+	// 		    $cantidad = 0;
+	// 		}
+
+	// 		$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $cantidad);
+			
+	// 		$row9 = $row9 + 1;
+
+	// 	}
+	//    	// CONTADORES //
+	//    	$col_I = $col_I + 3;
+	//    	$col_J = $col_J + 3;
+	//    	$col_K = $col_K + 3;
+	// }//FIN WHILE
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     //                                      TOTALES                                           //
@@ -1711,34 +1872,36 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	                          // CREAMOS HOJA DE ACTAS //
 	                          ///////////////////////////
 
-	$objPHPExcel->createSheet(2);
-	$objPHPExcel->setActiveSheetIndex(2);
-	$objPHPExcel->getActiveSheet()->setTitle("ACTA " . $titulo);
+	// $objPHPExcel->createSheet(2);
+	// $objPHPExcel->setActiveSheetIndex(2);
+	// $objPHPExcel->getActiveSheet()->setTitle("ACTA " . $titulo);
 
-	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
-	$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+	// $G = 2;
+	// $sql_conteo = "	SELECT ac.actividad_GOM as gom
+	// 				from cf_actividad ac
+	// 				where ac.contrato_id = 7;";
+	// $resultado_conteo = $obj_bd->EjecutaConsulta($sql_conteo);
+	// $num_sub = $obj_bd->Filas($sql_conteo);
 
-	/*
-	COLUMNAS
-	*/
-	$A = 3;
-	
-	/*
-	COLUMNAS
-	*/
-	$col_I = 0;
+	// if ($num_sub > 0) {
+ //   		while ($conteo = $obj_bd->FuncionFetch($resultado_conteo)) {
+    		
+ //    		$gom = $conteo['gom'];
+	// 		$objPHPExcel->getActiveSheet(2)->getCell('A' . $G)->setValue($gom);
 
+	// 		$sql_cant = "CALL SP_factura('22','','','','','','','','','','','','','','','','','','','','" . trim($gom) . "','')";
 
-	while ($row_actas = $obj_bd->FuncionFetch($resultado_actas)) {
+	// 	    $resultado_cant = $obj_bd->EjecutaConsulta($sql_cant);
+	// 	    $canti = $obj_bd->FuncionFetch($resultado_cant);
 
-	   	$cantidad = "factura_actanum" . $row_actas['factura_actanum'];
+	// 	    $canti = $canti['conteo'];
 
-	   	$objPHPExcel->setActiveSheetIndex(2)->setCellValueByColumnAndRow($col_I, $A, $cantidad);
-	   	
-	   	$col_I = $col_I + 1;
-	}
-	   	 
+	// 	    $objPHPExcel->getActiveSheet(2)->getCell('B' . $G)->setValue($canti);
+			
+	// 		$G = $G + 1;
+ //    	}
 
+	// }	
 	// Establecer el índice de la hoja activa, Hoja que Excel abre como la primera hoja
     $objPHPExcel->setActiveSheetIndex(0);
 }
