@@ -745,52 +745,51 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	   									// SUMA VALORES PARCIALES ACTAS //
 									   	//////////////////////////////////
 
-	 //   	// CONSULTA ACTAS //
-	 //   	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
-		// $resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
-		// $stop = $obj_bd->Filas($sql_actas);
-		// $row_actas = $obj_bd->FuncionFetch($resultado_actas);
-	
-		// // COLUMNAS //
-		// $col_I = 8;
-		// $col_J = 9;
-		// $col_K = 10;
+	   	// CONSULTA ACTAS //
+	   	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+  $resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+  $row_actas = $obj_bd->FuncionFetch($resultado_actas);
+  $stop = $row_actas['factura_actanum'];
+  
+		// COLUMNAS //
+		$col_I = 8;
+		$col_J = 9;
+		$col_K = 10;
 
-
-		// for ($i=0; $i < $stop ; $i++) {
+  for ($i=0; $i < $stop ; $i++) {
 	    
-		// 	// LETRAS DE LAS COLUMNAS //
-		//    	$I = PHPExcel_Cell::stringFromColumnIndex($col_I);
-		//    	$J = PHPExcel_Cell::stringFromColumnIndex($col_J);
-		//    	$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
+			// LETRAS DE LAS COLUMNAS //
+		   	$I = PHPExcel_Cell::stringFromColumnIndex($col_I);
+		   	$J = PHPExcel_Cell::stringFromColumnIndex($col_J);
+		   	$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
 
-		//    	$sum_agrupada_hasta = (int)$B_com - 1;
+		   	$sum_agrupada_hasta = (int)$B_com - 1;
 
-		//    	// VALORES CELDAS //
-		//    	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+		   	// VALORES CELDAS //
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 
-		//    	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		//    	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		//    	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
-		//    	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-		//    	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_J,$A_com, '=SUM('. $J . $B . ':'. $J . $sum_agrupada_hasta . ')');
-		//    	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_K, $A_com, '=SUM('. $K . $B . ':'. $K . $sum_agrupada_hasta . ')');
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $A_com)->getNumberFormat()->setFormatCode('$#,##0.00');
+		   	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $A_com)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+		   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_J,$A_com, '=SUM('. $J . $B . ':'. $J . $sum_agrupada_hasta . ')');
+		   	$objPHPExcel->getActiveSheet()->setCellValueByColumnAndRow($col_K, $A_com, '=SUM('. $K . $B . ':'. $K . $sum_agrupada_hasta . ')');
 
-		//    	// ESTILOS CELDAS //		   	
-		//    	$merge = "$I{$A_com}:$K{$A_com}";
-		//    	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setBold(true);
-		//    	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
-		//    	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->getStartColor()->setARGB('E26B0A');
-		//    	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
+		   	// ESTILOS CELDAS //		   	
+		   	$merge = "$I{$A_com}:$K{$A_com}";
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->setBold(true);
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFill()->getStartColor()->setARGB('E26B0A');
+		   	$objPHPExcel->getActiveSheet()->getStyle($merge)->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_WHITE);
 
 		   	
 
-		//    	// CONTADOR COLUMNAS //
-		//   $col_I = $col_I + 3;
-		// 	$col_J = $col_J + 3;
-		// 	$col_K = $col_K + 3;
+		   	// CONTADOR COLUMNAS //
+		  $col_I = $col_I + 3;
+			$col_J = $col_J + 3;
+			$col_K = $col_K + 3;
 
-		// }//FIN FOR
+		}//FIN FOR
 
 
 	    // //CAULCULAR TOTALES DE ACTIVIDADES ACUMULADO
@@ -915,22 +914,6 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	   	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row8, '%');
 		
 
-		// for ($x=0; $x < 20 ; $x++) { 
-		// 	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $num);
-
-		// 	$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getNumberFormat()->setFormatCode('$#,##0.00');
-		//     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*'. $I . $row9);
-
-		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-		//     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-		//     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
-
-		    
-		// 	$num = $num + 1;
-		// 	$row9 = $row9 + 1;
-		// }
-
       /*
       CONSULTA MODULOS
       */
@@ -1044,16 +1027,27 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
             if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
                 while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
 
+                  $sql_porcentaje = "CALL SP_factura('23','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','','".$acta_num."')";
+
+                  $result_porcentaje = $obj_bd->EjecutaConsulta($sql_porcentaje);
+                  $row_porcentaje = $obj_bd->FuncionFetch($result_porcentaje);
+
+                  $porcent = $row_porcentaje['factura_porcentajeactual'];
+
+                  if ($porcent == "") {
+                    $porcent = 0;
+                  }
+
                  $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $num);
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $porcent);
 
                     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_J, $row9)->getNumberFormat()->setFormatCode('$#,##0.00');
-                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*I' . $row9);
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*'. $I . $row9);
 
                     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=J' . $row9 . '/G' . $row9);
+                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
 
 
 

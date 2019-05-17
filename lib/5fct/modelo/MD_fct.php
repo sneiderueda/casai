@@ -412,6 +412,7 @@ class MD_fct {
            <tr>
            <td><input type='text' id='valor_string" . $row['actividad_id'] . "' name='valor_cal_sub_" . $row['actividad_id'] . "' value='".round($valor_porcentaje)."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
            <td><input type='text' id='ot_id_" . $row['actividad_id'] . "' name='ot_id_" . $row['actividad_id'] . "' value='".$row['ordentrabajo_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           <td><input type='text' id='pre_id_" . $row['actividad_id'] . "' name='pre_id_" . $row['actividad_id'] . "' value='".$row['presupuesto_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
            </tr> 
 
            <tr> 
@@ -1004,6 +1005,7 @@ public function SaveFactura($post) {
          */
         $iva = $post['iva'];
         $detallepresupuesto_id = $post['detallepresupuesto_id'];
+        $presupuesto_id = $post['presupuesto_id'];
         $porcentaje = $post['porcentaje'];
         $valor_labor = $post['valor_labor'];
         $ot = $post['ot'];
@@ -1064,7 +1066,7 @@ public function SaveFactura($post) {
         // /*
         // INSERTAR EN LA BASE DE DATOS
         //  */
-        // $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$detallepresupuesto_id."','".$ot_id."','".$acta."');";
+        // $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
         // $consulta = $obj_bd->EjecutaConsulta($sql);
         // $row1 = $obj_bd->FuncionFetch($consulta);
