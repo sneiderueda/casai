@@ -410,9 +410,15 @@ class MD_fct {
 
            $tabla .= "
            <tr>
-           <td><input type='text' id='valor_string" . $row['actividad_id'] . "' name='valor_cal_sub_" . $row['actividad_id'] . "' value='".round($valor_porcentaje)."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
-           <td><input type='text' id='ot_id_" . $row['actividad_id'] . "' name='ot_id_" . $row['actividad_id'] . "' value='".$row['ordentrabajo_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
-           <td><input type='text' id='pre_id_" . $row['actividad_id'] . "' name='pre_id_" . $row['actividad_id'] . "' value='".$row['presupuesto_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           <td><input type='text' id='valor_string" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='".round($valor_porcentaje)."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           
+           <td><input type='text' id='ot_id_" . $row['presupuesto_id'] . "' name='ot_id_" . $row['presupuesto_id'] . "' value='".$row['ordentrabajo_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           
+           <td><input type='text' id='pre_id_" . $row['presupuesto_id'] . "' name='pre_id_" . $row['presupuesto_id'] . "' value='".$row['presupuesto_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           
+           <td><input type='text' id='dpre_id_" . $row['presupuesto_id'] . "' name='dpre_id_" . $row['presupuesto_id'] . "' value='".$row['detallepresupuesto_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+           
+           <td><input type='text' id='mod_id_" . $row['presupuesto_id'] . "' name='mod_id_" . $row['presupuesto_id'] . "' value='".$row['modulo_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
            </tr> 
 
            <tr> 
@@ -421,13 +427,13 @@ class MD_fct {
            <td>" . utf8_encode($row['modulo_descripcion']) . "</td>                     
            <td>" . utf8_encode($row['actividad_descripcion']) . "</td>   
             
-           <td><input type='text' style='text-align:center' id='porc_sub_" . $row['actividad_id'] . "' name='porc_sub_" . $row['actividad_id'] . "' maxlength='6' value='" . $cantidad . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row['actividad_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
+           <td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $cantidad . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
            
 
-           <td><input type='text' style='text-align:center' id='valor_cal_sub_" . $row['actividad_id'] . "' name='valor_cal_sub_" . $row['actividad_id'] . "' value='" . number_format((float)$valor_porcentaje, 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>";
+           <td><input type='text' style='text-align:center' id='valor_cal_sub_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . number_format((float)$valor_porcentaje, 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>";
 
             // <td><input type='checkbox' value='" . $row['presupuesto_id'] . "' id='presupuesto_" . $row['presupuesto_id'] . "' name='presupuesto[]' checked='checked' onclick='ActividadNoFaccturar(" . trim($row['presupuesto_id']) . "," . trim($row['seguimiento_id']) . "," . trim($data['detallepresupuesto_id']) . ")'/><br/> </td> </tr>";
-           $tabla .= "<td><input type='button' value='Consolidar' class='btn btn-danger letraBl' onclick='agregar_conciliacion(" . $row['actividad_id'] . ",".$cantidad.",".$valor_porcentaje.",".$new_acta.");'></td>";
+           $tabla .= "<td><input type='button' value='Consolidar' class='btn btn-danger letraBl' onclick='agregar_conciliacion(" . $row['presupuesto_id'] . ",".$cantidad.",".$valor_porcentaje.",".$new_acta.");'></td>";
        }
 
         // $tabla .= "<tr><th colspan='7' class='success'><center>Total Facturar (Sin IVA): $" . number_format($tot_facturar, 0, ',', '.') . "</center></th></tr></tbody>
@@ -1015,6 +1021,7 @@ public function SaveFactura($post) {
         $fechaFacturaMes = $post['txtInicioFactura'];
         $fechaFacturaFin = $post['txtFinFactura'];
         $ot_id = $post['id_ot'];
+        $modulo_id = $post['modulo_id'];
 
         /*
         CALCULOS
@@ -1030,56 +1037,60 @@ public function SaveFactura($post) {
                         ///////////////////////////////
                         //DATOS DE LAS ACTAS DEL MES //
                         ///////////////////////////////
-                        /*CONSULTA QUE DEVUELVE EL VALOR DEL SUBTOTAL DE LAS ACTAS*/    
-                        $sqlSub_actas = "CALL SP_factura('20','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
-
-                        $resSub_actas = $obj_bd->EjecutaConsulta($sqlSub_actas);
-                        $rowSub_actas = $obj_bd->FuncionFetch($resSub_actas);
-                        $sub_actas = $rowSub_actas['total_porc'];
-
-
-                        /*COLSULTA QUE DEVUELVE EL VALOR DEL INCREMENTO POR UBICACION, SI APLICA*/
-                        $sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
-
-                        $resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-                        $rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-                        $ubicacion_actas = $rowUbi_actas['ubicacion'];
-
-
-                        /*CALCULAR EL PORCENTAJE DE CUMPLIMIENTO*/
-                        $cumplimiento = ($sub_actas/$row['detallepresupuesto_total'])*100;
-
-                        /*CALCULA EL VALOR DEL INCREMENTO POR 90 DIAS DE ACTAS*/
-                        $dias_actas = ($sub_actas+$ubicacion_actas)*0.015;
-
-                        /*CALCULA EL VALOR DEL IVA DE LAS ACTAS*/
-                        $iva_actas = (($sub_actas+$ubicacion_actas+$dias_actas)*$iva)/100;
                         
-                        /*CALCULA EL VALOR PARCIAL DEL SUBTOTAL, LA UBICACION Y EL INCREMENTO DE DIAS*/
-                        $parcial_actas = $sub_actas+$ubicacion_actas+$dias_actas;
-                        
-                        /*CALCULA EL VALOR TOTAL DEL ACTA*/
-                        $total_actas = $parcial_actas+$iva_actas;
+        /*CONSULTA QUE DEVUELVE EL VALOR DEL SUBTOTAL DE LAS ACTAS*/    
+        $sqlSub_actas = "CALL SP_factura('20','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
 
-                        /*CIERRE*/
+        $resSub_actas = $obj_bd->EjecutaConsulta($sqlSub_actas);
+        $rowSub_actas = $obj_bd->FuncionFetch($resSub_actas);
+        $sub_actas = $rowSub_actas['total_porc'];
 
-        // /*
-        // INSERTAR EN LA BASE DE DATOS
-        //  */
-        // $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
-        // $consulta = $obj_bd->EjecutaConsulta($sql);
-        // $row1 = $obj_bd->FuncionFetch($consulta);
+        /*COLSULTA QUE DEVUELVE EL VALOR DEL INCREMENTO POR UBICACION, SI APLICA*/
+        $sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
 
-        // if ($row1>0){
+        $resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+        $rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+        $ubicacion_actas = $rowUbi_actas['ubicacion'];
 
-        //     return 1;
 
-        // }else{
+        /*CALCULAR EL PORCENTAJE DE CUMPLIMIENTO*/
+        $cumplimiento = ($sub_actas/$row['detallepresupuesto_total'])*100;
 
-            return $iva_actas;
+        /*CALCULA EL VALOR DEL INCREMENTO POR 90 DIAS DE ACTAS*/
+        $dias_actas = ($sub_actas+$ubicacion_actas)*0.015;
 
-        // }
+        /*CALCULA EL VALOR DEL IVA DE LAS ACTAS*/
+        $iva_actas = (($sub_actas+$ubicacion_actas+$dias_actas)*$iva)/100;
+        
+        /*CALCULA EL VALOR PARCIAL DEL SUBTOTAL, LA UBICACION Y EL INCREMENTO DE DIAS*/
+        $parcial_actas = $sub_actas+$ubicacion_actas+$dias_actas;
+        
+        /*CALCULA EL VALOR TOTAL DEL ACTA*/
+        $total_actas = $parcial_actas+$iva_actas;
+
+        /*CIERRE*/
+
+
+
+
+        /*
+        INSERTAR EN LA BASE DE DATOS
+         */
+        $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+        $consulta = $obj_bd->EjecutaConsulta($sql);
+        $row1 = $obj_bd->FuncionFetch($consulta);
+
+        if ($row1>0){
+
+            return 1;
+
+        }else{
+
+            return 0;
+
+        }
 
     }
 
