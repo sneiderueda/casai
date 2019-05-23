@@ -48,6 +48,7 @@ $resultado = $obj_bd->EjecutaConsulta($sql);
 
 while ($row = $obj_bd->FuncionFetch($resultado)) {
 
+
 	//cuenta las pestañas
     $objPHPExcel->getSheetCount(); 
   
@@ -88,6 +89,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
     $exp_fechaFactura = explode(",", $arrayFechaFactura);
     $mesFactura = $exp_fechaFactura[2];
     $yearFactura = $exp_fechaFactura[3];
+
     /**/
 
     /*
@@ -518,14 +520,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	   	} else {
 	   		$B_com = $B_com + $num_act_com + 1;
 	   	}
-
-		$objPHPExcel->setActiveSheetIndex(1)->mergeCells('B' . $B . ':B' . $B_com);
-		$labor = preg_replace("/\s+/", " ", $row_mod['baremo_item']);
-		$sigla = preg_replace("/\s+/", " ", $row_mod['tipobaremo_sigla']);
-		$medida = preg_replace("/\s+/", " ", $row_mod['labor_unidmedida']);
-		$objPHPExcel->getActiveSheet()->getCell('B' . $B)->setValue(utf8_encode($sigla . "-" . $labor . " " . $row_mod['labor_descripcion'] . " - UNIDAD DE MEDIDA " . $medida));
-		$objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getAlignment()->setWrapText(true);
-
+	    
 	    //MODULO
 	   	if ($A_com == 8) {
 	   		$A_com = $A_com + $num_act_com + 2;
@@ -537,6 +532,15 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	   	$modulo = preg_replace("/\s+/", " ", $row_mod['modulo_descripcion']);
 	   	$objPHPExcel->getActiveSheet()->getCell('A' . $A)->setValue(utf8_encode($modulo));
 	   	$objPHPExcel->getActiveSheet()->getStyle('A' . $A)->getAlignment()->setWrapText(true);
+
+
+		$objPHPExcel->setActiveSheetIndex(1)->mergeCells('B' . $B . ':B' . $B_com);
+		$labor = preg_replace("/\s+/", " ", $row_mod['baremo_item']);
+		$sigla = preg_replace("/\s+/", " ", $row_mod['tipobaremo_sigla']);
+		$medida = preg_replace("/\s+/", " ", $row_mod['labor_unidmedida']);
+		$objPHPExcel->getActiveSheet()->getCell('B' . $B)->setValue(utf8_encode($sigla . "-" . $labor . " " . $row_mod['labor_descripcion'] . " - UNIDAD DE MEDIDA " . $medida));
+		$objPHPExcel->getActiveSheet()->getStyle('B' . $B)->getAlignment()->setWrapText(true);
+
 
 	    // //OBSERVACIONES
 	    // if ($A_com == 8) {
@@ -878,12 +882,12 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
                 	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
 
 
-	                  	$sql_porcentaje = "CALL SP_factura('23','','','','','','','','','','','','','','','','','','','".$row['detallepresupuesto_id']."','" . $row_mod['modulo_id'] . "','".$acta_num."')";
+	                  	$sql_porcentaje = "CALL SP_factura('23','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','','".$acta_num."')";
 
 	                  	$result_porcentaje = $obj_bd->EjecutaConsulta($sql_porcentaje);
 	                  	$row_porcentaje = $obj_bd->FuncionFetch($result_porcentaje);
 
-	                  	$porcent = $row_porcentaje['suma_porcentajes'];
+	                  	$porcent = $row_porcentaje['factura_porcentajeactual'];
 
 	                  	if ($porcent == "") {
 		                    $porcent = 0;
@@ -1130,6 +1134,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
                     $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
 
 
+
 		            $row9 = $row9 + 1;
 		            $num = $num + 1;
 		        }//fin while 3
@@ -1251,7 +1256,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
 	/************************************ PRESUPUESTO ********************************************/
 
-	  //consulta para sumar solo las labores que tengan levantamiento
+	 //consulta para sumar solo las labores que tengan levantamiento
 	$sqlUbi = " SELECT sum(pt.presupuesto_valorporcentaje)*0.03 as porcentaje
 	FROM pt_presupuesto pt
 	JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
@@ -1307,7 +1312,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
 
 
-		$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','','".$acta_ubic."')";
+		$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$acta_ubic."')";
 
 		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
 		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
@@ -2096,7 +2101,6 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	$objPHPExcel->getActiveSheet()->getStyle($K . $G)->getFont()->setSize(11);
 	$objPHPExcel->getActiveSheet()->getStyle($K . $G)->getFont()->getColor()->setARGB('123D05');
 	$objPHPExcel->getActiveSheet()->getStyle($K . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-    // $objPHPExcel->getActiveSheet()->getCell('L' . $G)->setValue($sum_porcentaje . "%");
 	$objPHPExcel->getActiveSheet()->setCellValue($K . $G, '=('. $J . $G . ' /G' . $subDias . ')');
 	$objPHPExcel->getActiveSheet()
 	->getStyle($K . $G)
@@ -2107,8 +2111,6 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	
 	
   	//OTROS DATOS
-
-	//VALIDAR SI TIENE ACTAS
 	$pep = utf8_encode($row['ordentrabajo_pep']);
 	$orden = utf8_encode($row['ordentrabajo_num']);
 	$codigo_gom = utf8_encode($row['ordentrabajo_gom']);
@@ -2181,7 +2183,8 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
 	///////////////////////////// NOMBRE DE LA HOJA ///////////////////////////
 	$titulo = $row['ordentrabajo_num'];
-	$objPHPExcel->getActiveSheet()->setTitle($titulo);
+	$subestacion = utf8_encode($row['subestacion_nombre']);
+	$objPHPExcel->getActiveSheet()->setTitle($titulo ." ". $subestacion);
 
 
 	                          ///////////////////////////
@@ -2191,6 +2194,661 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	$objPHPExcel->createSheet(2);
 	$objPHPExcel->setActiveSheetIndex(2);
 	$objPHPExcel->getActiveSheet()->setTitle("ACTA " . $titulo);
+
+
+	// ANCHO COLUMNAS //
+	$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(25);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(5);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(10);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(12);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(25);
+    $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(10);
+    /**/
+    
+    // ALTO DE LAS FILAS //
+    $objPHPExcel->getActiveSheet()->getRowDimension('5')->setRowHeight(30);
+    $objPHPExcel->getActiveSheet()->getRowDimension('12')->setRowHeight(60);
+    $objPHPExcel->getActiveSheet()->getRowDimension('14')->setRowHeight(30);
+    $objPHPExcel->getActiveSheet()->getRowDimension('20')->setRowHeight(27);
+    $objPHPExcel->getActiveSheet()->getRowDimension('21')->setRowHeight(27);
+    /**/
+    
+    // OBJETO PARA INSERTAR EL LOGO //
+    $objDrawing = new PHPExcel_Worksheet_Drawing();
+    /**/
+
+    // LOGO DEL REPORTE //
+    $objDrawing->setName('Logo');
+    $objDrawing->setDescription('Logo');
+    $objDrawing->setPath('../../../img/logo.jpg');
+    $objDrawing->setHeight(40);
+    $objDrawing->setCoordinates('A1');
+    $objDrawing->setWorksheet($objPHPExcel->getActiveSheet());
+    /**/
+
+    // COMBINACION DE CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A1:A3');
+	$objPHPExcel->getActiveSheet()->mergeCells('B1:F3');
+	$objPHPExcel->getActiveSheet()->mergeCells('G1:H1');
+	$objPHPExcel->getActiveSheet()->mergeCells('G2:H2');
+	$objPHPExcel->getActiveSheet()->mergeCells('G3:H3');
+	$objPHPExcel->getActiveSheet()->mergeCells('B5:H5');
+	$objPHPExcel->getActiveSheet()->mergeCells('B7:C7');
+	$objPHPExcel->getActiveSheet()->mergeCells('B8:C8');
+	$objPHPExcel->getActiveSheet()->mergeCells('B9:C9');
+	$objPHPExcel->getActiveSheet()->mergeCells('B10:C10');
+	$objPHPExcel->getActiveSheet()->mergeCells('E7:F7');
+	$objPHPExcel->getActiveSheet()->mergeCells('E8:F8');
+	$objPHPExcel->getActiveSheet()->mergeCells('E9:F9');
+	$objPHPExcel->getActiveSheet()->mergeCells('E10:F10');
+	$objPHPExcel->getActiveSheet()->mergeCells('G7:H7');
+	$objPHPExcel->getActiveSheet()->mergeCells('G8:H8');
+	$objPHPExcel->getActiveSheet()->mergeCells('G9:H9');
+	$objPHPExcel->getActiveSheet()->mergeCells('G10:H10');
+	$objPHPExcel->getActiveSheet()->mergeCells('A12:H12');
+	$objPHPExcel->getActiveSheet()->mergeCells('A14:H14');
+	$objPHPExcel->getActiveSheet()->mergeCells('A16:H16');
+	$objPHPExcel->getActiveSheet()->mergeCells('B18:D18');
+	$objPHPExcel->getActiveSheet()->mergeCells('B19:D19');
+	$objPHPExcel->getActiveSheet()->mergeCells('B20:D20');
+	$objPHPExcel->getActiveSheet()->mergeCells('B21:D21');
+	$objPHPExcel->getActiveSheet()->mergeCells('B22:D22');
+	$objPHPExcel->getActiveSheet()->mergeCells('B23:D23');
+	$objPHPExcel->getActiveSheet()->mergeCells('B24:D24');
+	$objPHPExcel->getActiveSheet()->mergeCells('E18:F18');
+	$objPHPExcel->getActiveSheet()->mergeCells('E19:F19');
+	$objPHPExcel->getActiveSheet()->mergeCells('E20:F20');
+	$objPHPExcel->getActiveSheet()->mergeCells('E21:F21');
+	$objPHPExcel->getActiveSheet()->mergeCells('E22:F22');
+	$objPHPExcel->getActiveSheet()->mergeCells('E23:F23');
+	$objPHPExcel->getActiveSheet()->mergeCells('E24:F24');
+	$objPHPExcel->getActiveSheet()->mergeCells('C27:D27'); 
+    /**/
+
+    // BORDES //
+    $objPHPExcel->getActiveSheet()
+	->getStyle('A1:A3')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('B1:F3')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('G1:H3')
+	->getBorders()
+	->getOutline()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+    
+    $objPHPExcel->getActiveSheet()
+	->getStyle('A5:H5')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('A7:C10')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('E7:H10')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('B18:F24')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('B27:E27')
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+    /**/
+
+    // ALINEAR TEXTO CELDAS //
+    $objPHPExcel->getActiveSheet()->getStyle('A1:H100')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("A1:H3")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("B5")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("B7:B8")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
+    $objPHPExcel->getActiveSheet()->getStyle("G7:G8")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("G7")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("B18:F18")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $objPHPExcel->getActiveSheet()->getStyle("B22:F24")->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+    /**/
+
+    // FORMATO LETRA CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A1:H100')->getFont()->setName('Arial');
+	$objPHPExcel->getActiveSheet()->getStyle('A1:H100')->getFont()->setSize(10);
+	$objPHPExcel->getActiveSheet()->getStyle('A1:H100')->getAlignment()->setWrapText(true);
+	
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A1:H3')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B18:E18')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B22:E24')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B27:E27')->getFont()->setBold(true);
+
+	// COLOR CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('B18:F18')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+  	$objPHPExcel->getActiveSheet()->getStyle('B18:F18')->getFill()->getStartColor()->setARGB('D3D3D3');
+
+  	$objPHPExcel->getActiveSheet()->getStyle('B24:F24')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+  	$objPHPExcel->getActiveSheet()->getStyle('B24:F24')->getFill()->getStartColor()->setARGB('D3D3D3');
+
+  	$objPHPExcel->getActiveSheet()->getStyle('B27:E27')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+	$objPHPExcel->getActiveSheet()->getStyle('B27:E27')->getFill()->getStartColor()->setARGB('D3D3D3');
+  	
+	/**/
+  	
+
+	$pep = utf8_encode($row['ordentrabajo_pep']);
+	$orden = utf8_encode($row['ordentrabajo_num']);
+	$codigo_gom = utf8_encode($row['ordentrabajo_gom']);
+	$presupuestal = utf8_encode($row['ordentrabajo_ordenpresupuestal']);
+
+	
+	// LLENAR CAMPOS //
+	$objPHPExcel->setActiveSheetIndex(2)
+  	->setCellValue('B1', "Acta de avance \n Orden de trabajo ")
+  	->setCellValue('G1', "RG07-IO775")
+  	->setCellValue('G2', "Version 1")
+  	->setCellValue('G3', "18/07/2017")
+  	->setCellValue('A5', 'PROYECTO:')
+  	->setCellValue('B5', utf8_encode($row['ordentrabajo_obs']))
+  	->setCellValue('A7', 'PEP:')
+  	->setCellValue('B7', $pep)
+  	->setCellValue('A8', 'ORDEN PRESUPUESTAL:')
+  	->setCellValue('B8', $presupuestal)
+  	->setCellValue('A9', 'CONTRATISTA:')
+  	->setCellValue('B9', 'AC ENERGY')
+  	->setCellValue('A10', 'SUBESTACIÓN:')
+  	->setCellValue('B10', $subestacion)
+  	->setCellValue('E7', 'ORDEN DE TRABAJO:')
+  	->setCellValue('G7', $orden)
+  	->setCellValue('E8', 'ACTA DE AVANCE No.:')
+  	->setCellValue('G8', 'Acta No.'. $new_acta_ot . ' ' . $mesFactura . ' ' . $yearFactura)
+  	->setCellValue('E9', 'VALOR TOTAL OT:' )
+  	->setCellValue('E10', 'VALOR DEL ACTA:')
+  	->setCellValue('A12', "A los 20 días del mes de Mayo se reunieron en las instalaciones de CODENSA S.A. E.S.P., los ingenieros ".  utf8_encode($row['gestor']) ." por parte de CODENSA S.A. E.S.P. de la Unidad Operativa de Gestión y control AT, e Ing. Armando Ciendúa por parte de AC ENERGY, como firma contratista de CODENSA S.A. E.S.P, con el objeto de realizar la medición parcial de avance de la orden de trabajo para el período comprendido entre el ? y el ? para el proyecto: ". utf8_encode($row['ordentrabajo_obs']))
+  	->setCellValue('A14', '1. Alcance: Esta acta corresponde al avance de la orden de trabajo, de acuerdo con el detalle mostrado en el anexo Acta de avance de obra para el mes de '.$mesFactura.' de '.$yearFactura.'.')
+  	->setCellValue('A16', '2. Valor total según anexos adjuntos: El valor final del acta se describe a continuación:')
+  	->setCellValue('B18', 'DETALLE A PAGAR')
+  	->setCellValue('E18', 'VALOR')
+  	->setCellValue('B19', 'Valor según acta de avance')
+  	->setCellValue('B20', 'Ajustes al precio (3% - Incremento por ubicación)')
+  	->setCellValue('B21', 'Ajustes al precio (1.5% - Pago a 90 días)')
+  	->setCellValue('B22', 'SUBTOTAL')
+  	->setCellValue('B23', 'IVA '.$porcentaje.'%')
+  	->setCellValue('B24', 'TOTAL')
+  	->setCellValue('A26', '3. Resumen OT:')
+  	->setCellValue('B27', 'Acta No.')
+  	->setCellValue('C27', 'Valor sin IVA')
+  	->setCellValue('E27', '% OT')
+  	;/**/
+
+  	// CONSULTA TOTAL PRESUPUESTO //
+	$sqlSub="SELECT sum(pt.presupuesto_valorporcentaje) as total
+	FROM pt_presupuesto pt
+	JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+	JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+	JOIN dt_detalle_presupuesto dp ON pt.detallepresupuesto_id=dp.detallepresupuesto_id
+	AND pt.presupuesto_estado=1
+	AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . ";"
+	;
+
+	$resSub = $obj_bd->EjecutaConsulta($sqlSub);
+	$rowSub = $obj_bd->FuncionFetch($resSub);
+	$sub_pres = $rowSub['total'];
+
+	// CONSULTA UBICACION PRESUPUESTO //
+	$sqlUbi = " SELECT sum(pt.presupuesto_valorporcentaje)*0.03 as porcentaje
+	FROM pt_presupuesto pt
+	JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+	JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+	AND sb.subactividad_id=1
+	AND pt.presupuesto_estado=1
+	WHERE pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . ";"
+	;
+
+	$resUbi = $obj_bd->EjecutaConsulta($sqlUbi);
+	$rowUbi = $obj_bd->FuncionFetch($resUbi);
+	$ubicacion = $rowUbi['porcentaje'];
+
+	// CALCULO POR DIAS //
+	$dias = ($sub_pres + $ubicacion)*0.015;
+
+	// CALCULO TOTAL PRESUPUESTO //
+	$total_pre = $sub_pres + $ubicacion + $dias;
+
+	// LLENA CELDA CON TOTAL PRESUPUESTO //
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('G9', $total_pre);
+	$objPHPExcel->getActiveSheet()->getStyle('G9')->getNumberFormat()->setFormatCode('$#,##0');
+	/*Cierre*/
+
+
+
+	// CONSULTA ACTAS //
+	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+
+	$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+	$row_actas = $obj_bd->FuncionFetch($resultado_actas);
+	$stop = $row_actas['factura_actanum'];
+
+	// CONSULTA TOTAL ACTA //
+	$sql_total_acta = "SELECT sum(factura_porcentajeactual) as por, 
+								sum(factura_valorfacturado) as val
+						FROM dt_factura 
+						where factura_actanum = ".$stop."
+						and ordentrabajo_id = ".$row['ordentrabajo_id'].";";
+
+	$res_total_acta = $obj_bd->EjecutaConsulta($sql_total_acta);
+	$row_total_acta = $obj_bd->FuncionFetch($res_total_acta);
+
+	$total_acta = $row_total_acta['val'];
+
+	// UBICACION ACTA //
+	$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$stop."')";
+
+		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+		$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+		if ($ubicacion_actas == ""){
+			$ubicacion_actas = 0;
+		}
+
+	// INCREMENTOS DIAS ACTAS //
+	$dias = ($total_acta + $ubicacion_actas)*0.015;
+
+	// MOSTRAR DATOS EN CELDAS //
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E19', $total_acta);
+	$objPHPExcel->getActiveSheet()->getStyle('E19')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E20', $ubicacion_actas);
+	$objPHPExcel->getActiveSheet()->getStyle('E20')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E21', $dias);
+	$objPHPExcel->getActiveSheet()->getStyle('E21')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E22', '=SUM(E19:E21)');
+	$objPHPExcel->getActiveSheet()->getStyle('E22')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('G10', '=SUM(E19:E21)');
+	$objPHPExcel->getActiveSheet()->getStyle('G10')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E23', '=(E22*'.$porcentaje.')/100');
+	$objPHPExcel->getActiveSheet()->getStyle('E23')->getNumberFormat()->setFormatCode('$#,##0');
+
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E24', '=SUM(E22:E23)');
+	$objPHPExcel->getActiveSheet()->getStyle('E24')->getNumberFormat()->setFormatCode('$#,##0');
+
+	// VARIABLES //
+	$G = 28;
+	$acta = 0;
+
+	for ($i=0; $i < $stop ; $i++) {
+
+		$acta = $acta + 1;
+
+		// COMBINAR CELDAS //
+		$objPHPExcel->getActiveSheet()->mergeCells('C'.$G.':D'.$G);
+
+		// BORDES CELDAS //
+		$objPHPExcel->getActiveSheet()
+		->getStyle('B'.$G.':E'.$G)
+		->getBorders()
+		->getAllBorders()
+		->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+		// MUESTA EL NUMERO DE ACTA //
+		$objPHPExcel->getActiveSheet()->getCell('B' . $G)->setValue("ACTA " . $acta);
+
+		
+		// CONSULTA TOTAL ACTA //
+		$sql_total_acta = "SELECT sum(factura_porcentajeactual) as por, 
+								sum(factura_valorfacturado) as val
+						FROM dt_factura 
+						where factura_actanum = ".$acta."
+						and ordentrabajo_id = ".$row['ordentrabajo_id'].";";
+
+		$res_total_acta = $obj_bd->EjecutaConsulta($sql_total_acta);
+		$row_total_acta = $obj_bd->FuncionFetch($res_total_acta);
+		$total_acta = $row_total_acta['val'];
+
+
+		// UBICACION ACTA //
+		$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$stop."')";
+
+		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+		$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+		if ($ubicacion_actas == ""){
+			$ubicacion_actas = 0;
+		}
+
+		// INCREMENTOS DIAS ACTAS //
+		$dias = ($total_acta + $ubicacion_actas)*0.015;
+
+		// SUMA TOTAL ACTAS //
+		$total_total = $total_acta + $ubicacion_actas + $dias;
+
+		// MOSTRAR DATOS EN CELDAS //
+        $objPHPExcel->getActiveSheet()->getCell('C' . $G)->setValue($total_total);
+		$objPHPExcel->getActiveSheet()->getStyle('C' . $G)->getNumberFormat()->setFormatCode('$#,##0');
+
+		$objPHPExcel->getActiveSheet()->getStyle('E' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	   	$objPHPExcel->getActiveSheet()->setCellValue('E' . $G, '=C'.$G.'/G9');
+		$objPHPExcel->getActiveSheet()
+		->getStyle('E' . $G)
+		->getNumberFormat()
+		->applyFromArray([
+			"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00
+		]);
+		
+		$G = $G + 1;
+	}//FIN FOR
+
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('C'.$G.':D'.$G);
+
+	// BORDES CELDAS //
+	$objPHPExcel->getActiveSheet()
+	->getStyle('B'.$G.':E'.$G)
+	->getBorders()
+	->getAllBorders()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('B'.$G.':E'.$G)->getFont()->setBold(true);
+	
+	// COLOR CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('B'.$G.':E'.$G)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID);
+  	$objPHPExcel->getActiveSheet()->getStyle('B'.$G.':E'.$G)->getFill()->getStartColor()->setARGB('D3D3D3');
+
+  	$G_MENOS = $G - 1;
+
+	// MOSTRAR DATOS EN CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('B' . $G)->setValue("TOTAL");
+	
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('C' . $G, '=SUM(C28:C'.$G_MENOS.')');
+	$objPHPExcel->getActiveSheet()->getStyle('C' . $G)->getNumberFormat()->setFormatCode('$#,##0,%');
+
+	$objPHPExcel->getActiveSheet()->getStyle('E' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+   	$objPHPExcel->getActiveSheet()->setCellValue('E' . $G, '=C'.$G.'/G9');
+	$objPHPExcel->getActiveSheet()
+	->getStyle('E' . $G)
+	->getNumberFormat()
+	->applyFromArray([
+		"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00
+	]);
+
+	$G = $G + 2;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':H'.$G);	
+
+	// EXTRAER MES POR ARRAY //
+	$arrayFecha = $obj_bd->obtenerFechaEnLetra($fecha_fin);
+    	$exp_fecha = explode(",", $arrayFecha);
+
+	// MOSTRAR DATOS EN CELDA //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("Como constancia de lo anterior, se firma la presente acta el día ".$exp_fecha[1]." de ".$exp_fecha[2]." de ".$exp_fecha[3].".");
+
+
+	// FIRMA FILA 1 //
+	$G = $G + 3;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// BORDES CELDAS //
+	$objPHPExcel->getActiveSheet()
+	->getStyle('A'.$G.':C'.$G)
+	->getBorders()
+	->getBottom()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('E'.$G.':G'.$G)
+	->getBorders()
+	->getBottom()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	$gestor = utf8_encode(strtolower($row['gestor']));
+
+	$gestor_sql = "SELECT CONCAT(usu.usuario_nombre,' ',usu.usuario_apellidos) AS gestor, dp.detallepresupuesto_codensaGestor
+           FROM dt_detalle_presupuesto dp
+           JOIN dt_usuario usu ON dp.detallepresupuesto_gestor=usu.usuario_id
+           WHERE dp.detallepresupuesto_id=" .$row['detallepresupuesto_id'].";";
+
+
+
+	$resultado_gestor = $obj_bd->EjecutaConsulta($gestor_sql);
+	$data_gestor = $obj_bd->FuncionFetch($resultado_gestor);
+	//$nombre_gestor= utf8_decode( $data_gestor['gestor']);
+	$nombre_gestor = utf8_encode(strtolower($data_gestor['gestor']));
+	$nombre_gestor2 = utf8_encode(strtolower($data_gestor['detallepresupuesto_codensagestor']));
+
+
+	$gestor_sql1 = "SELECT usu.usuario_apellidos AS gestor1
+	           FROM dt_usuario usu
+	           WHERE usu.usuario_id =" . $nombre_gestor2;
+	           
+
+	$resultado_gestor1 = $obj_bd->EjecutaConsulta($gestor_sql1);
+	$data_gestor1 = $obj_bd->FuncionFetch($resultado_gestor1);
+	//$nombre_gestor= utf8_decode( $data_gestor['gestor']);
+	$nombre_gestor1 = utf8_encode(strtolower($data_gestor1['gestor1']));
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("Ing. " .  ucwords($gestor));
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Ing. ".  ucwords($nombre_gestor1));
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("Gestor de la ingeniería");
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Project Manager");
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("CODENSA S.A. E.S.P");
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("CODENSA S.A. E.S.P");
+
+
+	// FIRMA FILA 2 //
+	$G = $G + 3;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// BORDES CELDAS //
+	$objPHPExcel->getActiveSheet()
+	->getStyle('A'.$G.':C'.$G)
+	->getBorders()
+	->getBottom()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$objPHPExcel->getActiveSheet()
+	->getStyle('E'.$G.':G'.$G)
+	->getBorders()
+	->getBottom()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("Ing. Diana Marcela García Pulido");
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Ing. Rodrigo Villamil");
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("Coordinador operativo del contrato");
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Gestor del contrato");
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('A'.$G.':C'.$G);	
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('A'.$G.':C'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('A' . $G)->setValue("CODENSA S.A. E.S.P");
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("CODENSA S.A. E.S.P");
+
+
+	// FIRMA FILA 3 //
+	$G = $G + 3;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// BORDES CELDAS //
+	$objPHPExcel->getActiveSheet()
+	->getStyle('E'.$G.':G'.$G)
+	->getBorders()
+	->getBottom()
+	->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Ing. Armando Ciendúa Ciendúa");
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("Gerente General");
+
+	$G = $G + 1;
+
+	// COMBINAR CELDAS //
+	$objPHPExcel->getActiveSheet()->mergeCells('E'.$G.':G'.$G);	
+
+	// NEGRITA //	
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getFont()->setBold(true);
+
+	// ALINEACION CELDA //
+	$objPHPExcel->getActiveSheet()->getStyle('E'.$G.':G'.$G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+	// DATOS CELDAS //
+	$objPHPExcel->getActiveSheet()->getCell('E' . $G)->setValue("AC ENERGY SAS");
+
+
 
 	// $G = 2;
 	// $sql_conteo = "	SELECT ac.actividad_GOM as gom
