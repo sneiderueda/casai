@@ -877,12 +877,12 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
           		$num_sub = $obj_bd->Filas($sql_sub);
             	/**/
         
-        
+        		
             	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
                 	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
 
 
-	                  	$sql_porcentaje = "CALL SP_factura('23','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','','".$acta_num."')";
+	                  	$sql_porcentaje = "CALL SP_factura('23','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$acta_num."')";
 
 	                  	$result_porcentaje = $obj_bd->EjecutaConsulta($sql_porcentaje);
 	                  	$row_porcentaje = $obj_bd->FuncionFetch($result_porcentaje);
@@ -893,6 +893,16 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		                    $porcent = 0;
 		                }
 
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$acta_num."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
                  		$objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_I, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                     	$objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_I, $row9, $porcent);
 
@@ -901,8 +911,9 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*'. $I . $row9);
 
 	                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
+	                    // $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+	                    // $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
+	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, $ubicacion_actas);
 
 
 
@@ -1311,18 +1322,137 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		$J = PHPExcel_Cell::stringFromColumnIndex($col_J);
 		$K = PHPExcel_Cell::stringFromColumnIndex($col_K);
 
+		$total_ubic = 0;
+		/*
+      	CONSULTA MODULOS
+      	*/
+      	$sql_mod = "SELECT lb.labor_id,
+      	md.modulo_descripcion,
+      	bm.baremo_item,
+      	lb.labor_unidmedida,
+      	lb.labor_descripcion,
+      	tb.tipobaremo_sigla,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	md.modulo_id,
+      	pt.presupuesto_obs,
+      	sum(presupuesto_valorporcentaje) as total_actividad
+      	FROM pt_presupuesto pt
+      	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+      	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+      	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+      	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+      	AND pt.presupuesto_estado=1
+      	AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+      	GROUP BY md.modulo_descripcion,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	bm.baremo_item,
+      	tb.tipobaremo_descripcion,
+      	pt.presupuesto_obs";
+      	/**/
 
-		$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$acta_ubic."')";
+      	$resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 
-		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-		$ubicacion_actas = $rowUbi_actas['ubicacion'];
+      	/*
+    	FILAS
+    	*/
+	    $row7 = 7;
+	    $row8 = 8;
+	    $row9 = 9;
+	    
+	    // VARIABLES //
+	    $num = 0;
 
-		if ($ubicacion_actas == ""){
-			$ubicacion_actas = 0;
+	    while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
+        
+	        $total_facturar_tarea = 0;
+	        $total_actividad_acumulado = 0;
+	        $num_act_com = 0;
+	        $obs = $row_mod['presupuesto_obs'];
+
+	        /*
+	        2. CONSULTA ACTIVIDADES
+	        */
+	        $sql_act = "SELECT pt.presupuesto_porcentaje,
+	        ac.actividad_valorservicio,
+	        pt.presupuesto_valorporcentaje,
+	        pt.presupuesto_id,
+	        pt.baremoactividad_id,
+	        bm.baremo_item,
+	        bm.baremo_id,
+	        ac.actividad_id,
+	        ac.actividad_descripcion,
+	        pt.presupuesto_obs,
+	        ac.actividad_GOM
+	        FROM pt_presupuesto pt
+	        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	        JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+	        JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+	        AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+	        AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+	        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+	        AND bm.baremo_estado=1
+	        AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+	        AND pt.presupuesto_estado=1
+	        AND pt.presupuesto_obs='" . $obs . "'
+	        GROUP BY actividad_id";
+
+	        $result_act = $obj_bd->EjecutaConsulta($sql_act);
+	        $num_act = $obj_bd->Filas($sql_act);
+	        /**/    
+
+	        while ($row_act = $obj_bd->FuncionFetch($result_act)) {
+
+            	/*
+            	3. CONSULTAR SUBACTIVIDADES
+             	*/
+          		$sql_sub = " SELECT pt.presupuesto_id,
+          		pt.baremoactividad_id,
+          		pt.detalleactividad_id,
+          		sb.subactividad_descripcion,
+          		pt.presupuesto_porcentaje,
+          		pt.presupuesto_valorporcentaje,
+          		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+          		SUM(pt.presupuesto_valorporcentaje) as suma_valor
+          		FROM pt_presupuesto pt
+          		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+          		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+          		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+          		AND da.detalleactividad_estado=1
+          		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+          		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+          		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+          		AND pt.presupuesto_estado=1
+          		AND pt.presupuesto_obs='" . $obs . "';";
+
+          		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
+          		$num_sub = $obj_bd->Filas($sql_sub);
+            	/**/
+        
+        		
+            	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
+                	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
+
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$acta_ubic."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
+						$total_ubic = $total_ubic + $ubicacion_actas;
+
+					}
+				}	
+			}
 		}
-
-
+	
 		$objPHPExcel->getActiveSheet()->getStyle($I . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$objPHPExcel->getActiveSheet()->getCell($I . $F)->setValue("Ubicación 3%");
 		$objPHPExcel->getActiveSheet()->getStyle($I . $F)->getFont()->setName('Calibri');
@@ -1335,7 +1465,9 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		$objPHPExcel->getActiveSheet()->getStyle($J . $F)->getFont()->getColor()->setARGB('123D05');
 		$objPHPExcel->getActiveSheet()->getStyle($J . $F)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 		$objPHPExcel->getActiveSheet()->getStyle($J . $F)->getNumberFormat()->setFormatCode('$#,##0');
-		$objPHPExcel->getActiveSheet()->setCellValue($J . $F, $ubicacion_actas);
+
+
+		$objPHPExcel->getActiveSheet()->setCellValue($J . $F, $total_ubic);
 
 		// AUMENTO COLUMNAS //
 		$col_I = $col_I + 3;
@@ -2046,6 +2178,145 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		$sql_sum_actas = "CALL SP_factura('21','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','".$acta."')";
 		$resultado_sum_actas = $obj_bd->EjecutaConsulta($sql_sum_actas);
 		$row_sum_actas = $obj_bd->FuncionFetch($resultado_sum_actas);
+		$total_acta = $row_sum_actas['sum_acta'];
+
+		// UBICACION ACTA //
+		$total_ubic = 0;
+		/*
+      	CONSULTA MODULOS
+      	*/
+      	$sql_mod = "SELECT lb.labor_id,
+      	md.modulo_descripcion,
+      	bm.baremo_item,
+      	lb.labor_unidmedida,
+      	lb.labor_descripcion,
+      	tb.tipobaremo_sigla,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	md.modulo_id,
+      	pt.presupuesto_obs,
+      	sum(presupuesto_valorporcentaje) as total_actividad
+      	FROM pt_presupuesto pt
+      	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+      	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+      	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+      	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+      	AND pt.presupuesto_estado=1
+      	AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+      	GROUP BY md.modulo_descripcion,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	bm.baremo_item,
+      	tb.tipobaremo_descripcion,
+      	pt.presupuesto_obs";
+      	/**/
+
+      	$resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
+
+      	/*
+    	FILAS
+    	*/
+	    $row7 = 7;
+	    $row8 = 8;
+	    $row9 = 9;
+	    
+	    // VARIABLES //
+	    $num = 0;
+
+	    while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
+        
+	        $total_facturar_tarea = 0;
+	        $total_actividad_acumulado = 0;
+	        $num_act_com = 0;
+	        $obs = $row_mod['presupuesto_obs'];
+
+	        /*
+	        2. CONSULTA ACTIVIDADES
+	        */
+	        $sql_act = "SELECT pt.presupuesto_porcentaje,
+	        ac.actividad_valorservicio,
+	        pt.presupuesto_valorporcentaje,
+	        pt.presupuesto_id,
+	        pt.baremoactividad_id,
+	        bm.baremo_item,
+	        bm.baremo_id,
+	        ac.actividad_id,
+	        ac.actividad_descripcion,
+	        pt.presupuesto_obs,
+	        ac.actividad_GOM
+	        FROM pt_presupuesto pt
+	        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	        JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+	        JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+	        AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+	        AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+	        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+	        AND bm.baremo_estado=1
+	        AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+	        AND pt.presupuesto_estado=1
+	        AND pt.presupuesto_obs='" . $obs . "'
+	        GROUP BY actividad_id";
+
+	        $result_act = $obj_bd->EjecutaConsulta($sql_act);
+	        $num_act = $obj_bd->Filas($sql_act);
+	        /**/    
+
+	        while ($row_act = $obj_bd->FuncionFetch($result_act)) {
+
+            	/*
+            	3. CONSULTAR SUBACTIVIDADES
+             	*/
+          		$sql_sub = " SELECT pt.presupuesto_id,
+          		pt.baremoactividad_id,
+          		pt.detalleactividad_id,
+          		sb.subactividad_descripcion,
+          		pt.presupuesto_porcentaje,
+          		pt.presupuesto_valorporcentaje,
+          		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+          		SUM(pt.presupuesto_valorporcentaje) as suma_valor
+          		FROM pt_presupuesto pt
+          		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+          		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+          		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+          		AND da.detalleactividad_estado=1
+          		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+          		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+          		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+          		AND pt.presupuesto_estado=1
+          		AND pt.presupuesto_obs='" . $obs . "';";
+
+          		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
+          		$num_sub = $obj_bd->Filas($sql_sub);
+            	/**/
+        
+        		
+            	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
+                	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
+
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$acta."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
+						$total_ubic = $total_ubic + $ubicacion_actas;
+
+					}
+				}	
+			}
+		}
+
+		// INCREMENTOS DIAS ACTAS //
+		$dias = ( $total_acta+ $total_ubic)*0.015;
+
+		// SUMA TOTAL ACTAS //
+		$total_total = $total_acta + $total_ubic + $dias;
 
 
 		$objPHPExcel->getActiveSheet()->getStyle($I . $G)->getFont()->setName('Calibri');
@@ -2060,7 +2331,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		$objPHPExcel->getActiveSheet()->getStyle($J . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 		$objPHPExcel->getActiveSheet()->getStyle($J . $G)->getNumberFormat()->setFormatCode('$#,##0');
                
-		$objPHPExcel->getActiveSheet()->getCell($J . $G)->setValue($row_sum_actas['sum_acta']);
+		$objPHPExcel->getActiveSheet()->getCell($J . $G)->setValue($total_total);
 
 		$objPHPExcel->getActiveSheet()->getStyle($K . $G)->getFont()->setName('Calibri');
 		$objPHPExcel->getActiveSheet()->getStyle($K . $G)->getFont()->setSize(11);
@@ -2380,7 +2651,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
   	->setCellValue('G8', 'Acta No.'. $new_acta_ot . ' ' . $mesFactura . ' ' . $yearFactura)
   	->setCellValue('E9', 'VALOR TOTAL OT:' )
   	->setCellValue('E10', 'VALOR DEL ACTA:')
-  	->setCellValue('A12', "A los 20 días del mes de Mayo se reunieron en las instalaciones de CODENSA S.A. E.S.P., los ingenieros ".  utf8_encode($row['gestor']) ." por parte de CODENSA S.A. E.S.P. de la Unidad Operativa de Gestión y control AT, e Ing. Armando Ciendúa por parte de AC ENERGY, como firma contratista de CODENSA S.A. E.S.P, con el objeto de realizar la medición parcial de avance de la orden de trabajo para el período comprendido entre el ? y el ? para el proyecto: ". utf8_encode($row['ordentrabajo_obs']))
+  	->setCellValue('A12', "A los ".$exp_fecha[1]." de ".$exp_fecha[2]." de ".$exp_fecha[3].", reunieron en las instalaciones de CODENSA S.A. E.S.P., los ingenieros ".  utf8_encode($row['gestor']) ." por parte de CODENSA S.A. E.S.P. de la Unidad Operativa de Gestión y control AT, e Ing. Armando Ciendúa por parte de AC ENERGY, como firma contratista de CODENSA S.A. E.S.P, con el objeto de realizar la medición parcial de avance de la orden de trabajo para el período comprendido entre el ? y el ? para el proyecto: ". utf8_encode($row['ordentrabajo_obs']))
   	->setCellValue('A14', '1. Alcance: Esta acta corresponde al avance de la orden de trabajo, de acuerdo con el detalle mostrado en el anexo Acta de avance de obra para el mes de '.$mesFactura.' de '.$yearFactura.'.')
   	->setCellValue('A16', '2. Valor total según anexos adjuntos: El valor final del acta se describe a continuación:')
   	->setCellValue('B18', 'DETALLE A PAGAR')
@@ -2458,24 +2729,145 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	$total_acta = $row_total_acta['val'];
 
 	// UBICACION ACTA //
-	$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$stop."')";
+	$total_ubic = 0;
+		/*
+      	CONSULTA MODULOS
+      	*/
+      	$sql_mod = "SELECT lb.labor_id,
+      	md.modulo_descripcion,
+      	bm.baremo_item,
+      	lb.labor_unidmedida,
+      	lb.labor_descripcion,
+      	tb.tipobaremo_sigla,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	md.modulo_id,
+      	pt.presupuesto_obs,
+      	sum(presupuesto_valorporcentaje) as total_actividad
+      	FROM pt_presupuesto pt
+      	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+      	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+      	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+      	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+      	AND pt.presupuesto_estado=1
+      	AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+      	GROUP BY md.modulo_descripcion,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	bm.baremo_item,
+      	tb.tipobaremo_descripcion,
+      	pt.presupuesto_obs";
+      	/**/
 
-		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-		$ubicacion_actas = $rowUbi_actas['ubicacion'];
+      	$resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 
-		if ($ubicacion_actas == ""){
-			$ubicacion_actas = 0;
+      	/*
+    	FILAS
+    	*/
+	    $row7 = 7;
+	    $row8 = 8;
+	    $row9 = 9;
+	    
+	    // VARIABLES //
+	    $num = 0;
+
+	    while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
+        
+	        $total_facturar_tarea = 0;
+	        $total_actividad_acumulado = 0;
+	        $num_act_com = 0;
+	        $obs = $row_mod['presupuesto_obs'];
+
+	        /*
+	        2. CONSULTA ACTIVIDADES
+	        */
+	        $sql_act = "SELECT pt.presupuesto_porcentaje,
+	        ac.actividad_valorservicio,
+	        pt.presupuesto_valorporcentaje,
+	        pt.presupuesto_id,
+	        pt.baremoactividad_id,
+	        bm.baremo_item,
+	        bm.baremo_id,
+	        ac.actividad_id,
+	        ac.actividad_descripcion,
+	        pt.presupuesto_obs,
+	        ac.actividad_GOM
+	        FROM pt_presupuesto pt
+	        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	        JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+	        JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+	        AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+	        AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+	        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+	        AND bm.baremo_estado=1
+	        AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+	        AND pt.presupuesto_estado=1
+	        AND pt.presupuesto_obs='" . $obs . "'
+	        GROUP BY actividad_id";
+
+	        $result_act = $obj_bd->EjecutaConsulta($sql_act);
+	        $num_act = $obj_bd->Filas($sql_act);
+	        /**/    
+
+	        while ($row_act = $obj_bd->FuncionFetch($result_act)) {
+
+            	/*
+            	3. CONSULTAR SUBACTIVIDADES
+             	*/
+          		$sql_sub = " SELECT pt.presupuesto_id,
+          		pt.baremoactividad_id,
+          		pt.detalleactividad_id,
+          		sb.subactividad_descripcion,
+          		pt.presupuesto_porcentaje,
+          		pt.presupuesto_valorporcentaje,
+          		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+          		SUM(pt.presupuesto_valorporcentaje) as suma_valor
+          		FROM pt_presupuesto pt
+          		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+          		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+          		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+          		AND da.detalleactividad_estado=1
+          		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+          		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+          		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+          		AND pt.presupuesto_estado=1
+          		AND pt.presupuesto_obs='" . $obs . "';";
+
+          		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
+          		$num_sub = $obj_bd->Filas($sql_sub);
+            	/**/
+        
+        		
+            	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
+                	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
+
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$stop."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
+						$total_ubic = $total_ubic + $ubicacion_actas;
+
+					}
+				}	
+			}
 		}
 
 	// INCREMENTOS DIAS ACTAS //
-	$dias = ($total_acta + $ubicacion_actas)*0.015;
+	$dias = ($total_acta + $total_ubic)*0.015;
 
 	// MOSTRAR DATOS EN CELDAS //
 	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E19', $total_acta);
 	$objPHPExcel->getActiveSheet()->getStyle('E19')->getNumberFormat()->setFormatCode('$#,##0');
 
-	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E20', $ubicacion_actas);
+	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E20', $total_ubic);
 	$objPHPExcel->getActiveSheet()->getStyle('E20')->getNumberFormat()->setFormatCode('$#,##0');
 
 	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('E21', $dias);
@@ -2516,33 +2908,149 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 
 		
 		// CONSULTA TOTAL ACTA //
-		$sql_total_acta = "SELECT sum(factura_porcentajeactual) as por, 
-								sum(factura_valorfacturado) as val
-						FROM dt_factura 
-						where factura_actanum = ".$acta."
-						and ordentrabajo_id = ".$row['ordentrabajo_id'].";";
-
-		$res_total_acta = $obj_bd->EjecutaConsulta($sql_total_acta);
-		$row_total_acta = $obj_bd->FuncionFetch($res_total_acta);
-		$total_acta = $row_total_acta['val'];
+		$sql_sum_actas = "CALL SP_factura('21','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','".$acta."')";
+		$resultado_sum_actas = $obj_bd->EjecutaConsulta($sql_sum_actas);
+		$row_sum_actas = $obj_bd->FuncionFetch($resultado_sum_actas);
+		$total_acta = $row_sum_actas['sum_acta'];
 
 
 		// UBICACION ACTA //
-		$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fecha_inicio . "','" . $fecha_fin . "','','','','','','','','','','" . $row['detallepresupuesto_id'] . "','".$row['ordentrabajo_id']."','".$stop."')";
+		$total_ubic = 0;
+		/*
+      	CONSULTA MODULOS
+      	*/
+      	$sql_mod = "SELECT lb.labor_id,
+      	md.modulo_descripcion,
+      	bm.baremo_item,
+      	lb.labor_unidmedida,
+      	lb.labor_descripcion,
+      	tb.tipobaremo_sigla,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	md.modulo_id,
+      	pt.presupuesto_obs,
+      	sum(presupuesto_valorporcentaje) as total_actividad
+      	FROM pt_presupuesto pt
+      	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+      	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+      	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+      	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+      	AND pt.presupuesto_estado=1
+      	AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+      	GROUP BY md.modulo_descripcion,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	bm.baremo_item,
+      	tb.tipobaremo_descripcion,
+      	pt.presupuesto_obs";
+      	/**/
 
-		$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-		$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-		$ubicacion_actas = $rowUbi_actas['ubicacion'];
+      	$resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 
-		if ($ubicacion_actas == ""){
-			$ubicacion_actas = 0;
+      	/*
+    	FILAS
+    	*/
+	    $row7 = 7;
+	    $row8 = 8;
+	    $row9 = 9;
+	    
+	    // VARIABLES //
+	    $num = 0;
+
+	    while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
+        
+	        $total_facturar_tarea = 0;
+	        $total_actividad_acumulado = 0;
+	        $num_act_com = 0;
+	        $obs = $row_mod['presupuesto_obs'];
+
+	        /*
+	        2. CONSULTA ACTIVIDADES
+	        */
+	        $sql_act = "SELECT pt.presupuesto_porcentaje,
+	        ac.actividad_valorservicio,
+	        pt.presupuesto_valorporcentaje,
+	        pt.presupuesto_id,
+	        pt.baremoactividad_id,
+	        bm.baremo_item,
+	        bm.baremo_id,
+	        ac.actividad_id,
+	        ac.actividad_descripcion,
+	        pt.presupuesto_obs,
+	        ac.actividad_GOM
+	        FROM pt_presupuesto pt
+	        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	        JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+	        JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+	        AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+	        AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+	        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+	        AND bm.baremo_estado=1
+	        AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+	        AND pt.presupuesto_estado=1
+	        AND pt.presupuesto_obs='" . $obs . "'
+	        GROUP BY actividad_id";
+
+	        $result_act = $obj_bd->EjecutaConsulta($sql_act);
+	        $num_act = $obj_bd->Filas($sql_act);
+	        /**/    
+
+	        while ($row_act = $obj_bd->FuncionFetch($result_act)) {
+
+            	/*
+            	3. CONSULTAR SUBACTIVIDADES
+             	*/
+          		$sql_sub = " SELECT pt.presupuesto_id,
+          		pt.baremoactividad_id,
+          		pt.detalleactividad_id,
+          		sb.subactividad_descripcion,
+          		pt.presupuesto_porcentaje,
+          		pt.presupuesto_valorporcentaje,
+          		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+          		SUM(pt.presupuesto_valorporcentaje) as suma_valor
+          		FROM pt_presupuesto pt
+          		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+          		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+          		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+          		AND da.detalleactividad_estado=1
+          		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+          		AND pt.detallepresupuesto_id=" . $row['detallepresupuesto_id'] . "
+          		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+          		AND pt.presupuesto_estado=1
+          		AND pt.presupuesto_obs='" . $obs . "';";
+
+          		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
+          		$num_sub = $obj_bd->Filas($sql_sub);
+            	/**/
+        
+        		
+            	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
+                	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
+
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $row['ordentrabajo_id'] . "','".$acta."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
+						$total_ubic = $total_ubic + $ubicacion_actas;
+
+					}
+				}	
+			}
 		}
 
 		// INCREMENTOS DIAS ACTAS //
-		$dias = ($total_acta + $ubicacion_actas)*0.015;
+		$dias = ($total_acta + $total_ubic)*0.015;
 
 		// SUMA TOTAL ACTAS //
-		$total_total = $total_acta + $ubicacion_actas + $dias;
+		$total_total = $total_acta + $total_ubic + $dias;
 
 		// MOSTRAR DATOS EN CELDAS //
         $objPHPExcel->getActiveSheet()->getCell('C' . $G)->setValue($total_total);
@@ -2554,7 +3062,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 		->getStyle('E' . $G)
 		->getNumberFormat()
 		->applyFromArray([
-			"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00
+			"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
 		]);
 		
 		$G = $G + 1;
@@ -2584,7 +3092,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	$objPHPExcel->getActiveSheet()->getCell('B' . $G)->setValue("TOTAL");
 	
 	$objPHPExcel->setActiveSheetIndex(2)->setCellValue('C' . $G, '=SUM(C28:C'.$G_MENOS.')');
-	$objPHPExcel->getActiveSheet()->getStyle('C' . $G)->getNumberFormat()->setFormatCode('$#,##0,%');
+	$objPHPExcel->getActiveSheet()->getStyle('C' . $G)->getNumberFormat()->setFormatCode('$#,##0');
 
 	$objPHPExcel->getActiveSheet()->getStyle('E' . $G)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
    	$objPHPExcel->getActiveSheet()->setCellValue('E' . $G, '=C'.$G.'/G9');
@@ -2592,7 +3100,7 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	->getStyle('E' . $G)
 	->getNumberFormat()
 	->applyFromArray([
-		"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE_00
+		"code" => PHPExcel_Style_NumberFormat::FORMAT_PERCENTAGE
 	]);
 
 	$G = $G + 2;
@@ -3133,12 +3641,12 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('M' . $fl, '='.$formula);
 	$objPHPExcel->getActiveSheet()->getStyle('M' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-	/*CONSULTA PARA EL NUMERO DE ACTAS*/
-	$sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($resumen['ordentrabajo_id']) . "','')";
-
-	$resultado_acta = $obj_bd->EjecutaConsulta($sql_acta);
-	$num_acta = $obj_bd->FuncionFetch($resultado_acta);
-	$new_acta = $num_acta['acta'];
+	
+	// CONSULTA ACTAS //
+   	$sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $resumen['ordentrabajo_id'] . "','')";
+	$resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+	$row_actas = $obj_bd->FuncionFetch($resultado_actas);
+	$stop = $row_actas['factura_actanum'];
 
 
 	$objPHPExcel->setActiveSheetIndex(0);
@@ -3157,17 +3665,138 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 
 	/*Traemos el valor por ubicacion del acta*/
 	/*Abre*/
-	$sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','')";
+	// UBICACION ACTA //
+	$total_ubic = 0;
+		/*
+      	CONSULTA MODULOS
+      	*/
+      	$sql_mod = "SELECT lb.labor_id,
+      	md.modulo_descripcion,
+      	bm.baremo_item,
+      	lb.labor_unidmedida,
+      	lb.labor_descripcion,
+      	tb.tipobaremo_sigla,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	md.modulo_id,
+      	pt.presupuesto_obs,
+      	sum(presupuesto_valorporcentaje) as total_actividad
+      	FROM pt_presupuesto pt
+      	JOIN pt_baremo bm ON pt.baremo_id=bm.baremo_id
+      	JOIN cf_tipobaremo tb ON pt.tipobaremo_id=tb.tipobaremo_id
+      	JOIN cf_modulo md ON pt.modulo_id=md.modulo_id
+      	JOIN cf_labor lb ON bm.labor_id=lb.labor_id
+      	AND pt.presupuesto_estado=1
+      	AND pt.detallepresupuesto_id=" . $resumen['detallepresupuesto_id'] . "
+      	GROUP BY md.modulo_descripcion,
+      	pt.baremo_id,
+      	pt.tipobaremo_id,
+      	pt.detallepresupuesto_id,
+      	bm.baremo_item,
+      	tb.tipobaremo_descripcion,
+      	pt.presupuesto_obs";
+      	/**/
 
-	$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-	$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-	$ubicacion_actas = $rowUbi_actas['ubicacion'];
+      	$resultado_modulo = $obj_bd->EjecutaConsulta($sql_mod);
 
-	if ($ubicacion_actas == '') {
-		$ubicacion_actas = 0;
-	}
+      	/*
+    	FILAS
+    	*/
+	    $row7 = 7;
+	    $row8 = 8;
+	    $row9 = 9;
+	    
+	    // VARIABLES //
+	    $num = 0;
 
-	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $ubicacion_actas);
+	    while ($row_mod = $obj_bd->FuncionFetch($resultado_modulo)) {
+        
+	        $total_facturar_tarea = 0;
+	        $total_actividad_acumulado = 0;
+	        $num_act_com = 0;
+	        $obs = $row_mod['presupuesto_obs'];
+
+	        /*
+	        2. CONSULTA ACTIVIDADES
+	        */
+	        $sql_act = "SELECT pt.presupuesto_porcentaje,
+	        ac.actividad_valorservicio,
+	        pt.presupuesto_valorporcentaje,
+	        pt.presupuesto_id,
+	        pt.baremoactividad_id,
+	        bm.baremo_item,
+	        bm.baremo_id,
+	        ac.actividad_id,
+	        ac.actividad_descripcion,
+	        pt.presupuesto_obs,
+	        ac.actividad_GOM
+	        FROM pt_presupuesto pt
+	        JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+	        JOIN pt_baremo bm ON ba.baremo_id=bm.baremo_id
+	        JOIN cf_actividad ac ON ac.actividad_id=ba.actividad_id
+	        AND pt.baremo_id=" . $row_mod['baremo_id'] . "
+	        AND pt.tipobaremo_id=" . $row_mod['tipobaremo_id'] . "
+	        AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+	        AND bm.baremo_estado=1
+	        AND pt.detallepresupuesto_id=" . $row_mod['detallepresupuesto_id'] . "
+	        AND pt.presupuesto_estado=1
+	        AND pt.presupuesto_obs='" . $obs . "'
+	        GROUP BY actividad_id";
+
+	        $result_act = $obj_bd->EjecutaConsulta($sql_act);
+	        $num_act = $obj_bd->Filas($sql_act);
+	        /**/    
+
+	        while ($row_act = $obj_bd->FuncionFetch($result_act)) {
+
+            	/*
+            	3. CONSULTAR SUBACTIVIDADES
+             	*/
+          		$sql_sub = " SELECT pt.presupuesto_id,
+          		pt.baremoactividad_id,
+          		pt.detalleactividad_id,
+          		sb.subactividad_descripcion,
+          		pt.presupuesto_porcentaje,
+          		pt.presupuesto_valorporcentaje,
+          		SUM(pt.presupuesto_porcentaje)  as suma_porcentaje,
+          		SUM(pt.presupuesto_valorporcentaje) as suma_valor
+          		FROM pt_presupuesto pt
+          		JOIN pt_baremo_actividad ba ON pt.baremoactividad_id=ba.baremoactividad_id
+          		JOIN pt_detalle_actividad da ON pt.detalleactividad_id=da.detalleactividad_id
+          		JOIN cf_subactividad sb ON da.subactividad_id=sb.subactividad_id
+          		AND da.detalleactividad_estado=1
+          		AND pt.baremoactividad_id =" . $row_act['baremoactividad_id'] . "
+          		AND pt.detallepresupuesto_id=" . $resumen['detallepresupuesto_id'] . "
+          		AND pt.modulo_id=" . $row_mod['modulo_id'] . "
+          		AND pt.presupuesto_estado=1
+          		AND pt.presupuesto_obs='" . $obs . "';";
+
+          		$result_sub = $obj_bd->EjecutaConsulta($sql_sub);
+          		$num_sub = $obj_bd->Filas($sql_sub);
+            	/**/
+        
+        		
+            	if ($num_sub > 0) { //Si tiene subactividades (Se pinta)
+                	while ($row_sub = $obj_bd->FuncionFetch($result_sub)) {
+
+		                $sqlUbi_actas = "CALL SP_facturacion('2','','','','','','','','','','','','','','','','','','','".$row_sub['presupuesto_id']."','" . $resumen['ordentrabajo_id'] . "','".$stop."')";
+
+						$resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
+						$rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
+						$ubicacion_actas = $rowUbi_actas['ubicacion'];
+
+						if ($ubicacion_actas == ""){
+						$ubicacion_actas = 0;
+						}
+
+						$total_ubic = $total_ubic + $ubicacion_actas;
+
+					}
+				}	
+			}
+		}
+	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('P' . $fl, $total_ubic);
 	$objPHPExcel->getActiveSheet()->getStyle('P' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 	/*Cierra*/
 
@@ -3203,7 +3832,7 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('T' . $fl, '='.$formula);
 	$objPHPExcel->getActiveSheet()->getStyle('T' . $fl)->getNumberFormat()->setFormatCode('$#,##0');
 
-	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $fl, $new_acta);
+	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('U' . $fl, $stop);
 	$objPHPExcel->setActiveSheetIndex(0)->setCellValue('V' . $fl, utf8_encode($resumen['gestor']));
 
 

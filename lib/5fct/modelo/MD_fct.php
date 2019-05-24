@@ -305,11 +305,13 @@ class MD_fct {
 
 
                 //validar numero de acta
-                        $sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
+                        // CONSULTA //
+                $sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+                $resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+                $row_actas = $obj_bd->FuncionFetch($resultado_actas);
+                $new_acta = $row_actas['factura_actanum'];
 
-                        $resultado_acta = $obj_bd->EjecutaConsulta($sql_acta);
-                        $num_acta = $obj_bd->FuncionFetch($resultado_acta);
-                        $new_acta = $num_acta['acta'] + 1;
+                        $new_acta = $new_acta + 1;
 
                         $tabla .= " 
                         <td class='warning'>" . "$" . number_format($ubicacion_actas, 0, ',', '.') . "</td>
@@ -383,14 +385,25 @@ class MD_fct {
 
                 $resultado = $obj_bd->EjecutaConsulta($sql);
                 $valor_porcentaje = 0;
-                while ($row = $obj_bd->FuncionFetch($resultado)) {
+
+                // //validar numero de acta
+                //         $sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
+
+                //         $resultado_acta = $obj_bd->EjecutaConsulta($sql_acta);
+                //         $num_acta = $obj_bd->FuncionFetch($resultado_acta);
+                //         $new_acta = $num_acta['acta'];
+
+        while ($row = $obj_bd->FuncionFetch($resultado)) {
 
                     //validar numero de acta
-                        $sql_acta = "CALL SP_factura('4','','','','','','','','','','','','','','','','','','','','" . trim($row['ordentrabajo_id']) . "','');";
+                    //
+                    // CONSULTA //
+                $sql_actas = "CALL SP_factura('16','','','','','','','','','','','','','','','','','','','','" . $row['ordentrabajo_id'] . "','')";
+                $resultado_actas = $obj_bd->EjecutaConsulta($sql_actas);
+                $row_actas = $obj_bd->FuncionFetch($resultado_actas);
+                $new_acta = $row_actas['factura_actanum'];
 
-                        $resultado_acta = $obj_bd->EjecutaConsulta($sql_acta);
-                        $num_acta = $obj_bd->FuncionFetch($resultado_acta);
-                        $new_acta = $num_acta['acta'] + 1;
+                        $new_acta = $new_acta + 1;
 
 
 
@@ -1023,76 +1036,129 @@ public function SaveFactura($post) {
         $ot_id = $post['id_ot'];
         $modulo_id = $post['modulo_id'];
 
+        // return $modulo_id;
+
         /*
         CALCULOS
          */
         $porcentaje_pendiente = $cantidad - $porcentaje;
         $valor_pendiente = round($valor_subtotal - $valor_labor);
 
-         // $sql = "CALL SP_factura('1','','','','','','','','". $fechaFacturaMes ."','". $fechaFacturaFin ."','','','','','','','','','','','','');";
+         $sql = "SELECT count(presupuesto_id) as cuenta
+        FROM pt_presupuesto
+        WHERE detallepresupuesto_id = " . $detallepresupuesto_id . "
+        and modulo_id = " . $modulo_id . "
+        and presupuesto_estado = 1;";
 
-         //        $resultado = $obj_bd->EjecutaConsulta($sql);
-         //        $row = $obj_bd->FuncionFetch($resultado);
+        $resultado = $obj_bd->EjecutaConsulta($sql);
+        $row = $obj_bd->FuncionFetch($resultado);
 
-                        ///////////////////////////////
-                        //DATOS DE LAS ACTAS DEL MES //
-                        ///////////////////////////////
-                        
-        /*CONSULTA QUE DEVUELVE EL VALOR DEL SUBTOTAL DE LAS ACTAS*/    
-        $sqlSub_actas = "CALL SP_factura('20','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
+        $cuenta = $row['cuenta'];
 
-        $resSub_actas = $obj_bd->EjecutaConsulta($sqlSub_actas);
-        $rowSub_actas = $obj_bd->FuncionFetch($resSub_actas);
-        $sub_actas = $rowSub_actas['total_porc'];
+        if ($cuenta == 2){
 
+            $sql1 = "SELECT sa.subactividad_descripcion
+            from cf_subactividad sa
+            join pt_detalle_actividad da on sa.subactividad_id = da.subactividad_id
+            join pt_presupuesto pt on da.detalleactividad_id = pt.detalleactividad_id
+            and pt.presupuesto_estado = 1
+            and pt.presupuesto_id = ".$presupuesto_id .";";
 
-        /*COLSULTA QUE DEVUELVE EL VALOR DEL INCREMENTO POR UBICACION, SI APLICA*/
-        $sqlUbi_actas = "CALL SP_factura('18','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $detallepresupuesto_id . "','','')";
+            $resultado1 = $obj_bd->EjecutaConsulta($sql1);
+            $row1 = $obj_bd->FuncionFetch($resultado1);
 
-        $resUbi_actas = $obj_bd->EjecutaConsulta($sqlUbi_actas);
-        $rowUbi_actas = $obj_bd->FuncionFetch($resUbi_actas);
-        $ubicacion_actas = $rowUbi_actas['ubicacion'];
+            $desc = utf8_encode($row1['subactividad_descripcion']);
 
+            if($desc == "DISEÑO"){
+                /*
+                INSERTAR EN LA BASE DE DATOS
+                */
+               
+                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
-        /*CALCULAR EL PORCENTAJE DE CUMPLIMIENTO*/
-        $cumplimiento = ($sub_actas/$row['detallepresupuesto_total'])*100;
-
-        /*CALCULA EL VALOR DEL INCREMENTO POR 90 DIAS DE ACTAS*/
-        $dias_actas = ($sub_actas+$ubicacion_actas)*0.015;
-
-        /*CALCULA EL VALOR DEL IVA DE LAS ACTAS*/
-        $iva_actas = (($sub_actas+$ubicacion_actas+$dias_actas)*$iva)/100;
-        
-        /*CALCULA EL VALOR PARCIAL DEL SUBTOTAL, LA UBICACION Y EL INCREMENTO DE DIAS*/
-        $parcial_actas = $sub_actas+$ubicacion_actas+$dias_actas;
-        
-        /*CALCULA EL VALOR TOTAL DEL ACTA*/
-        $total_actas = $parcial_actas+$iva_actas;
-
-        /*CIERRE*/
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row3 = $obj_bd->FuncionFetch($consulta);
 
 
+               $presupuesto_id1 = $presupuesto_id - 1;
+               
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','0','0','0','".$id_usuario."','','0','0','0','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+               $consulta = $obj_bd->EjecutaConsulta($sql);
+               $row2 = $obj_bd->FuncionFetch($consulta);
+
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id1."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row1 = $obj_bd->FuncionFetch($consulta);
 
 
-        /*
-        INSERTAR EN LA BASE DE DATOS
-         */
-        $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                if ($row1>0){
 
-        $consulta = $obj_bd->EjecutaConsulta($sql);
-        $row1 = $obj_bd->FuncionFetch($consulta);
+                    return 1;
 
-        if ($row1>0){
+                }else{
 
-            return 1;
+                    return 0;
 
+                }
+
+            }else{
+
+                /*
+                INSERTAR EN LA BASE DE DATOS
+                */
+               
+                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row2 = $obj_bd->FuncionFetch($consulta);
+
+
+                
+                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row1 = $obj_bd->FuncionFetch($consulta);
+
+                if ($row1>0){
+
+                    return 1;
+
+                }else{
+
+                    return 0;
+
+                }
+            }
         }else{
 
-            return 0;
+                /*
+                INSERTAR EN LA BASE DE DATOS
+                */
+               
+                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
-        }
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row2 = $obj_bd->FuncionFetch($consulta);
 
+
+                
+                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row1 = $obj_bd->FuncionFetch($consulta);
+
+                if ($row1>0){
+
+                    return 1;
+
+                }else{
+
+                    return 0;
+
+                }
+            }
     }
-
 }// CIERRE CLASE
 
