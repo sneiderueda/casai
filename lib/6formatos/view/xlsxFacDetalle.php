@@ -911,9 +911,8 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_J, $row9, '=F' . $row9 . '*'. $I . $row9);
 
 	                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	                    // $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
-	                    // $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
-	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, $ubicacion_actas);
+	                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
+	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
 
 
 

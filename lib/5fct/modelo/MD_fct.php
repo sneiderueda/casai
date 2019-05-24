@@ -403,7 +403,7 @@ class MD_fct {
                 $row_actas = $obj_bd->FuncionFetch($resultado_actas);
                 $new_acta = $row_actas['factura_actanum'];
 
-                        $new_acta = $new_acta + 1;
+                        $new_acta = $new_acta;
 
 
 
@@ -432,6 +432,8 @@ class MD_fct {
            <td><input type='text' id='dpre_id_" . $row['presupuesto_id'] . "' name='dpre_id_" . $row['presupuesto_id'] . "' value='".$row['detallepresupuesto_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
            
            <td><input type='text' id='mod_id_" . $row['presupuesto_id'] . "' name='mod_id_" . $row['presupuesto_id'] . "' value='".$row['modulo_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
+
+           <td><input type='text' id='bar_id_" . $row['presupuesto_id'] . "' name='bar_id_" . $row['presupuesto_id'] . "' value='".$row['baremoactividad_id']."'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
            </tr> 
 
            <tr> 
@@ -1035,18 +1037,21 @@ public function SaveFactura($post) {
         $fechaFacturaFin = $post['txtFinFactura'];
         $ot_id = $post['id_ot'];
         $modulo_id = $post['modulo_id'];
+        $baremoactividad_id = $post['baremoactividad_id'];
 
-        // return $modulo_id;
 
-        /*
-        CALCULOS
-         */
+
+        $acta = $acta + 1;
         $porcentaje_pendiente = $cantidad - $porcentaje;
         $valor_pendiente = round($valor_subtotal - $valor_labor);
 
-         $sql = "SELECT count(presupuesto_id) as cuenta
+        
+
+
+        $sql = "SELECT count(presupuesto_id) as cuenta
         FROM pt_presupuesto
         WHERE detallepresupuesto_id = " . $detallepresupuesto_id . "
+        and baremoactividad_id = " . $baremoactividad_id . "
         and modulo_id = " . $modulo_id . "
         and presupuesto_estado = 1;";
 
@@ -1056,6 +1061,7 @@ public function SaveFactura($post) {
         $cuenta = $row['cuenta'];
 
         if ($cuenta == 2){
+
 
             $sql1 = "SELECT sa.subactividad_descripcion
             from cf_subactividad sa
@@ -1068,6 +1074,8 @@ public function SaveFactura($post) {
             $row1 = $obj_bd->FuncionFetch($resultado1);
 
             $desc = utf8_encode($row1['subactividad_descripcion']);
+
+            // return $desc;
 
             if($desc == "DISEÑO"){
                 /*
@@ -1131,34 +1139,7 @@ public function SaveFactura($post) {
 
                 }
             }
-        }else{
-
-                /*
-                INSERTAR EN LA BASE DE DATOS
-                */
-               
-                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
-
-                $consulta = $obj_bd->EjecutaConsulta($sql);
-                $row2 = $obj_bd->FuncionFetch($consulta);
-
-
-                
-                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
-
-                $consulta = $obj_bd->EjecutaConsulta($sql);
-                $row1 = $obj_bd->FuncionFetch($consulta);
-
-                if ($row1>0){
-
-                    return 1;
-
-                }else{
-
-                    return 0;
-
-                }
-            }
+        }
     }
 }// CIERRE CLASE
 
