@@ -47,7 +47,7 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
         $.each(JsonEncargados.encargados, function (key, data_encargado) {
             table_encargados = '<tr id="tr_encargado_asig' + data_encargado.perfilusuario_id + '">' +
                     '<td><button type="button" name="btn_eliminar_enc_' + data_encargado.perfilusuario_id +
-                    '" id="btn_eliminar_enc_' + data_encargado.perfilusuario_id + '" class="btn btn-default btn-xs" onclick="delMoreEncargado(' + data_encargado.perfilusuario_id + ');contadorFilasTablaGeneral(' + 
+                    '" id="btn_eliminar_enc_' + data_encargado.perfilusuario_id + '" class="btn btn-danger btn-xs" onclick="delMoreEncargado(' + data_encargado.perfilusuario_id + ');contadorFilasTablaGeneral(' + 
                     concat + 'encargadoAddTR' + concat + ',' + concat + 'txt_add_encargado' + concat + ');"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>Eliminar</button></td>' +
                     '<td>' + data_encargado.usuario_apellidos + ' '+data_encargado.usuario_nombre +' '+data_encargado.perfil_nombre+
                     '<input type="hidden" name="idAddEncargadoPg[]" id="idAddEncargadoPg" value="' + data_encargado.perfilusuario_id + '">' +
@@ -72,7 +72,7 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         $.each(JsonTecnicosProgramados.tecnicos, function (key, data_tecnico) {
             table_tecnicos = '<tr id="tr_ingeniero_asig' + data_tecnico.perfilusuario_id + '">' +
-                    '<td><button type="button" name="btn_eliminar_ing_' + data_tecnico.perfilusuario_id + '" id="btn_eliminar_ing_' + data_tecnico.perfilusuario_id + '" class="btn btn-default btn-xs" onclick="delMoreIngeniero(' + data_tecnico.perfilusuario_id + ');contadorFilasTablaGeneral(' + concat + 'ingenieroAddTR' + concat + ',' + concat + 'txt_add_ingeniero' + concat + ');"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>Eliminar</button></td>' +
+                    '<td><button type="button" name="btn_eliminar_ing_' + data_tecnico.perfilusuario_id + '" id="btn_eliminar_ing_' + data_tecnico.perfilusuario_id + '" class="btn btn-danger btn-xs" onclick="delMoreIngeniero(' + data_tecnico.perfilusuario_id + ');contadorFilasTablaGeneral(' + concat + 'ingenieroAddTR' + concat + ',' + concat + 'txt_add_ingeniero' + concat + ');"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>Eliminar</button></td>' +
                     '<td>' + data_tecnico.tecnico +
                     '<input type="hidden" name="idAddIngenieroPg[]" id="idAddIngenieroPg" value="' + data_tecnico.perfilusuario_id + '">' +
                     '</td>' +
@@ -134,14 +134,14 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 <form id="frm_DataProgramarOT" class="form-horizontal">    
     <fieldset>        
         <div class="form-group">
-            <label for="" class="col-sm-3 control-label">Labor:</label>
+            <label for="" class="fondo letraN col-sm-3 control-label">Labor:</label>
             <div class="col-sm-5" id="labor">                      
             </div>
         </div>
 
         <!-- Area-->
         <div class="form-group">
-            <label for="lb_area_ot" class="col-sm-3 control-label">Area:</label>
+            <label for="lb_area_ot" class="fondo letraN col-sm-3 control-label">Area:</label>
             <div class="col-sm-5">                
                 <select id="slAreaOT" name="slAreaOT" class="form-control" onchange="ListUserArea('slIngOT', this.value); ListUserArea('List_slIngOT', this.value);">
                 </select>                
@@ -150,19 +150,19 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         <!-- Encargado -->
         <div class="form-group">
-            <label for="lb_ing_ot" class="col-sm-3 control-label">Responsable:</label>
+            <label for="lb_ing_ot" class="fondo letraN col-sm-3 control-label">Responsable:</label>
             <div class="col-sm-5">                
                 <select id="slIngOT" name="slIngOT" class="form-control" style="width:400px">
                 </select>      
                 <input type="hidden" name="txt_add_encargado" id="txt_add_encargado" value="">
-                <button type="button" name="btnAddEncargado" id="btnAddEncargado" class="btn btn-default btn-xs" onclick="addEncargadoProgramacion();
+                <button type="button" name="btnAddEncargado" id="btnAddEncargado" class="btn btn-primary btn-xs" onclick="addEncargadoProgramacion();
                         contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
-                <button type="button" name="btnCancelEncargado" id="btnCancelEncargado" class="btn btn-default btn-xs" onclick="clearMoreEncargado();
+                <button type="button" name="btnCancelEncargado" id="btnCancelEncargado" class="btn btn-success btn-xs" onclick="clearMoreEncargado();
                         contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
                 <div id="tableMoreEncargado" style="display: none;">
-                    <table class="table table-bordered table-striped" id="tb_encargados">
+                    <table class="table table-bordered table-hover" id="tb_encargados">
                         <thead>
-                            <tr>
+                            <tr class="fondo letraN">
                                 <th>Acción</th>
                                 <th>Responsable</th>
                                 <th>Area</th>
@@ -177,19 +177,19 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         <!-- Ingenieros a cargo -->
         <div class="form-group">
-            <label for="lb_ingLs_ot" class="col-sm-3 control-label">Ingeniero:</label>
+            <label for="lb_ingLs_ot" class="fondo letraN col-sm-3 control-label">Ingeniero:</label>
             <div class="col-sm-5">                
                 <select id="List_slIngOT" name="List_slIngOT" class="form-control" style="width:400px">
                 </select>    
                 <input type="hidden" name="txt_add_ingeniero" id="txt_add_ingeniero" value="">
-                <button type="button" name="btnAddTecnico" id="btnAddTecnico" class="btn btn-default btn-xs" onclick="addIngenieroProgramacion();
+                <button type="button" name="btnAddTecnico" id="btnAddTecnico" class="btn btn-primary btn-xs" onclick="addIngenieroProgramacion();
                         contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
-                <button type="button" name="btnCancelTecnico" id="btnCancelTecnico" class="btn btn-default btn-xs" onclick="clearMoreIngeniero();
+                <button type="button" name="btnCancelTecnico" id="btnCancelTecnico" class="btn btn-success btn-xs" onclick="clearMoreIngeniero();
                         contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
                 <div id="tableMoreIngeniero" style="display: none;">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-hover">
                         <thead>
-                            <tr>
+                            <tr class="fondo letraN">
                                 <th>Acción</th>
                                 <th>Ingeniero</th>
                             </tr>
@@ -201,26 +201,27 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
                 <div id="controlDataProfesional"></div>
             </div>
         </div>
-
-        <!--vehiculo-->
-        <div class="form-group">
-            <label for="lb_vehiculo" class="col-sm-3 control-label">Vehiculo:</label>
-            <div class="col-sm-5">                
-                <input type="text" class="form-control data" id="txt_vehiculo" name="txt_vehiculo" placeholder="Si aplica">                
-            </div>
-        </div>
-
+        
         <!-- Observaciones de la programacion-->
         <div class="form-group">
-            <label for="lb_labor" class="col-sm-3 control-label">Observaciones:</label>
+            <label for="lb_labor" class="fondo letraN col-sm-3 control-label">Observaciones Coordinador:</label>
             <div class="col-sm-5">  
                 <textarea class="form-control data"  id="txt_obs_programacion" name="txt_obs_programacion"rows="5" cols="40" placeholder="" ></textarea>                
             </div>
         </div>
 
+        <!--vehiculo-->
+        <div class="form-group">
+            <label for="lb_vehiculo" class="fondo letraN col-sm-3 control-label">Vehiculo:</label>
+            <div class="col-sm-5">                
+                <input type="text" class="form-control data" id="txt_vehiculo" name="txt_vehiculo" placeholder="Si aplica">                
+            </div>
+        </div>
+
+
         <!--Fecha inicio-->
         <div class="form-group">
-            <label for="lb_inicio" class="col-sm-3 control-label">Inicio Ejecucion:</label>
+            <label for="lb_inicio" class="fondo letraN col-sm-3 control-label">Inicio Ejecucion:</label>
             <div class="col-sm-5 input-group date" id="InicioOT"  style="width:200px">                
                 <input type='text' id="txtInicioOT" name="txtInicioOT" class="form-control data" readonly />
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
@@ -238,7 +239,7 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         <!--Fecha fin-->
         <div class="form-group">
-            <label for="lb_fin" class="col-sm-3 control-label">Fin Ejecucion:</label>
+            <label for="lb_fin" class="fondo letraN col-sm-3 control-label">Fin Ejecucion:</label>
             <div class="col-sm-5 input-group date" id="FinOT" style="width:200px">                
                 <input type='text' id="txtFnicioOT" name="txtFnicioOT" class="form-control data" readonly />
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
@@ -247,7 +248,7 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         <!--Hora Fin-->
         <div class="form-group">
-            <label for="lb_inicio_hora" class="col-sm-3 control-label">Hora Fin Ejecucion:</label>      
+            <label for="lb_inicio_hora" class=" col-sm-3 control-label">Hora Fin Ejecucion:</label>      
             <div id="datetimepicker4" class="col-sm-5 input-group date" style="width:200px">
                 <input data-format="hh:mm:ss" type="text" name="txtHoraFin" id="txtHoraFin" readonly></input>
                 <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>                                    
@@ -256,9 +257,9 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
         <!--Botones-->
         <div class="form-group">
-            <div class="col-sm-offset-4 col-sm-4">
-                <button id="btoGuardar" name="btoGuardar" class="btn btn-primary" type="submit" >Guardar</button>                                
-
+            <div class="fondo">
+                <div class="col-sm-5"></div>
+                    <button id="btoGuardar" name="btoGuardar" class=" btn btn-primary" type="submit" >Guardar</button>                                
             </div>
         </div>
 

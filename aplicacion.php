@@ -54,21 +54,21 @@ $usuario = $_SESSION['Usuario'];
                                                            <h5><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                                    DISEÃ‘O DE SUBESTACIONES Y REDES AT</b></h5>
                                                                </div>-->
-                    <div>
-                       <div class="container fondo barFija">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown-toggle">
-                                <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <h7><b style="color: #ff8c00"><?php echo utf8_encode($usuario[usuario_apellidos]) . " " . utf8_encode($usuario[usuario_nombre]); ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="background: #ff8c00" src="img/user.png" alt="">
-                                    <span class=" fa fa-angle-down"></span>
-                                </a>
-                                <ul class="dropdown-menu dropdown-usermenu pull-right" style="background: #333333; border: 1px solid #ff8c00;">
-                                    <li><a style="color: #ff8c00;" href="formRol.php">Cambiar sesion</a></li>
-                                    <li><a style="color: #ff8c00;" href="lib/SingOff.php">Salir</a></li>
-                                </ul>
-                            </li>
+                    
+            <div class="container fondo barFija">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown-toggle">
+                        <a href="" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <h7><b style="color: #ff8c00"><?php echo utf8_encode($usuario[usuario_apellidos]) . " " . utf8_encode($usuario[usuario_nombre]); ?></h7></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="background: #ff8c00" src="img/user.png" alt="">
+                            <span class=" fa fa-angle-down"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-usermenu pull-right" style="background: #333333; border: 1px solid #ff8c00;">
+                            <li><a style="color: #ff8c00;" href="formRol.php">Cambiar sesion</a></li>
+                            <li><a style="color: #ff8c00;" href="lib/SingOff.php">Salir</a></li>
                         </ul>
-                        <!-- </nav> -->
+                    </li>
+                </ul>
+                <!-- </nav> -->
                 <!-- </div> -->
                 <!-- sidebar menu -->
                 <div id="sidebar-menu" class="nav navbar-nav navbar-right">
@@ -80,7 +80,10 @@ $usuario = $_SESSION['Usuario'];
                 </div>
             </div>
 
-
+            <br>
+            <br>
+            <br>
+            <br>
             <!-- page content -->
             <div class="right_col m-2 fondo1" role="main">
                 <div class="contenido" id="codigo">

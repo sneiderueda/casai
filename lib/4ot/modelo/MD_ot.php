@@ -29,20 +29,20 @@ class MD_ot {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
-        $tabla .= "<legend>OT Cliente</legend>";
+        $tabla .= "<br><br><br><br><fieldset style='color:black'>";
+        $tabla .= "<legend class='titulo'>OT Cliente</legend>";
         $url = "'lib/3presup/view/formEditPresup.php','contenido','0'";
 
         $tabla .= "<br>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
                     <thead>
-                        <tr>                              
+                        <tr class="fondo letraN">                              
                             <th>Reporte</th>  
                             <th>No. OT</th> 
                             
-                            <th>Estado</th>  
+                            <!-- <th>Estado</th> --> 
                             <th>Presupuesto</th> 
                             <th>Subestacion</th>                                                        
                             <th>Fecha Inicio OT</th>                                                        
@@ -81,7 +81,7 @@ class MD_ot {
                 <td><img src='img/report_excel.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoXlsx(" . $row['detallepresupuesto_id'] . ")' />
                     <img src='img/word2010.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoWord(" . $row['detallepresupuesto_id'] . ")' /></td>                     
                 <td>" . $row['ordentrabajo_num'] . "</td>                     
-                <td>" . $estado . "</td>                     
+                <!-- <td>" . $estado . "</td> -->                    
                <td>" . utf8_encode($row['detallepresupuesto_nombre']) . "</td> 
                 <td>" . utf8_encode($row['subestacion_nombre']) . "</td>                
                 <td>" . $row['ordentrabajo_fechaini'] . "</td>                
@@ -90,8 +90,8 @@ class MD_ot {
                 <td>" . number_format((float) $row['detallepresupuesto_total'], 0, ',', '.') . "</td>                                             
                 <td>" . number_format((float) $total, 0, ',', '.') . "</td>                                             
                                            
-                <td><button class='btn btn-default'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Programar  </button>
-                    <button class='btn btn-default'  onclick='DivIncremento(" . $row['detallepresupuesto_id'] . ")'><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Incremento  </button>";
+                <td><button class='btn btn-primary'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Programar  </button>
+                    <!-- <button class='btn btn-default'  onclick='DivIncremento(" . $row['detallepresupuesto_id'] . ")'><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Incremento  </button> -->";
             $tabla .= "</td> 
             </tr>";
         }
@@ -114,15 +114,15 @@ class MD_ot {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
-        $tabla .= "<legend>AsignaciÃ³n Responsables del Proyecto</legend>";
+        $tabla .= "<fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'>Asignación Responsables del Proyecto</legend>";
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<form id="presupuesto_actividades_asoc">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
                     <thead>
-                        <tr>
+                        <tr class="fondo letraN">
                            <th>Labor</th> 
-                           <th>Alcance tÃ©cnico particular</th>
+                           <th>Alcance técnico particular</th>
                            <th>Modulo</th>
                            <th>Total</th> 
                            <th>Accion</th>                           
@@ -142,7 +142,7 @@ class MD_ot {
                 <td>" . utf8_encode($row['presupuesto_obs']) . "</td>                     
                 <td>" . utf8_encode($row['modulo_descripcion']) . "</td>                     
                 <td>" . number_format((float) $row['total_actividad'], 0, ',', '.') . "</td>    
-                <td><input type='button' class='btn btn-default'  onclick='EditarActividadPresupuesto(" . $row['baremo_id'] . "," . $row['tipobaremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . ",1," . trim($obs) . ");' value='Editar'>                 
+                <td><input type='button' class='btn btn-primary'  onclick='EditarActividadPresupuesto(" . $row['baremo_id'] . "," . $row['tipobaremo_id'] . "," . $row['detallepresupuesto_id'] . "," . $row['modulo_id'] . ",1," . trim($obs) . ");' value='Programar'>                 
                 </td>
                 </tr>";
         }
@@ -369,15 +369,15 @@ class MD_ot {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
-        $tabla .= "<legend>Actividades Asignadas</legend>";
+        $tabla .= "<br><br><br><br><fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'>Actividades Asignadas</legend>";
         $tabla .= " <button name='btnAdd' id='btnAdd' class='btn btn-default' type='button' onclick='ReportarLabores()'>Reportar Seleccionadas</button>";
         $tabla .= "<br>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
                     <thead>
-                        <tr>                              
+                        <tr class="fondo letraN">                              
                             <th>Sel.</th>  
                             <th>No. OT</th>  
                             <th>Estado</th>  
@@ -1011,13 +1011,13 @@ class MD_ot {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
+        $tabla .= "<fieldset class='letraBl'>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<form id="Actividades_reportar">';
-        $tabla .= '<table cellpadding="0" class="table table-bordered table-striped" cellspacing="0" border="0" id="example">
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
                     <thead>
-                        <tr>
+                        <tr class="fondo letraN">
                            <th>OT</th>
                            <th>Subestacion</th> 
                            <th>Objeto</th>                                                    

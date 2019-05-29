@@ -19,29 +19,9 @@
   	<input type="hidden" class="form-control" id="total_presupuesto_incremento" name="total_presupuesto_incremento">
   	<input type="hidden" name="modulo_inicial" id="modulo_inicial" value="1"></th>
 
-    <br><br><br><br><br><br><br>
+    <br><br><br><br><br>
   	<fieldset style="color: black">
   		<legend class="titulo">Generar Presupuesto</legend>
-
-        <!-- <nav class="barraPre fondo letraN">
-            <div class="inline">
-                <h4>Presupuesto: </h4>
-                <button id="btoGuardarPresupuesto" name="btoGuardarPresupuesto" class="btn btn-primary" type="submit" onclick="SavePresupuesto();">Guardar</button>
-                <button type="button" class="btn btn-default" name="btnCancelar" id="btnCancelar" onclick="gritPresupuesto();">Cancelar</button>
-            </div>
-
-            <div class="inline ">
-                <h4>Modulo: </h4>
-                <button title="Agregar" class="btn btn-primary" onclick="agregar_modulo();"><span class="glyphicon glyphicon-plus" ></span></button>
-                <button title="Remover" class="btn btn-danger" onclick="remover_modulo();"><span class="glyphicon glyphicon-minus"></button>
-            </div>
-
-            <div class="inline">
-                <h4>Labor: </h4>
-                <button title="Agregar" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></button>
-                <button title="Remover" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></button>
-                </div>
-            </nav> -->
 
             <!-- Siguiente div contiene as tabs -->
             <div class="container">
@@ -78,9 +58,12 @@
 											<button id="subirDocumentos" name="subirDocumentos" class="btn btn-warning" type="" onclick="agregarDocumento()" style="color:black"><span class="glyphicon glyphicon-upload"></span><strong> Subir Documentos</strong></button>
 										</div>
 
-            							<div class="inline ">
+            							<!-- <div class="inline ">
 											<button id="calcularIncrementos" name="calcularIncrementos" class="btn btn-success" type="" onclick="guardarIncrementos()" style="color:black"><span class="glyphicon glyphicon-floppy-save"></span><strong> Guardar Incrementos</strong></button>
-										</div>
+										</div> -->
+                                        <div class="inline ">
+                                            <button class='btn btn-success'  onclick='DivIncremento("<?php echo $detallepresupuesto_id ?>")' style='color:black'><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Agregar Incrementos </button>
+                                        </div>
 
        									<?php
            								}
@@ -150,6 +133,15 @@
             							</div>
 
             							<div class="col-sm-6">
+                                            
+                                            <!-- Presupuesto-->
+                                            <div class="form-group">
+                                                <label for="lb_nombre" class="col-sm-3 control-label">OT anteriores:</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="txt_otAnteriores" name="txt_otAnteriores" placeholder="Ot Anteriores" onblur="aMayusculas(this.value, this.id);">
+                                                </div>
+                                            </div>
+
 
             								<!-- Gestor-->
             								<div class="form-group">
@@ -168,8 +160,6 @@
             										</select>
             									</div>
             								</div>
-
-
 
             								<!--Fecha inicio-->
             								<div class="form-group">
@@ -200,41 +190,41 @@
             								</div>
 
 
-            								<?php
+            								<!-- <?php
 
             								if ($detallepresupuesto_id != 0) {
 
             									?>
-
+ -->
 
             									<!--Porcentaje por ubicación-->
-            									<div class="form-group">
+            									<!-- <div class="form-group"> 
             										<label for="lb_tot_pres" class="col-sm-3 control-label">Incrementos por ubicación 3%</label>
             										<div class="col-sm-8">
             											<input type="checkbox" id="checkboxUbicacion" name="checkboxUbicacion" style="width: 20px; height: 20px"></input>
             											<input type="hidden" id="check" value="0"></input>
             											<input type="text" class="form-control data" id="incremento_ubicacion" name="txt_tot_pres" disabled="disabled" value="" style="width:179px">
             										</div>
-            									</div>
+            									</div> -->
 
 
 
             									<!-- Porcentaje pago 90 dias -->
-            									<div class="form-group">
+            									<!-- <div class="form-group">
             										<label for="lb_tot_pres" class="col-sm-3 control-label">Pago a 90 dias, 1.5%: $</label>
             										<div class="col-sm-8">
             											<input type="text" class="form-control data" id="incremento_90dias" disabled="disabled" value="" style="width:200px">
             										</div>
             									</div>
-
+ -->
             									<!-- Total presupuesto con incrementos -->
-            									<div class="form-group">
+            									<!-- <div class="form-group">
             										<label for="lb_tot_pres" class="col-sm-3 control-label">Total presupuesto con incrementos: $</label>
             										<div class="col-sm-8">
             											<input type="text" class="form-control data" id="totalIncrementos" name="txt_tot_pres" disabled value="" style="width:200px">
             										</div>
             									</div>
-            								<?php } ?>
+            								<?php } ?> -->
             							</div>
             						</article>
             					</div>
@@ -248,7 +238,8 @@
         				<button name="btnListActividadesPre" id="btnListActividadesPre" class="btn btn-default" type="button" onclick="ListActividadesPresupuesto('<?php echo $detallepresupuesto_id ?>')">Cancelar</button>
         			</div>
         		</nav>
-        		<legend>Agregar Actividades</legend>
+
+        		<legend class="titulo">Agregar Actividades</legend>
 
         		<!--Modulo-->
         		<div class="form-group">

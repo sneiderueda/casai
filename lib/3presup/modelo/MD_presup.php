@@ -25,7 +25,7 @@ class MD_presup
             visibility: hidden
         }
         </style>";
-        $tabla .= "<br><br><br><br><br><br><br><fieldset style='color:black'>";
+        $tabla .= "<br><br><br><br><fieldset style='color:black'>";
         $tabla .= "<legend class='titulo'>Presupuestos Registrados</legend>";
         $url = "'lib/3presup/view/formEditPresup.php','contenido','0'";
 
@@ -457,15 +457,14 @@ class MD_presup
                 $sigla = $row['tipobaremo_sigla'];
                 $labor_valor = $row['baremo_valortotalact'];
 
+
                 $tabla .= "<script type='text/javascript'>  $('#desc_labor').html('" . $sigla . "-" . $item . ": " . utf8_encode($labor_descripcion) . "'); 
             $('#valor_labor').html('$" . number_format((float)$labor_valor, 0, ',', '.') . "'); 
             $('#contenido_labor').css('display', 'block');
             $('#contenido_labor_valor').css('display', 'block');</script>";
 
-                $tabla .= '<br><nav class="barraPre fondo letraN anclar_arriba">
-                           <div class="inline ">
-                            <button name="btnGuardar" id="btnGuardar" class="btn btn-primary" type="button" onclick="SaveActividadPresupuesto(' . $baremo_id . ')">Guardar</button>                    </div>
-                </nav>';
+                
+
                 // $tabla .= '<button name="btnGuardar" id="btnGuardar" class="btn btn-primary" type="button" onclick="SaveActividadPresupuesto(' . $baremo_id . ')">Guardar</button>';
 
                 /* validar si tiene sub actividades */
@@ -526,6 +525,10 @@ class MD_presup
         </div>
         ";
             $tabla .= "<fieldset>";
+            $tabla .= '<br><nav class="barraPre fondo letraN anclar_arriba">
+                           <div class="inline ">
+                            <button name="btnGuardar" id="btnGuardar" class="btn btn-primary" type="button" onclick="SaveActividadPresupuesto(' . $baremo_id . ')">Guardar</button>                    </div>
+                </nav>';
             return $tabla;
         } else {
             return 0;

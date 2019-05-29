@@ -19,3 +19,4 @@ Autir:jennifer.cabiativa@gmail.com
 
 <div id="div_subestacion"></div>
 <div id="div_agregarDocumento"></div>
+<div id="div_incremento" class="div_incremento"></div>
