@@ -1,9 +1,11 @@
 <?php
 define('CHARSET', 'UTF-8');
+
 require_once '../../../components/PHPWord/PHPWord.php';
 require_once '../../0connection/BD_config.php';
 require_once '../../0connection/connection.php';
 require_once '../../0connection/BD.php';
+
 $hoy = date("d/m/Y");
 setlocale(LC_ALL, "es_ES");
 $fecha_emisionOt = "";
@@ -102,15 +104,21 @@ $sql1 = "SELECT   OT.ordentrabajo_num,
 
 $resultado1 = $obj_bd->EjecutaConsulta($sql1);
 while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
-
-    
-    // VARIABLES //
-    $orden_trabajo = utf8_encode($row1['ordentrabajo_num']);
+  $orden_trabajo = utf8_encode($row1['ordentrabajo_num']);
     $ordentrabajo_ordenpresupuestal = utf8_encode($row1['ordentrabajo_ordenpresupuestal']);
     $ordentrabajo_pep = utf8_encode($row1['ordentrabajo_pep']);
     $total_final_OT = $row1['detallepresupuesto_total'] + $row1['detallepresupuesto_valorincremento'];
+    $table_des->addRow();
+    $table_des->addCell(2000)->addText(utf8_encode($row1['ordentrabajo_num']), $fontStyle, 'p2Style');
+    // $table_des->addCell(1800)->addText(utf8_encode($row1['ordentrabajo_GOM']));
+    $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaemision']), $fontStyle2, 'p2Style');
+    $table_des->addCell(1500)->addText(utf8_encode($row1['ordentrabajo_contratista']), $fontStyle2, 'p2Style');
+    $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaini']), $fontStyle2, 'p2Style');
+    $table_des->addCell(2000)->addText($row1['subestacion_nombre'], $fontStyle2, 'p2Style');
+    $table_des->addCell(2000)->addText("$" . number_format($total_final_OT, 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
+
     $contrato1 = utf8_encode($row1['contrato_numero']);
-    $contrato = split('-', $contrato1);
+    $contrato = explode('-', $contrato1);
     $cliente = utf8_encode($row1['cliente_descripcion']);
     $proyecto = utf8_encode($row1['proyecto']);
     $alcance = utf8_encode($row1['detallepresupuesto_alcance']);
@@ -119,19 +127,6 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $fecha_fin_pre = $row1['detallepresupuesto_fechafin'];
     $fecha_emisionOt = $row1['ordentrabajo_fechaemision'];
     $valo_presupuesto = number_format($row1['detallepresupuesto_total'], 0, ',', '.');
-
-
-    //LLENAMOS LOS CAMPOS DE LA TABLA //
-    $table_des->addRow();
-    $table_des->addCell(2000)->addText(utf8_encode($row1['ordentrabajo_num']), $fontStyle, 'p2Style');
-    $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaemision']), $fontStyle2, 'p2Style');
-    $table_des->addCell(1500)->addText(utf8_encode($row1['cliente_descripcion']), $fontStyle2, 'p2Style');
-    $table_des->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaini']), $fontStyle2, 'p2Style');
-    $table_des->addCell(2000)->addText($row1['subestacion_nombre'], $fontStyle2, 'p2Style');
-    $table_des->addCell(2000)->addText("$" . number_format($total_final_OT, 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
-
-    
-
 }
 $section->addTextBreak(1);
 $texto1 = "Mediante el Contrato Marco No. " . $contrato[0] . " " . $cliente . " designa a AC ENERGY para realizar la ingeniería  para los trabajos en la subestación " . $subestacion . ", según el alcance descrito en esta OT, en desarrollo del proyecto, " . $proyecto . ".";

@@ -122,7 +122,7 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $table_des->addCell(2000)->addText("$" . number_format($total_final_OT, 0, ',', '.') . " Antes de IVA", $fontStyle, 'p2Style');
 
     $contrato1 = utf8_encode($row1['contrato_numero']);
-    $contrato = split('-', $contrato1);
+    $contrato = explode('-', $contrato1);
     $cliente = utf8_encode($row1['cliente_descripcion']);
     $proyecto = utf8_encode($row1['proyecto']);
     $alcance = utf8_encode($row1['detallepresupuesto_alcance']);
