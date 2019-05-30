@@ -167,10 +167,18 @@ class MD_presup
         $objeto = preg_replace("/\s+/", " ", $data['txt_Objetivo']);
         if ($data['detallepresupuesto_id'] != "") {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('6','" . $data['detallepresupuesto_id'] . "','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . $data['txt_gestorCodensa'] . "');";
+
+            $sql_ante = "CALL SP_dtanterioresot('2','','".$data['txt_otAnteriores']."','','','','','".$id_usuario."','" . $data['detallepresupuesto_id'] . "');";
+            
+
         } else {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('2','','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . trim(utf8_decode($data['txt_gestorCodensa'])) . "');";
+
+            $sql_ante = "CALL SP_dtanterioresot('1','','".$data['txt_otAnteriores']."','','','','".$id_usuario."','','" . $data['detallepresupuesto_id'] . "');";
+            
         }
 
+        $res_ante = $obj_bd->EjecutaConsulta($sql_ante);
         $res_PRES = $obj_bd->EjecutaConsulta($sql_PRES);
         if (!$res_PRES)
             die('Invalid query ->' . mysqli_errno() . '->' . $res_PRES);
