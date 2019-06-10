@@ -165,6 +165,7 @@ class MD_presup
         //INSERTAR PRESUPUESTO    
         $alcance = preg_replace("/\s+/", " ", $data['txt_alcance']);
         $objeto = preg_replace("/\s+/", " ", $data['txt_Objetivo']);
+
         if ($data['detallepresupuesto_id'] != "") {
             $sql_PRES = "CALL SP_dtdetallepresupuesto('6','" . $data['detallepresupuesto_id'] . "','" . trim(utf8_decode($alcance)) . "','','" . trim($data['txtPresInicio']) . "','" . trim($data['txtPresFin']) . "','','','" . $data['slGestor'] . "','" . trim(utf8_decode($data['txt_presupuesto'])) . "','" . trim(utf8_decode($objeto)) . "','','" . $id_usuario . "','','" . $data['slSubestacion'] . "','" . $data['slCliente'] . "','','" . $data['txt_gestorCodensa'] . "');";
 
@@ -509,6 +510,7 @@ class MD_presup
                     <td>" . $array_entregables . "</td>
 
                     <td><input type='text' id='porc_sub_" . $row_sub['detalleactividad_id'] . "' name='porc_sub_" . $row_sub['detalleactividad_id'] . "' maxlength='6' value='" . $row_sub['detallesubactividad_porc'] . "' placeholder='Numero' style='width:60px' class='input-medium a_txt_porc' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row_sub['detalleactividad_id'] . "," . $actividad_valordecimal . "," . $row_sub['detallesubactividad_porc'] . ");'></td>
+                    
                     <td><input type='text' id='valor_cal_sub_" . $row_sub['detalleactividad_id'] . "' name='valor_cal_sub_" . $row_sub['detalleactividad_id'] . "' value='" . number_format((float)$row_sub['detallesubactividad_costosiniva'], 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
                     </tr>
                     <input type='hidden' name='detalleactividad_id[]' id='detalleactividad_id[]' value='" . $row_sub['detalleactividad_id'] . "_" . $row['baremoactividad_id'] . "'>";
@@ -708,6 +710,12 @@ class MD_presup
 
         $result = $obj_bd->EjecutaConsulta($sql);
         $array = $obj_bd->FuncionFetch($result);
+
+        $sql_ante = "CALL SP_dtanterioresot('3','','','','','','','','" . $data['detallepresupuesto_id'] . "');";
+
+        $res_ante = $obj_bd->EjecutaConsulta($sql_ante);
+        $anterior = $obj_bd->FuncionFetch($res_ante);
+
         $total_final = $array['detallepresupuesto_valorincremento'] + $array['detallepresupuesto_total'];
         $arreglo_retorno['detallepresupuesto_id'] = $array['detallepresupuesto_id'];
         $arreglo_retorno['detallepresupuesto_nombre'] = utf8_encode($array['detallepresupuesto_nombre']);
@@ -727,6 +735,7 @@ class MD_presup
         $arreglo_retorno['detallepresupuesto_incremento_formato'] = number_format((float)$array['detallepresupuesto_valorincremento'], 0, ',', '.');
         $arreglo_retorno['total_final_presupuesto_formato'] = number_format((float)$total_final, 0, ',', '.');
         $arreglo_retorno['detallepresupuesto_tipoincremento'] = $array['detallepresupuesto_tipoincremento'];
+        $arreglo_retorno['anterioresot_descripcion'] = $anterior['anterioresot_descripcion'];
 
         $json = json_encode($arreglo_retorno);
         return $json;
@@ -748,7 +757,7 @@ class MD_presup
             visibility: hidden;
         }
         </style>";
-        $tabla .= "<br><fieldset>";
+        $tabla .= "<br><fieldset class='letraBl'";
         $tabla .= "<legend>Alcance Técnico OT</legend>";
         $tabla .= '<div class="row" id="div_copiar">
         <div class="col-sm-4"><select id="sl_copiar_md" name="sl_copiar_md" class="form-control" ></select></div>

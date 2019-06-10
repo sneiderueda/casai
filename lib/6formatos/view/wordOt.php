@@ -156,18 +156,41 @@ $PHPWord->addTableStyle('alcance', $styleTable);
 $table_res = $section->addTable('alcance');
 // Add row
 $table_res->addRow();
-// Add cells
-$table_res->addCell(4000, array('gridSpan' => 2))->addText("Existe una orden de trabajo anterior asociada con el alcance de esta OT                       SI _  NO _", $fontStyle_texto, $paragraphOptions);
 
+$sql_ante = "CALL SP_dtanterioresot('3','','','','','','','','" . $det_pret . "');";
+
+$res_ante = $obj_bd->EjecutaConsulta($sql_ante);
+$anterior = $obj_bd->FuncionFetch($res_ante);
+
+if ($anterior) {
+
+// Add cells
+$table_res->addCell(4000, array('gridSpan' => 2))->addText("Existe una orden de trabajo anterior asociada con el alcance de esta OT                       SI X  NO _", $fontStyle_texto, $paragraphOptions);
 $section->addTextBreak(1);
+
 $table_res->addRow();
 $table_res->addCell(3000)->addText(trim('No. Orden de trabajo: '), $fontStyle_texto, $paragraphOptions);
-$table_res->addCell(12000)->addText('', $fontStyle_texto, $paragraphOptions);
+$table_res->addCell(12000)->addText(utf8_encode($anterior['anterioresot_descripcion']), $fontStyle_texto, $paragraphOptions);
+
 $table_res->addRow();
 $table_res->addCell(3000)->addText(trim(utf8_decode('Empresa Colaboradora: ')), $fontStyle_texto, $paragraphOptions);
 $table_res->addCell(12000)->addText(trim(' AC ENERGY S.A.S.'), $fontStyle_texto, $paragraphOptions);
 $section->addTextBreak(1);
 
+}else{
+    // Add cells
+$table_res->addCell(4000, array('gridSpan' => 2))->addText("Existe una orden de trabajo anterior asociada con el alcance de esta OT                       SI _  NO X", $fontStyle_texto, $paragraphOptions);
+$section->addTextBreak(1);
+
+$table_res->addRow();
+$table_res->addCell(3000)->addText(trim('No. Orden de trabajo: '), $fontStyle_texto, $paragraphOptions);
+$table_res->addCell(12000)->addText('', $fontStyle_texto, $paragraphOptions);
+
+$table_res->addRow();
+$table_res->addCell(3000)->addText(trim(utf8_decode('Empresa Colaboradora: ')), $fontStyle_texto, $paragraphOptions);
+$table_res->addCell(12000)->addText(trim(' AC ENERGY S.A.S.'), $fontStyle_texto, $paragraphOptions);
+$section->addTextBreak(1);
+}
 
 
 $alcance = explode(". ", $alcance);

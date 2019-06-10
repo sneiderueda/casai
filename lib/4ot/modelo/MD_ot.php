@@ -872,6 +872,9 @@ class MD_ot {
         $arreglo_retorno['ordentrabajo_num'] = $array['ordentrabajo_num'];
         $arreglo_retorno['detallepresupuesto_objeto'] = utf8_encode($array['detallepresupuesto_objeto']);
         $arreglo_retorno['presupuesto_obs'] = utf8_encode($array['presupuesto_obs']);
+        $arreglo_retorno['presupuesto_alcances'] = utf8_encode($array['presupuesto_alcances']);
+        $arreglo_retorno['presupuesto_entregables'] = utf8_encode($array['presupuesto_entregables']);
+        $arreglo_retorno['presupuesto_programacion_obs'] = utf8_encode($array['presupuesto_programacion_obs']);
         $texto_alcance = str_replace('. ', '. <br><br>', $array['detallepresupuesto_alcance']);
         // $texto_alcance = preg_replace("/./", "****", $array['detallepresupuesto_alcance']);
         $arreglo_retorno['detallepresupuesto_alcance'] = utf8_encode($texto_alcance);
@@ -1021,14 +1024,13 @@ class MD_ot {
                         <tr class="fondo letraN">
                            <th>OT</th>
                            <th>Subestacion</th> 
-                           <th>Objeto</th>                                                    
-                                                                                                                                  
-                           <th>Modulo</th>                                                                                                         
-                           <th>Labor</th>                                                                                                         
-                           <th>Actividad</th>                                                                                                         
-                           <th>Alcance tÃ©cnico particular</th>                                                                                                         
-                           <th>Cantidad</th>                                                                                                         
-                           <th>Valor</th>                                                                                                         
+                           <th>Objeto</th>
+                           <th>Modulo</th>                                                  
+                           <th>Labor</th>                                              
+                           <th>Actividad</th>                      
+                           <th>Alcance técnico particular</th>
+                           <th>Cantidad</th>
+                           <th>Valor</th>
                         </tr>
                     </thead>
                     <tbody>';
@@ -1235,4 +1237,265 @@ class MD_ot {
         }
     }
 
-}
+
+    public function cargar_normas ($post){
+
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+
+        ///////////////
+        // VARIABLES //
+        ///////////////
+        $tabla = "";
+        $presupuesto_id = $post['presupuesto_id'];
+
+
+        /////////////
+        // PROCESO //
+        /////////////
+
+        $tabla .="<style>.ui-dialog-titlebar-close {
+            visibility: hidden;
+        }</style>";
+        $tabla .="<fieldset>";
+            $tabla .="<div class='table-responsive'>";
+                $tabla .="<form id='presupuesto_actividades_asoc'>";
+                    $tabla .="<table cellpadding='0' class='table table-bordered table-hover' border='0' id='tabla_cargarNormas'>";
+                        $tabla .="<thead>";
+                            $tabla .="<tr class='fondo letraN'>
+                                <th>Norma</th>
+                                <th>Versión</th>
+                                <th>Entidad</th>
+                                <th>Ubicación</th>
+                                <th>Acción</th>";
+                            $tabla .="</tr>";
+                        $tabla .="</thead>";
+
+                        $tabla .="<tbody>";
+
+                            /////////////////////
+                            // CONSULTA NORMAS //
+                            /////////////////////
+                            $sql_norma = "CALL SP_cfnormas('1','','','','','','','');";
+                            $res_norma = $obj_bd->EjecutaConsulta($sql_norma);
+
+                            while ($row_norma = $obj_bd->FuncionFetch($res_norma)) {
+
+                                $tabla .="<tr>";
+
+                                $sql_norma_con = "CALL SP_cfnormas('3','".$row_norma['normas_id']."','".$presupuesto_id."','','','','','');";
+                                $res_norma_con = $obj_bd->EjecutaConsulta($sql_norma_con);
+                                $row_norma_con = $obj_bd->FuncionFetch($res_norma_con);
+
+                                $existe = $row_norma_con['_existe'];
+
+                                if ($existe == 0 || $existe == "") {
+                                    $tabla .= "<td><button id='btn_agregarNormas_".$row_norma['normas_id']."' class='btn btn-primary' value='".$row_norma['normas_id']."' onclick='agregar_normas(this.value,".$presupuesto_id.");'><span id='spanNormas_".$row_norma['normas_id']."'>Agregar</span></button>
+                                        <br>
+                                        <button id='btn_quitarNormas_".$row_norma['normas_id']."' class='btn btn-danger hidden' value='".$row_norma['normas_id']."' onclick='quitar_normas(this.value,".$presupuesto_id.");'>Quitar</button>
+                                        </td>";
+                                }else{
+                                    $tabla .= "<td><button id='btn_agregarNormas_".$row_norma['normas_id']."' class='btn btn-success disabled' value='".$row_norma['normas_id']."' onclick='agregar_normas(this.value,".$presupuesto_id.");'><span id='spanNormas_".$row_norma['normas_id']."'>Agregado</span></button>
+                                        <br>
+                                        <button id='btn_quitarNormas_".$row_norma['normas_id']."' class='btn btn-danger' value='".$row_norma['normas_id']."' onclick='quitar_normas(this.value,".$presupuesto_id.");'>Quitar</button>
+                                        </td>";
+                                }
+
+                                $tabla .="
+                                <td>". utf8_encode($row_norma['normas_descripcion']) ."</td>
+                                <td>". utf8_encode($row_norma['normas_version']) ."</td>
+                                <td>". utf8_encode($row_norma['normas_entidad']) ."</td>
+                                <td><a target = '_blank' href='". utf8_encode($row_norma['normas_ubicacion']) ."'>". utf8_encode($row_norma['normas_ubicacion']) ."</a></td>";
+
+                                $tabla .="</tr>";
+                            }
+
+                        $tabla .="</tbody>"; 
+                    $tabla .="</table>";
+                $tabla .="</form>";
+            $tabla .="</div> <script>$('#tabla_cargarNormas').DataTable(
+        {'order': [[ 0, 'asc' ]]});</script>";
+        $tabla .="</fieldset>";
+
+        return $tabla;
+
+    }//fin funcion
+
+    
+    public function agregar_normas($post){
+
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+
+        ///////////////
+        // VARIABLES //
+        ///////////////
+        $id_usuario = $_SESSION['Usuario']['usuario_id'];
+        $norma_id = $post['norma_id'];
+        $presupuesto_id = $post['presupuesto_id'];
+
+
+        /////////////
+        // PROCESO //
+        /////////////
+        
+        $sql_norma = "CALL SP_cfnormas('2','".$norma_id."','".$id_usuario."','".$presupuesto_id."','','','','');";
+        $res_norma = $obj_bd->EjecutaConsulta($sql_norma);
+        $row_norma = $obj_bd->FuncionFetch($res_norma);
+
+        $insert = $row_norma['_ultimo'];
+
+        if ($insert == 0 || $insert == ""){
+
+            return 0;
+    
+        }else{
+
+            return 1;
+
+        }
+
+    }
+
+
+    public function quitar_normas($post){
+
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+
+        ///////////////
+        // VARIABLES //
+        ///////////////
+        $id_usuario = $_SESSION['Usuario']['usuario_id'];
+        $norma_id = $post['norma_id'];
+        $presupuesto_id = $post['presupuesto_id'];
+
+
+        /////////////
+        // PROCESO //
+        /////////////
+        
+
+        $sql_norma = "CALL SP_cfnormas('5','".$norma_id."','".$id_usuario."','".$presupuesto_id."','','','','');";
+        $res_norma = $obj_bd->EjecutaConsulta($sql_norma);
+        $row_norma = $obj_bd->FuncionFetch($res_norma);
+
+        $insert = $row_norma['_existe'];
+        
+        return $insert;
+
+        if ($insert == 0 || $insert == ""){
+
+            return 0;
+    
+        }else{
+
+            return 1;
+
+        }
+
+    }
+
+
+    public function alcancesBaremados($post)
+    {
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+        $alcan = explode(',',$post['alcances']);
+
+        $i = 0;
+
+            foreach ($alcan as $key => $value) 
+            {
+                // $x[$i] = $i.":".$value;
+
+                $sql_alcance = "SELECT alcance_descripcion
+                                FROM cf_alcance
+                                WHERE alcance_id = ".$value.";";
+
+                $res_alcance = $obj_bd->EjecutaConsulta($sql_alcance);
+                $alcance = $obj_bd->FuncionFetch($res_alcance);
+
+                $alcance1[$i] = utf8_encode($alcance['alcance_descripcion']);
+                
+                $i++;
+            };
+        
+
+        $alcan = implode(' <br><br>- ', $alcance1);
+
+        return json_encode($alcan);
+    }
+
+
+    public function entregablesBaremados($post)
+    {
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+        $entre = explode(',',$post['entregables']);
+
+        $i = 0;
+
+            foreach ($entre as $key => $value) 
+            {
+                // $x[$i] = $i.":".$value;
+
+                $sql_entre = "SELECT entregable_descripcion
+                                FROM cf_entregable
+                                WHERE entregable_id = ".$value.";";
+
+                $res_entre = $obj_bd->EjecutaConsulta($sql_entre);
+                $entre = $obj_bd->FuncionFetch($res_entre);
+
+                $entre1[$i] = utf8_encode($entre['entregable_descripcion']);
+                
+                $i++;
+            };
+        
+
+        $entregable = implode(' <br><br>- ', $entre1);
+
+        return json_encode($entregable);
+    }
+
+
+    public function normatividad($post)
+    {
+        /////////////////////
+        // LLAMAR CLASE BD //
+        /////////////////////
+        $obj_bd = new BD();
+
+        $sql_norma_con = "CALL SP_cfnormas('6','','".$post['presupuesto_id']."','','','','','');";
+            $res_norma_con = $obj_bd->EjecutaConsulta($sql_norma_con);
+            $filas = $obj_bd->Filas($sql_norma_con);
+
+            $i = 0;
+            while($row_norma_con = $obj_bd->FuncionFetch($res_norma_con))
+            {
+
+                $entre1[$i] = utf8_encode($row_norma_con['normas_descripcion']);
+                $i++;
+            }
+
+        $norma = implode(' <br><br>- ', $entre1);  
+                
+        return json_encode($norma);
+    }
+
+} // fin clase

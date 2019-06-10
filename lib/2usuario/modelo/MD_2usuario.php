@@ -905,7 +905,10 @@ class MD_2usuario {
 
             $retorno = "<option value=''>seleccione</option>";
             while ($row = $obj_bd->FuncionFetch($resul)) {
-                $retorno .= "<option value='" . $row['perfilusuario_id'] . "'>" . utf8_encode($row['usuario_apellidos'] . ' ' . $row['usuario_nombre']) . "-" . utf8_encode($row['perfil_nombre']) . "</option>";
+                
+                $nombre = $row['usuario_nombre'] . ' ' . $row['usuario_apellidos'] . " / " . utf8_decode($row['perfil_nombre']);
+
+                $retorno .= "<option value='" . $row['perfilusuario_id'] . "'>" . utf8_encode($nombre) . "</option>";
             }
             return $retorno;
         } catch (Exception $ex) {

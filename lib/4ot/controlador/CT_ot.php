@@ -135,3 +135,33 @@ if ($opcion == 'ValidarArrayPresupuesto') {
     $retorno = $obj_ot->ValidarArrayPresupuesto($_POST);
     echo $retorno;
 }
+
+if ($opcion == 'cargar_normas') {
+    $retorno = $obj_ot->cargar_normas($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'agregar_normas') {
+    $retorno = $obj_ot->agregar_normas($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'quitar_normas') {
+    $retorno = $obj_ot->quitar_normas($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'alcancesBaremados') {
+    $retorno = $obj_ot->alcancesBaremados($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'entregablesBaremados') {
+    $retorno = $obj_ot->entregablesBaremados($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'normatividad') {
+    $retorno = $obj_ot->normatividad($_POST);
+    echo $retorno;
+}

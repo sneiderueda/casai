@@ -9,11 +9,13 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 
 <script>
     var presupuesto_id =<?php echo $presupuesto_id; ?>;
-    var concat = "'";
+    var concat = "";
     ListArea('slAreaOT');
+    cargar_normas(presupuesto_id);
     var jsondetalle = JsonDetalleActividad(presupuesto_id);
     $("#labor").html(jsondetalle.labor_id + ' - ' + jsondetalle.labor_descripcion);
 
+    
     var DataPresupuesto = JsonPresupuesto(<?php echo $presupuesto_id; ?>);
     ListUserArea('List_slIngOT', DataPresupuesto.area_id);
     ListUserArea('slIngOT', DataPresupuesto.area_id);
@@ -128,145 +130,174 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
         }
     });
 
+
+
 </script>
 
-</br>
-<form id="frm_DataProgramarOT" class="form-horizontal">    
-    <fieldset>        
-        <div class="form-group">
-            <label for="" class="fondo letraN col-sm-3 control-label">Labor:</label>
-            <div class="col-sm-5" id="labor">                      
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 ">
+            <div role="tabpanel" class="">
+                <ul class="nav nav-tabs borde_inf" role="tablist" id="agregar_tab">
+                    <li role="presentation" id="tab0" class="active"><a href="#seccion4" aria-controls="seccion4" data-toggle="tab" role="tab">Asignar Tareas</a></li>
+                    <li role="presentation" id="tab1" class=""><a href="#seccion5" aria-controls="seccion5" data-toggle="tab" role="tab">Normatividad</a></li>
+                    <li role="presentation" id="tab1" class=""><a href="#seccion6" aria-controls="seccion6" data-toggle="tab" role="tab">Vehiculo</a></li>
+                </ul>
             </div>
-        </div>
 
-        <!-- Area-->
-        <div class="form-group">
-            <label for="lb_area_ot" class="fondo letraN col-sm-3 control-label">Area:</label>
-            <div class="col-sm-5">                
-                <select id="slAreaOT" name="slAreaOT" class="form-control" onchange="ListUserArea('slIngOT', this.value); ListUserArea('List_slIngOT', this.value);">
-                </select>                
-            </div>
-        </div>
+            <div class="tab-content" id="tab-content">
 
-        <!-- Encargado -->
-        <div class="form-group">
-            <label for="lb_ing_ot" class="fondo letraN col-sm-3 control-label">Responsable:</label>
-            <div class="col-sm-5">                
-                <select id="slIngOT" name="slIngOT" class="form-control" style="width:400px">
-                </select>      
-                <input type="hidden" name="txt_add_encargado" id="txt_add_encargado" value="">
-                <button type="button" name="btnAddEncargado" id="btnAddEncargado" class="btn btn-primary btn-xs" onclick="addEncargadoProgramacion();
-                        contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
-                <button type="button" name="btnCancelEncargado" id="btnCancelEncargado" class="btn btn-success btn-xs" onclick="clearMoreEncargado();
-                        contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
-                <div id="tableMoreEncargado" style="display: none;">
-                    <table class="table table-bordered table-hover" id="tb_encargados">
-                        <thead>
-                            <tr class="fondo letraN">
-                                <th>Acción</th>
-                                <th>Responsable</th>
-                                <th>Area</th>
-                            </tr>
-                        </thead>
-                        <tbody id="encargadoAddTR">
-                        </tbody>
-                    </table>
+                <div role="tabpanel" class="tab-pane active" id="seccion4">
+                    </br>
+                    <form id="frm_DataProgramarOT" class="form-horizontal">    
+                        <fieldset>        
+                            <div class="form-group">
+                                <label for="" class="fondo letraN col-sm-3 control-label">Labor:</label>
+                                <div class="col-sm-5" id="labor">                      
+                                </div>
+                            </div>
+
+                            <!-- Area-->
+                            <div class="form-group">
+                                <label for="lb_area_ot" class="fondo letraN col-sm-3 control-label">Area:</label>
+                                <div class="col-sm-5">                
+                                    <select id="slAreaOT" name="slAreaOT" class="form-control" onchange="ListUserArea('slIngOT', this.value); ListUserArea('List_slIngOT', this.value);">
+                                    </select>                
+                                </div>
+                            </div>
+
+                            <!-- Encargado -->
+                            <div class="form-group">
+                                <label for="lb_ing_ot" class="fondo letraN col-sm-3 control-label">Jefe de Cuadrilla:</label>
+                                <div class="col-sm-5">                
+                                    <select id="slIngOT" name="slIngOT" class="form-control" style="width:400px">
+                                    </select>      
+                                    <input type="hidden" name="txt_add_encargado" id="txt_add_encargado" value="">
+                                    <button type="button" name="btnAddEncargado" id="btnAddEncargado" class="btn btn-primary btn-xs" onclick="addEncargadoProgramacion();
+                                            contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
+                                    <button type="button" name="btnCancelEncargado" id="btnCancelEncargado" class="btn btn-success btn-xs" onclick="clearMoreEncargado();
+                                            contadorFilasTablaGeneral('encargadoAddTR', 'txt_add_encargado');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
+                                    <div id="tableMoreEncargado" style="display: none;">
+                                        <table class="table table-bordered table-hover" id="tb_encargados">
+                                            <thead>
+                                                <tr class="fondo letraN">
+                                                    <th>Acción</th>
+                                                    <th>Responsable</th>
+                                                    <th>Area</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="encargadoAddTR">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ingenieros a cargo -->
+                            <div class="form-group">
+                                <label for="lb_ingLs_ot" class="fondo letraN col-sm-3 control-label">Personal involucrado:</label>
+                                <div class="col-sm-5">                
+                                    <select id="List_slIngOT" name="List_slIngOT" class="form-control" style="width:400px">
+                                    </select>    
+                                    <input type="hidden" name="txt_add_ingeniero" id="txt_add_ingeniero" value="">
+                                    <button type="button" name="btnAddTecnico" id="btnAddTecnico" class="btn btn-primary btn-xs" onclick="addIngenieroProgramacion();
+                                            contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
+                                    <button type="button" name="btnCancelTecnico" id="btnCancelTecnico" class="btn btn-success btn-xs" onclick="clearMoreIngeniero();
+                                            contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
+                                    <div id="tableMoreIngeniero" style="display: none;">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                                <tr class="fondo letraN">
+                                                    <th>Acción</th>
+                                                    <th>Ingeniero</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="ingenieroAddTR">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div id="controlDataProfesional"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Observaciones de la programacion-->
+                            <div class="form-group">
+                                <label for="lb_labor" class="fondo letraN col-sm-3 control-label">Observaciones Coordinador:</label>
+                                <div class="col-sm-5">  
+                                    <textarea class="form-control data"  id="txt_obs_programacion" name="txt_obs_programacion"rows="5" cols="40" placeholder="" ></textarea>                
+                                </div>
+                            </div>
+
+                            <!--Fecha inicio-->
+                            <div class="form-group">
+                                <label for="lb_inicio" class="fondo letraN col-sm-3 control-label">Inicio Ejecucion:</label>
+                                <div class="col-sm-5 input-group date" id="InicioOT"  style="width:200px">                
+                                    <input type='text' id="txtInicioOT" name="txtInicioOT" class="form-control data" readonly />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
+                                </div>
+                            </div>
+
+                            <!--Hora inicio-->
+                            <div class="form-group">
+                                <label for="lb_inicio_hora" class="col-sm-3 control-label">Hora Inicio Ejecucion:</label>      
+                                <div id="datetimepicker3" class="col-sm-5 input-group date" style="width:200px">
+                                    <input data-format="hh:mm:ss" type="text" name="txtHoraIni" id="txtHoraIni" readonly></input>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>                                    
+                                </div>          
+                            </div>
+
+                            <!--Fecha fin-->
+                            <div class="form-group">
+                                <label for="lb_fin" class="fondo letraN col-sm-3 control-label">Fin Ejecucion:</label>
+                                <div class="col-sm-5 input-group date" id="FinOT" style="width:200px">                
+                                    <input type='text' id="txtFnicioOT" name="txtFnicioOT" class="form-control data" readonly />
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
+                                </div>
+                            </div>
+
+                            <!--Hora Fin-->
+                            <div class="form-group">
+                                <label for="lb_inicio_hora" class=" col-sm-3 control-label">Hora Fin Ejecucion:</label>      
+                                <div id="datetimepicker4" class="col-sm-5 input-group date" style="width:200px">
+                                    <input data-format="hh:mm:ss" type="text" name="txtHoraFin" id="txtHoraFin" readonly></input>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>                                    
+                                </div>          
+                            </div>
+
+                            <!--Botones-->
+                            <div class="form-group">
+                                <div class="fondo">
+                                    <div class="col-sm-5"></div>
+                                        <button id="btoGuardar" name="btoGuardar" class=" btn btn-primary" type="submit" >Guardar</button>                                
+                                </div>
+                            </div>
+                        </fieldset>
+                    </form>
                 </div>
-            </div>
-        </div>
 
-        <!-- Ingenieros a cargo -->
-        <div class="form-group">
-            <label for="lb_ingLs_ot" class="fondo letraN col-sm-3 control-label">Ingeniero:</label>
-            <div class="col-sm-5">                
-                <select id="List_slIngOT" name="List_slIngOT" class="form-control" style="width:400px">
-                </select>    
-                <input type="hidden" name="txt_add_ingeniero" id="txt_add_ingeniero" value="">
-                <button type="button" name="btnAddTecnico" id="btnAddTecnico" class="btn btn-primary btn-xs" onclick="addIngenieroProgramacion();
-                        contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Adicionar</button>&nbsp;
-                <button type="button" name="btnCancelTecnico" id="btnCancelTecnico" class="btn btn-success btn-xs" onclick="clearMoreIngeniero();
-                        contadorFilasTablaGeneral('ingenieroAddTR', 'txt_add_ingeniero');"><span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Limpiar</button>
-                <div id="tableMoreIngeniero" style="display: none;">
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr class="fondo letraN">
-                                <th>Acción</th>
-                                <th>Ingeniero</th>
-                            </tr>
-                        </thead>
-                        <tbody id="ingenieroAddTR">
-                        </tbody>
-                    </table>
+                <div role="tabpanel" class="tab-pane active" id="seccion5">
+                    <!-- Normas -->
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">      
+                            <div id="normatividad"></div>      
+                        </div>
+                    </div>
                 </div>
-                <div id="controlDataProfesional"></div>
+            
+                <div role="tabpanel" class="tab-pane active" id="seccion6">
+                    <!-- Vehiculo -->
+                    <div class="form-group">
+                        <label for="lb_vehiculo" class="fondo letraN col-sm-3 control-label">Vehiculo:</label>
+                        <div class="col-sm-5">                
+                            <input type="text" class="form-control data" id="txt_vehiculo" name="txt_vehiculo" placeholder="Si aplica">                
+                        </div>
+                    </div>
+                </div>
+            
             </div>
         </div>
-        
-        <!-- Observaciones de la programacion-->
-        <div class="form-group">
-            <label for="lb_labor" class="fondo letraN col-sm-3 control-label">Observaciones Coordinador:</label>
-            <div class="col-sm-5">  
-                <textarea class="form-control data"  id="txt_obs_programacion" name="txt_obs_programacion"rows="5" cols="40" placeholder="" ></textarea>                
-            </div>
-        </div>
-
-        <!--vehiculo-->
-        <div class="form-group">
-            <label for="lb_vehiculo" class="fondo letraN col-sm-3 control-label">Vehiculo:</label>
-            <div class="col-sm-5">                
-                <input type="text" class="form-control data" id="txt_vehiculo" name="txt_vehiculo" placeholder="Si aplica">                
-            </div>
-        </div>
-
-
-        <!--Fecha inicio-->
-        <div class="form-group">
-            <label for="lb_inicio" class="fondo letraN col-sm-3 control-label">Inicio Ejecucion:</label>
-            <div class="col-sm-5 input-group date" id="InicioOT"  style="width:200px">                
-                <input type='text' id="txtInicioOT" name="txtInicioOT" class="form-control data" readonly />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
-            </div>
-        </div>
-
-        <!--Hora inicio-->
-        <div class="form-group">
-            <label for="lb_inicio_hora" class="col-sm-3 control-label">Hora Inicio Ejecucion:</label>      
-            <div id="datetimepicker3" class="col-sm-5 input-group date" style="width:200px">
-                <input data-format="hh:mm:ss" type="text" name="txtHoraIni" id="txtHoraIni" readonly></input>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>                                    
-            </div>          
-        </div>
-
-        <!--Fecha fin-->
-        <div class="form-group">
-            <label for="lb_fin" class="fondo letraN col-sm-3 control-label">Fin Ejecucion:</label>
-            <div class="col-sm-5 input-group date" id="FinOT" style="width:200px">                
-                <input type='text' id="txtFnicioOT" name="txtFnicioOT" class="form-control data" readonly />
-                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>                    
-            </div>
-        </div>
-
-        <!--Hora Fin-->
-        <div class="form-group">
-            <label for="lb_inicio_hora" class=" col-sm-3 control-label">Hora Fin Ejecucion:</label>      
-            <div id="datetimepicker4" class="col-sm-5 input-group date" style="width:200px">
-                <input data-format="hh:mm:ss" type="text" name="txtHoraFin" id="txtHoraFin" readonly></input>
-                <span class="input-group-addon"><span class="glyphicon glyphicon-time"></span></span>                                    
-            </div>          
-        </div>
-
-        <!--Botones-->
-        <div class="form-group">
-            <div class="fondo">
-                <div class="col-sm-5"></div>
-                    <button id="btoGuardar" name="btoGuardar" class=" btn btn-primary" type="submit" >Guardar</button>                                
-            </div>
-        </div>
-
-
-    </fieldset>
-
-</form>
+    </div>
+</div>
 
 <script type="text/javascript">
     $(function () {
@@ -289,6 +320,4 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
             pickDate: false
         });
     });
-
-
 </script>

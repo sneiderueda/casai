@@ -45,7 +45,7 @@ $hora = date("g:i A");
         <input type="hidden" class="form-control" id="id_seguimiento" name="id_seguimiento" value="<?php echo $id_seguimiento; ?>">  
 
 
-        <legend class="titulo">Detalle de la Actividad</legend>
+        <legend class="titulo">ORDEN DE TRABAJO INTERNA</legend>
 
         <div class="container">
             <div class="row">
@@ -63,88 +63,155 @@ $hora = date("g:i A");
 
                         <div role="tabpanel" class="tab-pane active" id="seccion0">
                             <br>
-                            <br>
 
-                            <form id="frm_DataSeguimientoOT" class="form-horizontal">    
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12 ">
 
-                                <div id="data_presupuesto">
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Subestacion:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_subestacion" name="txt_subestacion" disabled="disabled">                
+                                        <div role="tabpanel" class="">
+                                            <ul class="nav nav-tabs borde_inf" role="tablist" id="agregar_tab2">
+                                                <li role="presentation" id="tab4" class=""><a href="#seccion4" aria-controls="seccion4" data-toggle="tab" role="tab">Informacion OT</a></li>
+                                                <li role="presentation" id="tab5" class=""><a href="#seccion5" aria-controls="seccion5" data-toggle="tab" role="tab">Alcance OT</a></li>
+                                                <li role="presentation" id="tab6" class=""><a href="#seccion6" aria-controls="seccion6" data-toggle="tab" role="tab">Alcance Particular Cliente</a></li>
+                                                <li role="presentation" id="tab7" class=""><a href="#seccion7" aria-controls="seccion7" data-toggle="tab" role="tab">Alcances Baremados</a></li>
+                                                <li role="presentation" id="tab8" class=""><a href="#seccion8" aria-controls="seccion8" data-toggle="tab" role="tab">Entregables Baremados</a></li>
+                                                <li role="presentation" id="tab9" class=""><a href="#seccion9" aria-controls="seccion9" data-toggle="tab" role="tab">Observaciones Coordinador</a></li>
+                                                <li role="presentation" id="tab10" class=""><a href="#seccion10" aria-controls="seccion10" data-toggle="tab" role="tab">Normatividad</a></li>
+                                            </ul>
                                         </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">OT:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_ot" name="txt_ot" disabled="disabled">                
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Objeto:</label>
-                                        <div class="col-sm-5" id="objeto">                      
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Alcance:</label>
-                                        <div class="col-sm-5" id="alcance">                                     
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Modulo:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_modulo" name="txt_modulo" disabled="disabled" style="width:400px">                  
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Labor:</label>
-                                        <div class="col-sm-5" id="txt_labor">  
-
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Actividad:</label>
-                                        <div class="col-sm-5" id="actividad">                      
-                                        </div>
-                                    </div>
                                     
-                                    
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label>
-                                        <div class="col-sm-5" id="obs_presupuesto">                      
-                                        </div>
-                                    </div>
+                                        <div class="tab-content" id="tab-content">
 
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Código GOM:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_gom" name="txt_gom" disabled="disabled">                
-                                        </div>
-                                    </div>
+                                            <div role="tabpanel" class="tab-pane h4 text-justify" id="seccion4">
+                                                <br>
+                                                <form id="frm_DataSeguimientoOT" class="form-horizontal">    
 
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Cantidad:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_cantidad" name="txt_cantidad" disabled="disabled" style="width:50px">                
-                                        </div>
-                                    </div>
+                                                    <div id="data_presupuesto">
 
-                                    <div class="form-group">
-                                        <label for="" class="col-sm-3 control-label">Valor:</label>
-                                        <div class="col-sm-5">  
-                                            <input type="text" id="txt_valor" name="txt_valor" disabled="disabled">                
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Subestacion:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_subestacion" name="txt_subestacion" disabled="disabled">             
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">OT:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_ot" name="txt_ot" disabled="disabled">                
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Objeto:</label>
+                                                            <div class="col-sm-5" id="objeto">                      
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Modulo:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_modulo" name="txt_modulo" disabled="disabled" style="width:400px">                  
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Labor:</label>
+                                                            <div class="col-sm-5" id="txt_labor">  
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Actividad:</label>
+                                                            <div class="col-sm-5" id="actividad">                      
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Código GOM:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_gom" name="txt_gom" disabled="disabled">                
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Cantidad:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_cantidad" name="txt_cantidad" disabled="disabled" style="width:50px">                
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <label for="" class="col-sm-3 control-label">Valor:</label>
+                                                            <div class="col-sm-5">  
+                                                                <input type="text" id="txt_valor" name="txt_valor" disabled="disabled">                
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion5">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label titulo">Alcance:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4 " id="alcance">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion6">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4" id="obs_presupuesto">                      
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion7">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4" id="alc_baremado">                      
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion8">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4" id="entregable">                      
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion9">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4" id="obs_coor">                      
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div role="tabpanel" class="tab-pane" id="seccion10">
+                                                <br>
+                                                <div class="form-group">
+                                                    <!-- <label for="" class="col-sm-3 control-label">Alcance técnico particular:</label> -->
+                                                    <div class="col-sm-5 col-sm-offset-3 text-justify h4" id="normas">                      
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
+
 
                         <div role="tabpanel" class="tab-pane" id="seccion1">
                             <legend class="titulo">Ejecución y reporte de avance de la OT</legend>
@@ -383,6 +450,15 @@ $hora = date("g:i A");
                             </div>
                         </div>
 
+                        <div role="tabpanel" class="tab-pane" id="seccion3">
+                            <!--Seguimientos de la actividad-->
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-12">      
+                                    <div id="Seguimiento_actividad"></div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -446,6 +522,16 @@ $hora = date("g:i A");
     $("#txt_gom").val(dataPresupuesto.actividad_gom);
     $("#txt_cantidad").val(dataPresupuesto.presupuesto_porcentaje);
     $("#txt_valor").val(dataPresupuesto.presupuesto_valorporcentaje);
+    $('#obs_coor').html(dataPresupuesto.presupuesto_programacion_obs);
+    
+
+    var alcances = dataPresupuesto.presupuesto_alcances;
+    alcancesBaremados(alcances);
+
+    var entregables = dataPresupuesto.presupuesto_entregables;
+    entregablesBaremados(entregables);
+
+    normatividad('<?php echo $presupuesto_id ?>');
 
     ListSeguimientoPresup('<?php echo $presupuesto_id ?>', '<?php echo $presupuesto_progestado; ?>', '<?php echo $presupuesto_porcentaje; ?>', 1);
     $("#slc_estado_actividad").val('<?php echo $presupuesto_progestado; ?>');
