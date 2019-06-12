@@ -220,6 +220,8 @@ class MD_ot {
         // $arre_ingenieros = explode(',', $post['listaIngenieros']);
         //validar si hay mas de 1 responsable asignado a la actividad
         $num_responsables = (int) $post['txt_add_encargado'];
+        $ot = $post['txt_ot'];
+
         if ($num_responsables == 1) {
             // 1.  Inactivar otros encargados asociados
             $encargado = "CALL SP_ptpresupuesto('20','" . trim($post['presupuesto_id']) . "','" . $id_usuario . "','','2','','','','','','','','','','','','','','','','','')";
@@ -242,6 +244,12 @@ class MD_ot {
                     $result = $obj_bd->EjecutaConsulta($sql);
                 }
             }
+
+
+
+
+
+
         } elseif ($num_responsables > 1) {
             $principal = "";
             // 1.  Inactivar otros encargados asociados
@@ -284,7 +292,41 @@ class MD_ot {
         if (!$result) {
             return 0;
         } else {
-            // ELIMINAR TECNICOS DEL PRESUPUESTO
+
+            ////////////////////////////////////
+            // GUARDAR CONSECUTIVO OT INTERNA //
+            ////////////////////////////////////
+            $sql_con = "CALL SP_dtinterna('3','','','','','','','','".$ot."')";
+            $res_con = $obj_bd->EjecutaConsulta($sql_con);
+            $row_con = $obj_bd->FuncionFetch($res_con);
+
+
+            $sql_int = "CALL SP_dtinterna('1','','1','','".$value."','','".$post['txtFnicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
+            $res_int = $obj_bd->EjecutaConsulta($sql_int);
+            $filas = $obj_bd->Filas($sql_int);
+            $row_int = $obj_bd->FuncionFetch($res_int);
+
+            if ($filas > 0)
+           {
+                $consecutivo = $row_con['interna_consecutivo'];
+
+                $sql_int1 = "CALL SP_dtinterna('2','','','".$id_usuario."','".$value."','".$consecutivo."','".$post['txtInicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
+                $res_int1 = $obj_bd->EjecutaConsulta($sql_int1);
+                $row_int1 = $obj_bd->FuncionFetch($res_int1);
+
+            }else{
+
+                $consecutivo = $row_con['interna_consecutivo'] + 1;
+
+                $sql_int2 = "CALL SP_dtinterna('2','','','".$id_usuario."','".$value."','".$consecutivo."','".$post['txtInicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
+                $res_int2 = $obj_bd->EjecutaConsulta($sql_int2);
+                $row_int2 = $obj_bd->FuncionFetch($res_int2);
+            }
+
+
+            ///////////////////////////////////////
+            // ELIMINAR TECNICOS DEL PRESUPUESTO //
+            ///////////////////////////////////////
             $sql_dt = "CALL SP_ptpresupuesto('17','" . trim($post['presupuesto_id']) . "','','','','','','','','','','','','','','','','','','','','');";
             $result_dt = $obj_bd->EjecutaConsulta($sql_dt);
 
@@ -316,8 +358,11 @@ class MD_ot {
 
         $result = $obj_bd->EjecutaConsulta($sql);
         $array = $obj_bd->FuncionFetch($result);
-
+        
         $arreglo_retorno['area_id'] = $array['area_id'];
+        $arreglo_retorno['ordentrabajo_id'] = $array['ordentrabajo_id'];
+        $arreglo_retorno['ordentrabajo_num'] = $array['ordentrabajo_num'];
+        $arreglo_retorno['interna_consecutivo'] = $array['interna_consecutivo'];
         $arreglo_retorno['presupuesto_encargado'] = $array['presupuesto_encargado'];
         $arreglo_retorno['presupuesto_fechaini'] = $array['presupuesto_fechaini'];
         $arreglo_retorno['presupuesto_fechafin'] = $array['presupuesto_fechafin'];

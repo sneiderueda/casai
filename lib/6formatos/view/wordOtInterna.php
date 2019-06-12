@@ -87,6 +87,7 @@ $fontStyle_texto = array('name' => 'Arial', 'size' => 10, 'bold' => false, 'alig
 
 //llenar la tabla
 $sql1 = "SELECT   OT.ordentrabajo_num,
+                OT.ordentrabajo_id,
                 OT.ordentrabajo_GOM,
                 OT.ordentrabajo_contratista,
                 OT.ordentrabajo_fechaemision,
@@ -114,6 +115,7 @@ $resultado1 = $obj_bd->EjecutaConsulta($sql1);
 while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     
     $orden_trabajo = utf8_encode($row1['ordentrabajo_num']);
+    $orden_id = $row1['ordentrabajo_id'];
     $ordentrabajo_ordenpresupuestal = utf8_encode($row1['ordentrabajo_ordenpresupuestal']);
     $ordentrabajo_pep = utf8_encode($row1['ordentrabajo_pep']);
     $total_final_OT = $row1['detallepresupuesto_total'] + $row1['detallepresupuesto_valorincremento'];
@@ -129,8 +131,15 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $valo_presupuesto = number_format($row1['detallepresupuesto_total'], 0, ',', '.');
 
 
+    $sql_con = "CALL SP_dtinterna('3','','','','','','','','".$orden_id."')";
+    $res_con = $obj_bd->EjecutaConsulta($sql_con);
+    $row_con = $obj_bd->FuncionFetch($res_con);
+
+    $consecutivo = $row_con['interna_consecutivo'];
+
+
     $table->addRow();
-    $table->addCell(2000)->addText(utf8_encode($row1['ordentrabajo_num']), $fontStyle, 'p2Style');
+    $table->addCell(2000)->addText(utf8_encode($row1['ordentrabajo_num']."/".$consecutivo), $fontStyle, 'p2Style');
     // $table_des->addCell(1800)->addText(utf8_encode($row1['ordentrabajo_GOM']));
     $table->addCell(2800)->addText(utf8_encode($row1['ordentrabajo_fechaemision']), $fontStyle2, 'p2Style');
     $table->addCell(1500)->addText(utf8_encode($row1['cliente_descripcion']), $fontStyle2, 'p2Style');
@@ -517,7 +526,7 @@ while ($row3 = $obj_bd->FuncionFetch($resultado3)) {
 
 
             //////////////////////////////////////
-            // CONSULTA EL PERSONAL INVILUCRADO //
+            // CONSULTA EL PERSONAL INVOLUCRADO //
             //////////////////////////////////////
             $sql_per = "SELECT concat(usu.usuario_nombre,' ',usu.usuario_apellidos) as nombre
                         from cf_tecnico_presupuesto tp

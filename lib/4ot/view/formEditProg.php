@@ -15,7 +15,6 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
     var jsondetalle = JsonDetalleActividad(presupuesto_id);
     $("#labor").html(jsondetalle.labor_id + ' - ' + jsondetalle.labor_descripcion);
 
-    
     var DataPresupuesto = JsonPresupuesto(<?php echo $presupuesto_id; ?>);
     ListUserArea('List_slIngOT', DataPresupuesto.area_id);
     ListUserArea('slIngOT', DataPresupuesto.area_id);
@@ -31,6 +30,8 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
     $("#txtHoraFin").val(DataPresupuesto.presupuesto_horafin);
     $("#txt_obs_programacion").val(DataPresupuesto.presupuesto_programacion_obs);
     $("#txt_vehiculo").val(DataPresupuesto.presupuesto_vehiculo);
+    $("#txt_ot").val(DataPresupuesto.ordentrabajo_id);
+    $("#ot").append(DataPresupuesto.ordentrabajo_num + "/" +DataPresupuesto.interna_consecutivo);
 
     if (DataPresupuesto.presupuesto_fechaini == "0000-00-00") {
         $("#txtInicioOT").val("");
@@ -135,6 +136,9 @@ $presupuesto_id = htmlspecialchars(strip_tags(trim($_POST['prusupuesto_id'])));
 </script>
 
 <div class="container">
+    <label>No. ot interna: </label>
+    <label id="ot"></label>
+    <input type="hidden" id="txt_ot">
     <div class="row">
         <div class="col-md-12 ">
             <div role="tabpanel" class="">
