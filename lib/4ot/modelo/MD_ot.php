@@ -71,9 +71,9 @@ class MD_ot {
             }
             $urlEdit = '"lib/4ot/view/formOT.php","contenido","' . $row['detallepresupuesto_id'] . '"';
             $tabla .= "<tr>                
-                <td><img src='img/report_excel.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoXlsx(" . $row['detallepresupuesto_id'] . ")' />
-                    <img src='img/word2010.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoWord(" . $row['detallepresupuesto_id'] . ")' />
-                    <img src='img/pdf.png' title='Descargar Interna' width='20' height='20' border='0' onClick='DescargarPresupuestoWordInterna(" . $row['detallepresupuesto_id'] . ")' /></td>                     
+                    <td><img src='img/word2010.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoWord(" . $row['detallepresupuesto_id'] . ")' />
+                        <img src='img/report_excel.png' title='Descargar Presupuesto' width='20' height='20' border='0' onClick='DescargarPresupuestoXlsx(" . $row['detallepresupuesto_id'] . ")' />
+                        <img src='img/word2010.png' title='Descargar Interna' width='20' height='20' border='0' onClick='DescargarPresupuestoWordInterna(" . $row['detallepresupuesto_id'] . ")' /></td>                     
                 <td>" . $row['ordentrabajo_num'] . "</td>                     
                 <!-- <td>" . $estado . "</td> -->                    
                <td>" . utf8_encode($row['detallepresupuesto_nombre']) . "</td> 

@@ -339,6 +339,10 @@ class MD_fct {
 
                         $new_acta = $new_acta;
 
+                        if ($new_acta == "") {
+                        	$new_acta = 0;
+                        }
+
 
 
                     $obs = '"' . preg_replace("/\s+/", " ", utf8_encode($row['presupuesto_obs'])) . '"';
@@ -921,7 +925,7 @@ public function SaveFactura($post) {
         </style>";
         $tabla .= "<br><br><br><br>";
         $tabla .= "<fieldset class='letraBl'>";
-        $tabla .= "<legend class='titulo'>Ordenes Consolidadas</legend>";
+        $tabla .= "<legend class='titulo'>Actas Consolidadas</legend>";
 
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
@@ -938,7 +942,7 @@ public function SaveFactura($post) {
         <th>IVA</th>
         <th>Total + IVA</th>
         <th>Gestor</th>
-        <th>Fecha Acta</th>
+        <th>Mes Acta</th>
         <th>No. Acta</th>                                                  
         </tr>
         </thead>
@@ -1034,7 +1038,7 @@ public function SaveFactura($post) {
                 INSERTAR EN LA BASE DE DATOS                
                 */
                
-                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row3 = $obj_bd->FuncionFetch($consulta);
@@ -1071,7 +1075,7 @@ public function SaveFactura($post) {
                 INSERTAR EN LA BASE DE DATOS para facturacion
                 */
                
-                $sql = "CALL SP_facturacion('1','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row2 = $obj_bd->FuncionFetch($consulta);
@@ -1096,5 +1100,11 @@ public function SaveFactura($post) {
             }
         }
     }
-}// CIERRE CLASE
+
+
+
+//////////////////
+// CIERRE CLASE //
+//////////////////
+} 
 
