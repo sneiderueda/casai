@@ -1008,7 +1008,7 @@ class MD_presup
 
                             if ($row_sub['presupuesto_encargado'] != "") {
                                 // $tabla .= "<td><img src='img/prog_ok.png' id='arbol' title='Actividad Programada' width='20' height='20' style='cursor:pointer' border='0' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . ")'>";
-                                $tabla .= "<td><input type='button' id='bto_ok' name='bto_ok' class='btn btn-primary'  value='Programada' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . ")'/>";
+                                $tabla .= "<td><input type='button' id='bto_ok' name='bto_ok' class='btn btn-primary'  value='Programada' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . "," . $row_sub['ordentrabajo_id'] . ")'/>";
                                 /* REALIZAR DESCARGO */
                                 if (utf8_encode($row_sub['subactividad_descripcion']) == "LEVANTAMIENTO") {
 
@@ -1019,7 +1019,7 @@ class MD_presup
                                 $tabla . "</td>";
                             } else {
                                 //$tabla .= "<td><img src='img/prog_add.png' id='arbol' title='Programar Actividad' width='20' height='20' style='cursor:pointer' border='0' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . ")'>";
-                                $tabla .= "<td><input type='button' id='bto_no' name='bto_no' class='btn btn-danger'  value='Programar' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . ")'/>";
+                                $tabla .= "<td><input type='button' id='bto_no' name='bto_no' class='btn btn-danger'  value='Programar' onclick='DivProgramarOT(" . $row_sub['presupuesto_id'] . "," . $row_sub['ordentrabajo_id'] . ")'/>";
                                 $tabla . "</td>";
                             }
                         }
@@ -1076,7 +1076,10 @@ class MD_presup
                         <td>" . $array_alcances . "</td>
                         <td>" . $array_entregables . "</td>
 
+
+
                         <td><input type='text' id='porc_sub_" . $row_sub['detalleactividad_id'] . "' name='porc_sub_" . $row_sub['detalleactividad_id'] . "' maxlength='6' value='" . $row_sub['presupuesto_porcentaje'] . "' placeholder='Numero' style='width:60px' class='input-medium a_txt_porc' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row_sub['detalleactividad_id'] . "," . $actividad_valordecimal . "," . $row_sub['presupuesto_porcentaje'] . ");'></td>
+                        
                         <td><input type='text' id='valor_cal_sub_" . $row_sub['detalleactividad_id'] . "' name='valor_cal_sub_" . $row_sub['detalleactividad_id'] . "' value='" . number_format((float)$row_sub['presupuesto_valorporcentaje'], 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'></td>
                         </tr>
                         <input type='hidden' name='detalleactividad_id[]' id='detalleactividad_id[]' value='" . $row_sub['presupuesto_id'] . "_" . $row_sub['detalleactividad_id'] . "_" . $row['baremoactividad_id'] . "'>";
@@ -1096,6 +1099,18 @@ class MD_presup
                 }
 
                 if ($data['control'] == "1") {
+
+                    // $sql_exi = "SELECT presupuesto_porcentaje
+                    //             from pt_presupuesto
+                    //             where presupuesto_id = "$row['presupuesto_id']";";
+                    // $res_exi = $obj_bd->EjecutaConsulta($sql_exi);
+                    // $filas = $obj_bd->Filas($sql_exi);
+                    // $row_exi = $obj_bd->FuncionFetch($res_exi);
+
+                    // if ($filas > 0) {
+                        
+                    // }
+
                     $tabla .= "<td></td>
                     <td></td>
                     <td></td>

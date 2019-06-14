@@ -24,6 +24,7 @@
 
     <fieldset style="color:black;">
 
+
         <legend class="titulo">Datos Presupuesto</legend>            
 
         <!-- Presupuesto-->

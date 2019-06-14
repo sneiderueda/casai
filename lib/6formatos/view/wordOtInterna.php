@@ -131,11 +131,19 @@ while ($row1 = $obj_bd->FuncionFetch($resultado1)) {
     $valo_presupuesto = number_format($row1['detallepresupuesto_total'], 0, ',', '.');
 
 
+    //////////////////////////////////////
+    // NUMERO DE CONSECUTIVO OT INTERNA //
+    //////////////////////////////////////
     $sql_con = "CALL SP_dtinterna('3','','','','','','','','".$orden_id."')";
     $res_con = $obj_bd->EjecutaConsulta($sql_con);
     $row_con = $obj_bd->FuncionFetch($res_con);
 
     $consecutivo = $row_con['interna_consecutivo'];
+
+    if ($consecutivo == "")
+        {
+            $consecutivo = 0;
+        }
 
 
     $table->addRow();

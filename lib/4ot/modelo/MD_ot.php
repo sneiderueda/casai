@@ -60,15 +60,8 @@ class MD_ot {
 
         while ($row = $obj_bd->FuncionFetch($resultado)) {
 
-            /* CALCULAR PORCENTAJE */
-
-//            if($row['total_actividades']>0){
-//            $porcentaje = round(($row['actividades_programadas'] * 100) / $row['total_actividades'], 2);    
-//            }else{
-//                $porcentaje=0;
-//            }
-//            
-            /**/
+                    
+            
             $total = (int) $row['detallepresupuesto_valorincremento'] + (int) $row['detallepresupuesto_total'];
             if ($row['detallepresupuesto_estado'] == '3') {
                 $estado = "Aprobado";
@@ -306,9 +299,17 @@ class MD_ot {
             $filas = $obj_bd->Filas($sql_int);
             $row_int = $obj_bd->FuncionFetch($res_int);
 
+            $con = $row_con['interna_consecutivo'];
+
+             if ($con == "")
+            {
+            $con = 1;
+            }
+
+
             if ($filas > 0)
            {
-                $consecutivo = $row_con['interna_consecutivo'];
+                $consecutivo = $con;
 
                 $sql_int1 = "CALL SP_dtinterna('2','','','".$id_usuario."','".$value."','".$consecutivo."','".$post['txtInicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
                 $res_int1 = $obj_bd->EjecutaConsulta($sql_int1);
@@ -316,7 +317,7 @@ class MD_ot {
 
             }else{
 
-                $consecutivo = $row_con['interna_consecutivo'] + 1;
+                $consecutivo = $con + 1;
 
                 $sql_int2 = "CALL SP_dtinterna('2','','','".$id_usuario."','".$value."','".$consecutivo."','".$post['txtInicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
                 $res_int2 = $obj_bd->EjecutaConsulta($sql_int2);
@@ -358,11 +359,23 @@ class MD_ot {
 
         $result = $obj_bd->EjecutaConsulta($sql);
         $array = $obj_bd->FuncionFetch($result);
+
+        $sql_con = "CALL SP_dtinterna('3','','','','','','','','".$data['ot_id']."')";
+        $res_con = $obj_bd->EjecutaConsulta($sql_con);
+        $row_con = $obj_bd->FuncionFetch($res_con);
+
+
+        $consecutivo =$row_con['interna_consecutivo'];
+
+        if ($consecutivo == "")
+        {
+            $consecutivo = 0;
+        }
         
         $arreglo_retorno['area_id'] = $array['area_id'];
         $arreglo_retorno['ordentrabajo_id'] = $array['ordentrabajo_id'];
         $arreglo_retorno['ordentrabajo_num'] = $array['ordentrabajo_num'];
-        $arreglo_retorno['interna_consecutivo'] = $array['interna_consecutivo'];
+        $arreglo_retorno['interna_consecutivo'] = $consecutivo;
         $arreglo_retorno['presupuesto_encargado'] = $array['presupuesto_encargado'];
         $arreglo_retorno['presupuesto_fechaini'] = $array['presupuesto_fechaini'];
         $arreglo_retorno['presupuesto_fechafin'] = $array['presupuesto_fechafin'];
@@ -845,7 +858,7 @@ class MD_ot {
                             <th>Fecha/Hora Inicio</th>                                                        
                             <th>Fecha/Hora Fin</th>                                                        
                             <th>Asignado Por</th>                                                                                                                
-                            <th>Accion</th>                                                                                                                                            
+                            <th>Accion</th>                                                                 
                         </tr>
                     </thead>
                     <tbody>';
