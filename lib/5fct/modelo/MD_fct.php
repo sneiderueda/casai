@@ -387,31 +387,26 @@ class MD_fct {
 
           $res_exi = $obj_bd-> EjecutaConsulta($sql_exi);
           $filas = $obj_bd-> Filas($sql_exi);
+          $row_pend = $obj_bd->FuncionFetch($res_exi);
 
           if ($filas > 0) {
-
-          		$sql_pend = "call SP_facturacion('4', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '" . $row['presupuesto_id'] . "', '".$row['ordentrabajo_id']."', '');";
-
-	          	$res_pend = $obj_bd-> EjecutaConsulta($sql_pend);
-	          	$filas1 = $obj_bd-> Filas($sql_exi);
-	          	$row_pend = $obj_bd->FuncionFetch($res_pend);
 
 	          	if ($row_pend['factura_porcentajependiente'] != 0) {
 
 	          		$valor_porcentaje = $row_pend['factura_valorpendiente'];
-
-            		$tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $row_pend['factura_porcentajependiente'] . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
+	          		
+            		$tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $row_pend['factura_porcentajependiente'] . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalPorcConciliacion(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".$row_pend['factura_porcentajependiente'].");'></td>
           
            			<td><input type='hidden' style='text-align:center' id='valor_cal_sub_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . round($valor_porcentaje, 0) . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'>
 						<input type='text' style='text-align:center' id='valor_cal_sub1_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . number_format((float)$valor_porcentaje, 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'>
            			</td>
                        
-        			<td><input type='button' id='consolidar_" . $row['presupuesto_id'] . "' value='Consolidar' class='btn btn-warning letraBl disabled' style = '' onclick='actualizar_conciliacion(" . $row_pend['factura_id'] . ");'></td>";
+        			<td><input type='button' id='consolidar_" . $row['presupuesto_id'] . "' value='Consolidar' class='btn btn-warning letraBl' style = '' onclick='actualizar_conciliacion(" . $row['presupuesto_id'] . ",".$cantidad.",".$valor_porcentaje.",".$new_acta.",".$row_pend['factura_id'].");'></td>";
             	}else{
 
             		$valor_porcentaje = 0;
 
-            		$tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $row_pend['factura_porcentajependiente']. "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' disabled='true' onblur='CalValorPorcPresupuestoSub(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
+            		$tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $row_pend['factura_porcentajependiente']. "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' disabled='true' onblur='CalPorcConciliacion(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
           
            			<td><input type='hidden' style='text-align:center' id='valor_cal_sub_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . round($valor_porcentaje, 0) . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'>
 						<input type='text' style='text-align:center' id='valor_cal_sub1_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . number_format((float)$valor_porcentaje, 0, ',', '.') . "'  style='width:100px' disabled='true' class='input-medium a_valor_cal'>
@@ -422,7 +417,7 @@ class MD_fct {
 
           }else{
 
-            $tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $cantidad . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalValorPorcPresupuestoSub(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".'1'.");'></td>
+          	$tabla .= "<td><input type='text' style='text-align:center' id='porc_sub_" . $row['presupuesto_id'] . "' name='porc_sub_" . $row['presupuesto_id'] . "' maxlength='6' value='" . $cantidad . "' placeholder='Numero' style='width:60px' class='a_txt_porc ing_datos' onkeypress='return decimales(event)' onblur='CalPorcConciliacion(this.value," . $row['presupuesto_id'] . "," . $row['actividad_valorservicio'] . ", ".$new_acta.",".$cantidad.");'></td>
           
            <td><input type='hidden' style='text-align:center' id='valor_cal_sub_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . round($valor_porcentaje, 0) . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'>
 				<input type='text' style='text-align:center' id='valor_cal_sub1_" . $row['presupuesto_id'] . "' name='valor_cal_sub_" . $row['presupuesto_id'] . "' value='" . number_format((float)$valor_porcentaje, 0, ',', '.') . "'  style='width:100px' disabled='disabled' class='input-medium a_valor_cal'>
@@ -438,7 +433,7 @@ class MD_fct {
        ";
        $tabla .= "<fieldset>";
        return $tabla;
-   }
+    }
 
    public function SaveActividadNoFacturar($post) {
     $obj_bd = new BD();
@@ -932,23 +927,29 @@ public function SaveFactura($post) {
         $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
         <thead>
         <tr class="fondo letraN">                              
-        <th>OT</th>  
-        <th>Subestación</th>  
-        <th>Proyecto</th>
-        <th>Subtotal sin IVA</th>                                                        
-        <th>Incremento Ubicación</th>
-        <th>Incremento Pago 90 dias</th>
-        <th>Subtotal + incrementos</th>
-        <th>IVA</th>
-        <th>Total + IVA</th>
-        <th>Gestor</th>
-        <th>Mes Acta</th>
-        <th>No. Acta</th>                                                  
+        <th class="text-center">OT</th>  
+        <th class="text-center">Subestación</th>  
+        <th class="text-center">Proyecto</th>
+        <th class="text-center">Gestor</th>
         </tr>
         </thead>
         <tbody>';
 
-        
+        ///////////////
+        // CONSULTAS //
+        ///////////////
+		$sql = "CALL SP_facturacion('4','','','','','','','','','','','','','','','','','','','','','');";
+
+        $consulta = $obj_bd->EjecutaConsulta($sql);
+	    while($conci = $obj_bd->FuncionFetch($consulta))
+	    {
+	        $tabla .= 	"<tr>
+						<td class='text-uppercase text-center'><button class='btn btn-info fondo' value='".$conci['ordentrabajo_id'] ."' onclick='listar_conciliacion(".$conci['ordentrabajo_id'] .");'>".$conci['ordentrabajo_num'] ."</button></td>
+						<td class='text-uppercase'>".utf8_encode($conci['subestacion_nombre']) ."</td>
+						<td class='text-uppercase'>".utf8_encode($conci['detallepresupuesto_nombre']) ."</td>
+						<td class='text-uppercase'>".utf8_encode($conci['nombre_gestor']) ."</td>
+	        			</tr>";
+	    }    
 
         $tabla .= "</tbody>
         </table>
@@ -1038,7 +1039,7 @@ public function SaveFactura($post) {
                 INSERTAR EN LA BASE DE DATOS                
                 */
                
-                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row3 = $obj_bd->FuncionFetch($consulta);
@@ -1048,12 +1049,12 @@ public function SaveFactura($post) {
 
                // envia los datos duplicados para poder sumarlos
                
-               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','0','0','0','".$id_usuario."','','0','0','0','".$presupuesto_id."','".$ot_id."','".$acta."');";
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','0','0','0','".$id_usuario."','','0','0','0','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                $consulta = $obj_bd->EjecutaConsulta($sql);
                $row2 = $obj_bd->FuncionFetch($consulta);
 
-               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id1."','".$ot_id."','".$acta."');";
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id1."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row1 = $obj_bd->FuncionFetch($consulta);
@@ -1075,7 +1076,7 @@ public function SaveFactura($post) {
                 INSERTAR EN LA BASE DE DATOS para facturacion
                 */
                
-                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row2 = $obj_bd->FuncionFetch($consulta);
@@ -1083,7 +1084,7 @@ public function SaveFactura($post) {
 
                 // para excel
                 
-                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$cantidad."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$valor_subtotal."','".$presupuesto_id."','".$ot_id."','".$acta."');";
 
                 $consulta = $obj_bd->EjecutaConsulta($sql);
                 $row1 = $obj_bd->FuncionFetch($consulta);
@@ -1102,6 +1103,303 @@ public function SaveFactura($post) {
     }
 
 
+    function actualizar_conciliacion($post){
+
+        /*
+        DECLARAMOS EL USUARIO
+         */
+        $id_usuario = $_SESSION['Usuario']['usuario_id'];
+
+        /*
+        DELCARAMOS EL OBJETO DE LA BASE DE DATOS
+         */
+        $obj_bd = new BD();        
+
+        /*
+        DECLARAMOS LAS VARIABLES
+         */
+        $iva = $post['iva'];
+        $conso_id = $post['conso_id'];
+        $detallepresupuesto_id = $post['detallepresupuesto_id'];
+        $presupuesto_id = $post['presupuesto_id'];
+        $porcentaje = $post['porcentaje'];
+        $valor_labor = $post['valor_labor'];
+        $ot = $post['ot'];
+        $cantidad = $post['cantidad'];
+        $valor_subtotal = $post['valor_subtotal'];
+        $acta = $post['acta'];
+        $fechaFacturaMes = $post['txtInicioFactura'];
+        $fechaFacturaFin = $post['txtFinFactura'];
+        $ot_id = $post['id_ot'];
+        $modulo_id = $post['modulo_id'];
+        $baremoactividad_id = $post['baremoactividad_id'];
+
+
+        $sql_exi = "call SP_facturacion('3', '', '', '', '', '', '', '', '" . $fechaFacturaMes . "', '" . $fechaFacturaFin . "', '', '', '', '', '', '', '', '', '', '" . $presupuesto_id . "', '".$ot_id."', '');";
+
+        $res_exi = $obj_bd-> EjecutaConsulta($sql_exi);
+        $filas = $obj_bd-> Filas($sql_exi);
+        $row_pend = $obj_bd->FuncionFetch($res_exi);
+
+
+
+        $acta = $acta + 1;
+        $porcentaje_pendiente = $row_pend['factura_porcentajependiente'] - $porcentaje;
+        $valor_pendiente = round($row_pend['factura_valorpendiente'] - $valor_labor);
+
+        
+
+
+        $sql = "SELECT count(presupuesto_id) as cuenta
+        FROM pt_presupuesto
+        WHERE detallepresupuesto_id = " . $detallepresupuesto_id . "
+        and baremoactividad_id = " . $baremoactividad_id . "
+        and modulo_id = " . $modulo_id . "
+        and presupuesto_estado = 1;";
+
+        $resultado = $obj_bd->EjecutaConsulta($sql);
+        $row = $obj_bd->FuncionFetch($resultado);
+
+        $cuenta = $row['cuenta'];
+
+        if ($cuenta == 2){
+
+
+            $sql1 = "SELECT sa.subactividad_descripcion
+            from cf_subactividad sa
+            join pt_detalle_actividad da on sa.subactividad_id = da.subactividad_id
+            join pt_presupuesto pt on da.detalleactividad_id = pt.detalleactividad_id
+            and pt.presupuesto_estado = 1
+            and pt.presupuesto_id = ".$presupuesto_id .";";
+
+            $resultado1 = $obj_bd->EjecutaConsulta($sql1);
+            $row1 = $obj_bd->FuncionFetch($resultado1);
+
+            $desc = utf8_encode($row1['subactividad_descripcion']);
+
+            // return $desc;
+
+            if($desc == "DISEÑO"){
+                /*
+                INSERTAR EN LA BASE DE DATOS                
+                */
+               
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$row_pend['factura_porcentajependiente']."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$row_pend['factura_valorpendiente']."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row3 = $obj_bd->FuncionFetch($consulta);
+
+
+               $presupuesto_id1 = $presupuesto_id - 1;
+
+               // envia los datos duplicados para poder sumarlos
+               
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','0','0','0','".$id_usuario."','','0','0','0','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+               $consulta = $obj_bd->EjecutaConsulta($sql);
+               $row2 = $obj_bd->FuncionFetch($consulta);
+
+               $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$row_pend['factura_porcentajependiente']."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$row_pend['factura_valorpendiente']."','".$presupuesto_id1."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row1 = $obj_bd->FuncionFetch($consulta);
+
+
+                if ($row1>0){
+
+                    return 1;
+
+                }else{
+
+                    return 0;
+
+                }
+
+            }else{
+
+                /*
+                INSERTAR EN LA BASE DE DATOS para facturacion
+                */
+               
+                $sql = "CALL SP_facturacion('1','','".$iva."','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$row_pend['factura_porcentajependiente']."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$row_pend['factura_valorpendiente']."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row2 = $obj_bd->FuncionFetch($consulta);
+
+
+                // para excel
+                
+                $sql = "CALL SP_factura('10','','','','','','','','".$fechaFacturaMes."','".$fechaFacturaFin."','0','".$porcentaje."','".$row_pend['factura_porcentajependiente']."','".$porcentaje_pendiente."','".$id_usuario."','','".$valor_labor."','".$valor_pendiente."','".$row_pend['factura_valorpendiente']."','".$presupuesto_id."','".$ot_id."','".$acta."');";
+
+                $consulta = $obj_bd->EjecutaConsulta($sql);
+                $row1 = $obj_bd->FuncionFetch($consulta);
+
+                if ($row1>0){
+
+                    return 1;
+
+                }else{
+
+                    return 0;
+
+                }
+            }
+        }
+    }
+
+    public function listar_conciliacion($post)
+    {
+	    /////////////
+    	// OBJETOS //
+	    /////////////
+    	$obj_bd = new BD();
+
+	    ///////////////
+    	// VARIABLES //
+	    ///////////////
+	    $ot_id = $post['ot_id'];
+	    $tabla = "";
+
+	    ////////////////////
+	    // CABECERA TABLA //
+	    ////////////////////
+	    $tabla .= "<style>
+        .ui-dialog-titlebar-close {
+            visibility: hidden;
+        }
+        </style>";
+        $tabla .= "<br><br><br><br>";
+        $tabla .= "<fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'><span>Actas Consolidadas</span></legend>";
+
+        $tabla .= "<br>";
+        $tabla .= '<div class="table-responsive">';
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
+        <thead>
+        <tr><button class="btn btn-default" onclick="ListCerradas()">Regresar</button></tr>
+        <tr class="fondo letraN">                              
+        <th class="text-center">No. Acta</th>  
+        <th class="text-center">Subtotal</th>  
+        <th class="text-center">Inc. Ubicación</th>
+        <th class="text-center">Inc. 90 días</th>
+        <th class="text-center">Subtotal + Incrementos</th>
+        <th class="text-center">Iva</th>
+        <th class="text-center">Total + Iva</th>
+        <th class="text-center">No. Conformidad</th>
+        <th class="text-center">Valor Conformidad</th>
+        <th class="text-center">Diferencia</th>
+        <th class="text-center">Acción</th>
+        </tr>
+        </thead>
+        <tbody>';
+
+	    ///////////////
+	    // CONSULTAS //
+	    ///////////////
+	    $sql = "CALL SP_facturacion('5','','','','','','','','','','','','','','','','','','','','".$ot_id."','');";
+
+        $consulta = $obj_bd->EjecutaConsulta($sql);
+
+        while($row_acta = $obj_bd->FuncionFetch($consulta))
+		{
+			$diferencia = $row_acta['factura_diferencia'];
+
+			/////////////////////////////
+			// CALCULAMOS LA UBICACION //
+			/////////////////////////////
+			$sql1 = "CALL SP_facturacion('6','','','','','','','','','','','','','','','','','','','','".$ot_id."','".$row_acta['factura_actanum']."');";
+			$consulta1 = $obj_bd->EjecutaConsulta($sql1);
+			$row_ubicacion = $obj_bd->FuncionFetch($consulta1);
+
+			$ubicacion = round($row_ubicacion['ubicacion'],0);
+
+			if ($ubicacion == "") 
+			{
+				$ubicacion = 0;
+			}
+
+			//////////////
+			// CALCULOS //
+			//////////////
+			$sub_ubi = $row_acta['subtotal'] + $ubicacion;
+			$dias = round($sub_ubi*0.015);
+			$total = round($sub_ubi + $dias);
+			$iva = round(($total*$row_acta['factura_iva'])/100);
+			$total_iva = round($total + $iva);
+
+			//////////////////
+			// MOSTRAR INFO //
+			//////////////////
+			$tabla .= 	"<tr>
+							<td class='text-center'>Acta ".$row_acta['factura_actanum']."</td>
+							<td>$".number_format($row_acta['subtotal'],0,',','.')."</td>
+							<td>$".number_format($ubicacion,0,',','.')."</td>
+							<td>$".number_format($dias,0,',','.')."</td>
+							<td>$".number_format($total,0,',','.')."</td>
+							<td>$".number_format($iva,0,',','.')."</td>
+							<td>$".number_format($total_iva,0,',','.')."</td>";
+
+				if ($diferencia != 0) 
+				{
+
+					$tabla .= "<td><input type='text'class='text-center' id='num_conformidad_".$row_acta['factura_actanum']."' placeholder='Número' value='".$row_acta['factura_numero_conformidad']."'/></td>
+					<td><input type='number'class='text-center ' id='valor_conformidad_".$row_acta['factura_actanum']."' placeholder='Valor' onblur='cal_diferencia(this.value," . $diferencia . "," . $row_acta['factura_actanum'] . ");'/></td>
+					<td><input type='text'class='text-center bg-danger' disabled id='diferencia_".$row_acta['factura_actanum']."' value='".$diferencia."'/></td>
+					<td><button class='btn btn-success' id='guardar_".$row_acta['factura_actanum']."' onclick='guardar_conformidad(".$row_acta['factura_actanum'].",".$ot_id.");'>Guardar</button></td>
+					</tr>";
+
+				}else{
+
+				$tabla .= "<td><input type='text'class='text-center' id='num_conformidad_".$row_acta['factura_actanum']."' placeholder='Número' /></td>
+				<td><input type='number'class='text-center' id='valor_conformidad_".$row_acta['factura_actanum']."' placeholder='Valor' onblur='cal_diferencia(this.value," . $total . "," . $row_acta['factura_actanum'] . ");'/></td>
+				<td><input type='text'class='text-center' disabled id='diferencia_".$row_acta['factura_actanum']."' value='".$total."'/></td>
+				<td><button class='btn btn-primary' id='guardar_".$row_acta['factura_actanum']."' onclick='guardar_conformidad(".$row_acta['factura_actanum'].",".$ot_id.");'>Guardar</button></td>
+				</tr>";
+				}
+		}
+
+		$tabla .= "</tbody>
+        </table>
+        </div>
+        <script>$('#example').DataTable();</script>";
+        $tabla .= "<fieldset>";
+        return $tabla;
+    }
+
+
+    public function guardar_conformidad($post)
+    {
+    	/////////////
+    	// OBJETOS //
+	    /////////////
+    	$obj_bd = new BD();
+
+	    ///////////////
+    	// VARIABLES //
+	    ///////////////
+    	$id_usuario = $_SESSION['Usuario']['usuario_id'];
+	    $ot_id = $post['ot_id'];
+	    $acta = $post['acta'];
+	    $num_conformidad = $post['num_conformidad'];
+	    $valor_conformidad = $post['valor_conformidad'];
+	    $diferencia = $post['diferencia'];
+
+	    //////////////
+	    // CONSULTA //
+	    //////////////
+	    $query_conf = "CALL SP_facturacion('7','','','','','','','','','','".$num_conformidad."','".$valor_conformidad."','".$diferencia."','','','".$id_usuario."','','','','','".$ot_id."','".$acta."');";
+		$res_query = $obj_bd->EjecutaConsulta($query_conf);
+
+		if (!$res_query) {
+			return 0;
+		}else{
+			return 1;
+		}
+
+    }
+
+
+    
 
 //////////////////
 // CIERRE CLASE //

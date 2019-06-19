@@ -47,7 +47,26 @@ if ($opcion == 'ListCerradas') {
 * @Desc:  Agregar registros base de datos para actas
 */
 
-if ($opcion == 'agregar_conciliacion') {
+if ($opcion == 'agregar_conciliacion') 
+{
     $retorno = $obj_factura->agregar_conciliacion($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'actualizar_conciliacion') 
+{
+    $retorno = $obj_factura->actualizar_conciliacion($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'listar_conciliacion') 
+{
+    $retorno = $obj_factura->listar_conciliacion($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'guardar_conformidad') 
+{
+    $retorno = $obj_factura->guardar_conformidad($_POST);
     echo $retorno;
 }

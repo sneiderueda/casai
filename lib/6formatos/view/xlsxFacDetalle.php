@@ -3651,7 +3651,8 @@ while ($resumen = $obj_bd->FuncionFetch($resultado_resumen)) {
 	$objPHPExcel->setActiveSheetIndex(0);
 
 	/*PROCESO PARA CALCULAR EL SUBTOTAL DE LAS ACTAS*/
-	$sqlSub_actas = "CALL SP_factura('20','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','')";
+	$sqlSub_actas = "CALL SP_factura('26','','','','','','','','" . $fechaFacturaMes . "','" . $fechaFacturaFin . "','','','','','','','','','','" . $resumen['detallepresupuesto_id'] . "','','
+  ".$stop."')";
 
 	$resSub_actas = $obj_bd->EjecutaConsulta($sqlSub_actas);
 	$rowSub_actas = $obj_bd->FuncionFetch($resSub_actas);
