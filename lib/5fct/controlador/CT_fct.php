@@ -70,3 +70,27 @@ if ($opcion == 'guardar_conformidad')
     $retorno = $obj_factura->guardar_conformidad($_POST);
     echo $retorno;
 }
+
+if ($opcion == 'buscar_conformidad') 
+{
+    $retorno = $obj_factura->buscar_conformidad($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'listar_conformidad') 
+{
+    $retorno = $obj_factura->listar_conformidad($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'buscar_conf_fact') 
+{
+    $retorno = $obj_factura->buscar_conf_fact($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'guardar_radicado') 
+{
+    $retorno = $obj_factura->guardar_radicado($_POST);
+    echo $retorno;
+}
