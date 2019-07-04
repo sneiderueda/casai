@@ -11,4 +11,7 @@ Autor Daniel Rueda
     </div>
 </div>
 
+
 <script>buscar_conformidad();</script>
+
+<div id="div_subestacion"></div>

@@ -283,7 +283,7 @@ $ot_id = $_POST['ot_id'];
                     </form>
                 </div>
 
-                <div role="tabpanel" class="tab-pane active" id="seccion5">
+                <div role="tabpanel" class="tab-pane" id="seccion5">
                     <!-- Normas -->
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">      
@@ -292,7 +292,7 @@ $ot_id = $_POST['ot_id'];
                     </div>
                 </div>
             
-                <div role="tabpanel" class="tab-pane active" id="seccion6">
+                <div role="tabpanel" class="tab-pane" id="seccion6">
                     <!-- Vehiculo -->
                     <div class="form-group">
                         <label for="lb_vehiculo" class="fondo letraN col-sm-3 control-label">Vehiculo:</label>

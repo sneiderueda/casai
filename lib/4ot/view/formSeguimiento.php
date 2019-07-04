@@ -205,8 +205,8 @@ $hora = date("g:i A");
                                                     </div>
                                                 </div>
                                             </div>
+                                            
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -434,7 +434,6 @@ $hora = date("g:i A");
                                                 <button id="btoGuardarSeguimiento" name="btoGuardarSeguimiento" class="btn btn-primary" type="submit" onclick="UpdateObsDocsSeguimiento();" >Modificar</button>                                    
                                                 <button id='btoAddSeguimiento' name='btoAddSeguimiento' class='btn btn-primary' type='submit' onclick='loadingSeguimientos(<?php echo $urlEdit; ?>);' >Nuevo Seguimiento</button>                                    
                                             <?php } ?>
-
                                         </div>
                                     </div>
                                 </div>

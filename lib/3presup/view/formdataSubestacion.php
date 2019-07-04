@@ -12,14 +12,26 @@ $dato = $_POST['dato'];
 
         <fieldset>            
 
+            <input type="hidden" name="" value="<?php echo $dato ?>">
 
-            <!-- codigo-->
-            <div class="form-group">
-                <label for="lb_codigo" class="col-sm-3 control-label">Codigo:</label>
-                <div class="col-sm-5">                
-                    <input type="text" class="form-control data" id="txt_cod_subestacion" name="txt_cod_subestacion" placeholder="Codigo Subestacion" required="true" onblur="aMayusculas(this.value, this.id);JsonSubestacion(this.value);">
+            <?php if ($dato == 0) { ?>
+                <!-- codigo-->
+                <div class="form-group">
+                    <label for="lb_codigo" class="col-sm-3 control-label">Codigo:</label>
+                    <div class="col-sm-5">                
+                        <input type="text" class="form-control data" id="txt_cod_subestacion" name="txt_cod_subestacion" placeholder="Codigo Subestacion" required="true" onblur="aMayusculas(this.value, this.id);JsonSubestacion(this.value);">
+                    </div>
                 </div>
-            </div>
+
+            <?php }else{ ?>
+                <!-- codigo-->
+                <div class="form-group">
+                    <label for="lb_codigo" class="col-sm-3 control-label">Codigo:</label>
+                    <div class="col-sm-5">                
+                        <input type="text" class="form-control data" id="txt_cod_subestacion" name="txt_cod_subestacion" placeholder="Codigo Subestacion" value="<?php echo $dato ?>" required="true" autofocus="autofocus" onblur="JsonSubestacion(this.value);aMayusculas(this.value, this.id);">
+                    </div>
+                </div>
+            <?php } ?>
 
             <!-- Nombre-->
             <div class="form-group">
@@ -36,14 +48,24 @@ $dato = $_POST['dato'];
                     <input type="text" class="form-control data" id="txt_hicom" name="txt_hicom" placeholder="HICOM" onblur="aMayusculas(this.value, this.id);">
                 </div>
             </div>
-
-            <!-- Ubicacion-->
-            <div class="form-group">
-                <label for="lb_ubicacion" class="col-sm-3 control-label">Ubicacion:</label>
-                <div class="col-sm-5">                
-                    <input type="text" class="form-control data" id="txt_ubicacion"  name="txt_ubicacion" placeholder="Direccion Subestacion">
+            
+            <?php if ($dato == 0) { ?>
+                <!-- Ubicacion-->
+                <div class="form-group">
+                    <label for="lb_ubicacion" class="col-sm-3 control-label">Municipio:</label>
+                    <div class="col-sm-5">                
+                        <input type="text" class="form-control data" id="txt_ubicacion"  name="txt_ubicacion" placeholder="Municipio Subestacion">
+                    </div>
                 </div>
-            </div>
+            <?php }else{ ?>
+                <!-- Ubicacion-->
+                <div class="form-group">
+                    <label for="lb_ubicacion" class="col-sm-3 control-label">Municipio:</label>
+                    <div class="col-sm-5">                
+                        <input type="text" class="form-control data" id="txt_ubicacion"  name="txt_ubicacion" placeholder="Municipio Subestacion">
+                    </div>
+                </div>
+            <?php } ?>
 
             <!-- Telefono-->
             <div class="form-group">
@@ -55,9 +77,9 @@ $dato = $_POST['dato'];
 
             <!-- Fax-->
             <div class="form-group">
-                <label for="lb_fax" class="col-sm-3 control-label">Fax:</label>
+                <label for="lb_fax" class="col-sm-3 control-label">Dirección:</label>
                 <div class="col-sm-5">                
-                    <input type="text" class="form-control data" id="txt_fax" name="txt_fax" placeholder="FAX Subestacion">
+                    <input type="text" class="form-control data" id="txt_fax" name="txt_fax" placeholder="Dirección Subestación">
                 </div>
             </div>
 

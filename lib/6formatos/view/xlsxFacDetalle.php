@@ -914,8 +914,6 @@ while ($row = $obj_bd->FuncionFetch($resultado)) {
 	                    $objPHPExcel->getActiveSheet()->getStyleByColumnAndRow($col_K, $row9)->getNumberFormat()->setFormatCode('0.0%;[Red]-0.0%');
 	                    $objPHPExcel->setActiveSheetIndex(1)->setCellValueByColumnAndRow($col_K, $row9, '=' . $J . $row9 . '/G' . $row9);
 
-
-
 			            $row9 = $row9 + 1;
 			            $num = $num + 1;
 			        }//fin while 3

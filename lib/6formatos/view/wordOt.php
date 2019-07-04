@@ -339,7 +339,8 @@ $sql3 = "SELECT lb.labor_id,
                 pt.detallepresupuesto_id,
                 bm.baremo_item,
                 tb.tipobaremo_descripcion,
-                md.modulo_descripcion";
+                md.modulo_descripcion
+                ";
 
 $resultado3 = $obj_bd->EjecutaConsulta($sql3);
 

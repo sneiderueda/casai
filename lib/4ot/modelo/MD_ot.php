@@ -84,7 +84,7 @@ class MD_ot {
                 <td>" . number_format((float) $row['detallepresupuesto_total'], 0, ',', '.') . "</td>                                             
                 <td>" . number_format((float) $total, 0, ',', '.') . "</td>                                             
                                            
-                <td><button class='btn btn-primary'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Programar  </button>
+                <td><button class='btn btn-primary fondo'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Programar  </button>
                     <!-- <button class='btn btn-default'  onclick='DivIncremento(" . $row['detallepresupuesto_id'] . ")'><span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> Incremento  </button> -->";
             $tabla .= "</td> 
             </tr>";
@@ -294,7 +294,7 @@ class MD_ot {
             $row_con = $obj_bd->FuncionFetch($res_con);
 
 
-            $sql_int = "CALL SP_dtinterna('1','','1','','".$value."','','".$post['txtFnicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
+            $sql_int = "CALL SP_dtinterna('1','','1','','".$value."','','".$post['txtInicioOT']."','".$post['txtFnicioOT']."','".$ot."')";
             $res_int = $obj_bd->EjecutaConsulta($sql_int);
             $filas = $obj_bd->Filas($sql_int);
             $row_int = $obj_bd->FuncionFetch($res_int);
@@ -303,7 +303,7 @@ class MD_ot {
 
              if ($con == "")
             {
-            $con = 1;
+            $con = 0;
             }
 
 
@@ -838,7 +838,7 @@ class MD_ot {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
+        $tabla .= "<fieldset class='letraBl'>";
         $tabla .= "<legend>Actividades Asignadas</legend>";
 
         $tabla .= "<br>";
@@ -846,7 +846,7 @@ class MD_ot {
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
                     <thead>
-                        <tr>                              
+                        <tr class="fondo letraN">                              
                             <th>No. OT</th>  
                             <th>Estado</th> 
                             <th>Subestacion</th> 
@@ -900,7 +900,7 @@ class MD_ot {
                 <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
                 <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
                 <td>" . utf8_encode($row['asigno']) . "</td>                                                 
-                <td><button class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+                <td><button class='btn btn-info fondo'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
             if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
                 $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
             }
@@ -911,7 +911,7 @@ class MD_ot {
         $tabla .= "</tbody>
                     </table>
                     </div>
-                    <script>$('#example').DataTable();</script>";
+                    <script>$('#example').DataTable({'order': [[ 1, 'asc' ]]});</script>";
         $tabla .= "<fieldset>";
         return $tabla;
     }

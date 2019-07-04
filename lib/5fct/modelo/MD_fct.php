@@ -1585,20 +1585,29 @@ class MD_fct {
 		    {
 		    	$tabla .= '	<tr>                              
 						        <th class="text-center">'.$row_conf['ordentrabajo_num'].'</th>
-						        <th class="text-center text-uppercase">'.utf8_encode($row_conf['subestacion_nombre']).'</th>
-						        <th class="text-center">'.$row_conf['conformidad_num'].'</th>  
-						        <th class="text-center text-uppercase">'.utf8_encode($row_conf['nombre_gestor']).'</th>
-						        <th class="text-center">'.$row_conf['conformidad_fechaconformidad'].'</th>
-						        <th class="text-right">$ '.number_format($row_conf['conformidad_valor'],0,'.','.').'</th>
-	        					<th class="text-center">'.$row_conf['conformidad_factura'].'</th>
-	        					<th class="text-center">'.$row_conf['conformidad_fecharadicado'].'</th>
-	        					<th class="text-center">'.$row_conf['conformidad_radicado'].'</th> 
+						        <th class="text-center text-uppercase">'.utf8_encode($row_conf['subestacion_nombre']).'</th>';
+
+				if ($row_conf['subestacion_ubicacion'] == "") 
+				{
+					$tabla .= '	<th id="col_muni" class="text-center"><button id="btn_editarSub" class="btn btn-warning" onclick="editarSubestacion('.$row_conf['subestacion_id'].')">Agregar</button></th>';  
+						        	
+				}else{
+					$tabla .= '	<th class="text-center">'.$row_conf['subestacion_ubicacion'].'</th>';
+				}
+
+						        
+				$tabla .= ' <th class="text-center text-uppercase">'.utf8_encode($row_conf['nombre_gestor']).'</th>
+							<th class="text-center">'.$row_conf['conformidad_fechaconformidad'].'</th>
+						    <th class="text-right">$ '.number_format($row_conf['conformidad_valor'],0,'.','.').'</th>
+	        				<th class="text-center">'.$row_conf['conformidad_factura'].'</th>
+	        				<th class="text-center">'.$row_conf['conformidad_fecharadicado'].'</th>
+	        				<th class="text-center">'.$row_conf['conformidad_radicado'].'</th> 
 	        				</tr>';
 
 	        	$suma_conformidad = $suma_conformidad + $row_conf['conformidad_valor'];
 		    }
 
-			$tabla .= "	<legend class='titulo'><span class='col-sm-4'>No. Conformidad: $ ".$num."</span><span class='col-sm-4'>Total Conformidad: $ ".number_format($suma_conformidad,0,'.','.')."</span><div class='text-center'><button class='btn btn-primary' onclick='xlxs_conformidad(".$row_conf['conformidad_num'].");'><img src='img/report_excel.png' width='20' height='20'> Descargar</button></div></legend>
+			$tabla .= "	<legend class='titulo'><span class='col-sm-4'>No. Conformidad: $ ".$num."</span><span class='col-sm-4'>Total Conformidad: $ ".number_format($suma_conformidad,0,'.','.')."</span><div class='text-center'><button class='btn btn-primary' onclick='descargar_xlxs_conformidad(".$num.");'><img src='img/report_excel.png' width='20' height='20'> Descargar</button></div></legend>
 						</tbody>
 	        			</table>
 	        			</div>
