@@ -15,7 +15,6 @@ Autir:jennifer.cabiativa@gmail.com
   <div id="Gen_Descargo"></div>
 
 <script>
-	cargarEstadoActividad();
-    // gritGestionAct();
+	cargarResueltaActividad();
 </script>
 

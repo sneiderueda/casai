@@ -99,6 +99,13 @@ if ($opcion == 'JsonDescargoOT') {
      $resultado = $obj_ot->JsonDescargoOT($_POST);
     echo $resultado;
 }
+
+if ($opcion == 'cargarEstadoActividad') 
+{
+    $retorno = $obj_ot->cargarEstadoActividad($_POST);
+    echo $retorno;
+}
+
 if ($opcion == 'gritGestionAct') {
     $retorno = $obj_ot->gritGestionAct($_POST);
     echo $retorno;
@@ -163,5 +170,15 @@ if ($opcion == 'entregablesBaremados') {
 
 if ($opcion == 'normatividad') {
     $retorno = $obj_ot->normatividad($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'cargarResueltaActividad') {
+    $retorno = $obj_ot->cargarResueltaActividad($_POST);
+    echo $retorno;
+}
+
+if ($opcion == 'cargarActividadesHistorial') {
+    $retorno = $obj_ot->cargarActividadesHistorial($_POST);
     echo $retorno;
 }

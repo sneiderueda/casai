@@ -510,7 +510,7 @@ class MD_ot {
         $tabla .= "</tbody>
                     </table>
                     </div>
-                    <script>$('#example').DataTable();</script>";
+                    <script>$('#example').DataTable({'order': [[ 1, 'desc' ]]});</script>";
         $tabla .= "<fieldset>";
         return $tabla;
     }
@@ -823,9 +823,52 @@ class MD_ot {
         return $json;
     }
 
-    function gritGestionAct() {
+    function cargarEstadoActividad()
+    {
+        ///////////////
+        // VARIABLES //
+        ///////////////
+        $contenido = '';
+
+        $contenido .= "<br>";
+        $contenido .= "<br>";
+        $contenido .= "<br>";
+        $contenido .= "<br>";
+        $contenido .= "<br>";
+        $contenido .= "<fieldset class='letraBl'>";
+        $contenido .= '<section class="container">
+                            <div class="row text-center">
+                                <div class="form-group">
+                                    <label class="h3">Estado: </label>
+                                    <select class="h3 p-4" id="sl_est_act" name="sl_est_act">
+                                        <option value="">--Seleccione--</option>
+                                        <option value="FACTURA PARCIAL">Factura Parcial</option>
+                                        <option value="FINALIZADA">Finalizada</option>
+                                        <option value="PROGRAMADA">Programada</option>
+                                        <option value="RECHAZADA">Rechazada</option>
+                                    </select>
+                                    <div>
+                                    <button class="fondo p-2 btn btn-primary" onClick="gritGestionAct()">Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </fieldset>';
+        $contenido .= "<br>";
+        $contenido .= "<br>";
+
+        return $contenido;
+    }
+
+
+    function gritGestionAct($post) {
 
         $obj_bd = new BD();
+
+        //////////////
+        //VARIABLES //
+        //////////////
+        $estado = $post['estado'];
         $id_usuario = $_SESSION['Usuario']['usuario_id'];
         $id_perfil = $_SESSION['Usuario']['ID_PERFIL'];
         $id_area = $_SESSION['Usuario']['ID_AREA'];
@@ -839,9 +882,7 @@ class MD_ot {
                 }
                 </style>";
         $tabla .= "<fieldset class='letraBl'>";
-        $tabla .= "<legend>Actividades Asignadas</legend>";
-
-        $tabla .= "<br>";
+        $tabla .= "<legend class='titulo'>Historial</legend>";
         $tabla .= "<br>";
         $tabla .= '<div class="table-responsive">';
         $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
@@ -854,23 +895,38 @@ class MD_ot {
                             <th>Labor</th> 
                             <th>Responsable</th>                       
                             <th>Area</th>                                                        
-                            <th>Actividad</th>                                                        
+                            <th>Actividad</th>
                             <th>Fecha/Hora Inicio</th>                                                        
                             <th>Fecha/Hora Fin</th>                                                        
-                            <th>Asignado Por</th>                                                                                                                
-                            <th>Accion</th>                                                                 
+                        <th>Asignado Por</th>                                                       
+                            <th>Accion</th>       
                         </tr>
                     </thead>
                     <tbody>';
 
-        if ($id_perfil != 1 && $id_perfil != 6 && $id_perfil != 9) {
-            if (isset($id_area)) {
-                $sql = "CALL SP_ptperfil_usuario('11','','" . $id_area . "','','');";
+        if ($estado == 'FACTURA PARCIAL') 
+        {
+            if ($id_perfil != 1 && $id_perfil != 6 && $id_perfil != 9) {
+                if (isset($id_area)) {
+                    $sql = "CALL SP_ptperfil_usuario('14','','" . $id_area . "','".$estado."','');";
+                } else {
+                    $sql = "CALL SP_ptperfil_usuario('13','','','".$estado."','');";
+                }
             } else {
-                $sql = "CALL SP_ptperfil_usuario('10','','','','');";
+                $sql = "CALL SP_ptperfil_usuario('13','','','".$estado."','');";
+            }   
+        }
+        else
+        {
+            if ($id_perfil != 1 && $id_perfil != 6 && $id_perfil != 9) {
+                if (isset($id_area)) {
+                    $sql = "CALL SP_ptperfil_usuario('11','','" . $id_area . "','".$estado."','');";
+                } else {
+                    $sql = "CALL SP_ptperfil_usuario('10','','','".$estado."','');";
+                }
+            } else {
+                $sql = "CALL SP_ptperfil_usuario('10','','','".$estado."','');";
             }
-        } else {
-            $sql = "CALL SP_ptperfil_usuario('10','','','','');";
         }
 
 
@@ -900,7 +956,8 @@ class MD_ot {
                 <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
                 <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
                 <td>" . utf8_encode($row['asigno']) . "</td>                                                 
-                <td><button class='btn btn-info fondo'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+                <td>";
+                // <button class='btn btn-info fondo'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>
             if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
                 $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
             }
@@ -1555,5 +1612,197 @@ class MD_ot {
                 
         return json_encode($norma);
     }
+
+
+    public function cargarResueltaActividad()
+    {
+        $obj_bd = new BD();
+
+        //////////////
+        //VARIABLES //
+        //////////////
+        $id_usuario = $_SESSION['Usuario']['usuario_id'];
+        $id_perfil = $_SESSION['Usuario']['ID_PERFIL'];
+        $id_area = $_SESSION['Usuario']['ID_AREA'];
+        // print_r($_SESSION['Usuario']);
+        $tabla = "";
+
+        //////////////////
+        // DISEÑO TABLA //
+        //////////////////
+        $tabla .= "<style>
+                .ui-dialog-titlebar-close {
+                visibility: hidden;
+                }
+                </style>";
+        $tabla .= "<fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'>Historial</legend>";
+        $tabla .= "<br>";
+        $tabla .= '<div class="table-responsive">';
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
+                    <thead>
+                        <tr class="fondo letraN">                              
+                            <th>No. OT</th>  
+                            <th>Estado</th> 
+                            <th>Subestacion</th> 
+                            <th>Modulo</th>
+                            <th>Labor</th> 
+                            <th>Responsable</th>                       
+                            <th>Area</th>                                                        
+                            <th>Actividad</th>
+                            <th>Fecha/Hora Inicio</th>                                                        
+                            <th>Fecha/Hora Fin</th>                                                        
+                        <th>Asignado Por</th>                                                       
+                            <th>Accion</th>       
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+        /////////////////
+        // DATOS TABLA //
+        /////////////////
+        if ($id_perfil != 1 && $id_perfil != 6 && $id_perfil != 9) {
+            if (isset($id_area)) {
+                $sql = "CALL SP_ptperfil_usuario('16','','" . $id_area . "','','');";
+            } else {
+                $sql = "CALL SP_ptperfil_usuario('15','','','','');";
+            }
+        } else {
+            $sql = "CALL SP_ptperfil_usuario('15','','','','');";
+        }
+        
+        $resultado = $obj_bd->EjecutaConsulta($sql);
+
+        while ($row = $obj_bd->FuncionFetch($resultado)) {
+
+            $urlEdit = '"lib/4ot/view/formSeguimientoGest.php","contenido","' . $row['baremo_id'] . '","' . $row['ordentrabajo_id'] . '","' . $row['presupuesto_id'] . '","' . $row['tipobaremo_id'] . '","' . $row['presupuesto_progestado'] . '","' . $row['presupuesto_porcentaje'] . '",""';
+            $tabla .= "<tr id='" . $row['presupuesto_id'] . "'>                
+                <td>" . utf8_encode($row['ordentrabajo_num']) . "</td>                     
+                <td>" . $row['presupuesto_progestado'] . "</td>                                                    
+                <td>" . utf8_encode($row['subestacion_nombre']) . "</td>  
+                <td>" . utf8_encode($row['modulo_descripcion']) . "</td>   
+                <td>" . utf8_encode($row['tipo_labor']) . "</td>  
+                <td class='Responsable'>" . utf8_encode($row['responsable']) . "</br><button type='button' class='btn btn-link' onclick='MostrarResponsablesTb(" . $row['presupuesto_id'] . ")'>Ver Mas</button></td>                 
+                <td>" . utf8_encode($row['area_nombre']) . "</td>                
+                <td>" . utf8_encode($row['actividad_descripcion'] . ' ' . $row['subactividad_descripcion']) . "</td>                
+                <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
+                <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
+                <td>" . utf8_encode($row['asigno']) . "</td>                                                 
+                <td>
+                <button class='btn btn-info fondo'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+            if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
+                $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
+            }
+            $tabla .= "</td> 
+            </tr>";
+        }
+
+        $tabla .= "</tbody>
+                    </table>
+                    </div>
+                    <script>$('#example').DataTable({'order': [[ 1, 'asc' ]]});</script>";
+        $tabla .= "<fieldset>";
+        return $tabla;        
+    }
+
+    public function cargarActividadesHistorial()
+    {
+        $obj_bd = new BD();
+        $id_usuario = $_SESSION['Usuario']['usuario_id'];
+        $id_perfil = $_SESSION['Usuario']['ID_PERFIL'];
+        $tabla = "";
+
+        $tabla .= "<style>
+                .ui-dialog-titlebar-close {
+                visibility: hidden;
+                }
+                </style>";
+        $tabla .= "<br><br><br><br><fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'>Actividades Asignadas</legend>";
+        $tabla .= " <button name='btnAdd' id='btnAdd' class='btn btn-default' type='button' onclick='ReportarLabores()'>Reportar Seleccionadas</button>";
+        $tabla .= "<br>";
+        $tabla .= "<br>";
+        $tabla .= '<div class="table-responsive">';
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">
+                    <thead>
+                        <tr class="fondo letraN">                              
+                            <th>Sel.</th>  
+                            <th>No. OT</th>  
+                            <th>Estado</th>  
+                            <th>Subestacion</th>  
+                            <th>Labor</th>  
+                            <th>Modulo</th>
+                            <th>Area</th>                                                        
+                            <th>Actividad</th>                                                        
+                            <th>Fecha/Hora Inicio</th>                                                        
+                            <th>Fecha/Hora Fin</th>                                                        
+                            <th>Asignado Por</th>                                                                                                                
+                            <th>Accion</th>                                                                                                                                            
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+        $sql = "CALL SP_ptperfil_usuario('17','" . $id_usuario . "','','" . $id_perfil . "','');";
+        $resultado = $obj_bd->EjecutaConsulta($sql);
+
+        while ($row = $obj_bd->FuncionFetch($resultado)) {
+
+
+            $urlEdit = '"lib/4ot/view/formSeguimiento.php","contenido","' . $row['baremo_id'] . '","' . $row['ordentrabajo_id'] . '","' . $row['presupuesto_id'] . '","' . $row['tipobaremo_id'] . '","' . $row['presupuesto_progestado'] . '","' . $row['presupuesto_porcentaje'] . '",""';
+            $tabla .= "<tr> 
+                <td><input type='checkbox' value='" . $row['presupuesto_id'] . "' id='" . $row['presupuesto_id'] . "' name='chek_reportar[]'  /></td>  
+                <td>" . utf8_encode($row['ordentrabajo_num']) . "</td>                     
+                <td>" . $row['presupuesto_progestado'] . "</td>                                                    
+                <td>" . utf8_encode($row['subestacion_nombre']) . "</td>                                                    
+                <td>" . $row['tipo_labor'] . "</td>                                                    
+                <td>" . utf8_encode($row['modulo_descripcion']) . "</td>                
+                <td>" . utf8_encode($row['area_nombre']) . "</td>                
+                <td>" . utf8_encode($row['actividad_descripcion'] . ' ' . $row['subactividad_descripcion']) . "</td>                
+                <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
+                <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
+                <td>" . utf8_encode($row['asigno']) . "</td>                                                 
+                <td><button class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+            if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
+                $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
+            }
+            $tabla .= "</td> 
+            </tr>";
+        }
+
+
+        // consultar actividades asociadas a mas de un responsable
+        $sql_encargados = "CALL SP_ptperfil_usuario('18','" . $id_usuario . "','','" . $id_perfil . "','');";
+        $resultado_encargados = $obj_bd->EjecutaConsulta($sql_encargados);
+
+        while ($row = $obj_bd->FuncionFetch($resultado_encargados)) {
+
+            $urlEdit = '"lib/4ot/view/formSeguimiento.php","contenido","' . $row['baremo_id'] . '","' . $row['ordentrabajo_id'] . '","' . $row['presupuesto_id'] . '","' . $row['tipobaremo_id'] . '","' . $row['presupuesto_progestado'] . '","' . $row['presupuesto_porcentaje'] . '",""';
+            $tabla .= "<tr>                
+                <td>" . utf8_encode($row['ordentrabajo_num']) . "</td>                     
+                <td>" . $row['presupuesto_progestado'] . "</td>                                                    
+                <td>" . utf8_encode($row['subestacion_nombre']) . "</td>                                                    
+                <td>" . $row['tipo_labor'] . "</td>                                                    
+                <td>" . utf8_encode($row['modulo_descripcion']) . "</td>                
+                <td>" . utf8_encode($row['area_nombre']) . "</td>                
+                <td>" . utf8_encode($row['actividad_descripcion'] . ' ' . $row['subactividad_descripcion']) . "</td>                
+                <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
+                <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
+                <td>" . utf8_encode($row['asigno']) . "</td>                                                 
+                <td><button class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+            /*  if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
+              $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
+              } */
+            $tabla .= "</td> 
+            </tr>";
+        }
+
+        $tabla .= "</tbody>
+                    </table>
+                    </div>
+                    <script>$('#example').DataTable({'order': [[ 1, 'desc' ]]});</script>";
+        $tabla .= "<fieldset>";
+        return $tabla;
+    }
+        
 
 } // fin clase
