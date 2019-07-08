@@ -22,6 +22,7 @@ class MD_ot {
     function gritPresupuestoOT() {
 
         $obj_bd = new BD();
+
         $tabla = "";
 
         $tabla .= "<style>
@@ -1761,9 +1762,9 @@ class MD_ot {
                 <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
                 <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
                 <td>" . utf8_encode($row['asigno']) . "</td>                                                 
-                <td><button class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+                <td><button style='display:none' class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
             if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
-                $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
+                $tabla .= "<button style='display:none' class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
             }
             $tabla .= "</td> 
             </tr>";
@@ -1788,7 +1789,7 @@ class MD_ot {
                 <td>" . $row['presupuesto_fechaini'] . " - " . $row['presupuesto_horaini'] . "</td>                
                 <td>" . $row['presupuesto_fechafin'] . " - " . $row['presupuesto_horafin'] . "</td>                                                                         
                 <td>" . utf8_encode($row['asigno']) . "</td>                                                 
-                <td><button class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
+                <td><button style='display:none' class='btn btn-default'  onclick='loadingSeguimientos(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span> Reportar  </button>";
             /*  if (utf8_encode($row['subactividad_descripcion']) == "LEVANTAMIENTO") {
               $tabla .= "<button class='btn btn-default'  onclick='DivEditDescargo(" . $row['ordentrabajo_id'] . "," . $row['presupuesto_id'] . ")'><span class='glyphicon glyphicon-book' aria-hidden='true'></span> Descargo  </button>";
               } */

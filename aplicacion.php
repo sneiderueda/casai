@@ -73,15 +73,18 @@ $usuario = $_SESSION['Usuario'];
                 <!-- </nav> -->
                 <!-- </div> -->
                 <!-- sidebar menu -->
+                
                 <div id="sidebar-menu" class="nav navbar-nav navbar-left">
+
                     <div class="">
                         <!-- mostrar menu-->
                         <div id="menu_sistema"></div>
                     </div>
 
                 </div>
+                </div>
             </div>
-
+    
             <br>
             <br>
             <!-- page content -->

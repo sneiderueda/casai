@@ -2,43 +2,48 @@
     $(function () {
         $('#txtDateApertura').datetimepicker({
             language: 'es',
-            // minDate: new Date(),
+            minDate: new Date(),
             useCurrent: false,
             dateFormat: 'dd-mm-yy',
             format: 'YYYY-MM-DD HH:mm:ss',
-            minDate: getFormattedDate(new Date())
+            minDate: '01-01-2016'
+            // minDate: getFormattedDate(new Date())
         });
         $('#txtDateInicio').datetimepicker({
             language: 'es',
-            //  minDate: new Date(),
+             minDate: new Date(),
             useCurrent: false,
             dateFormat: 'dd-mm-yy',
             format: 'YYYY-MM-DD HH:mm:ss',
-            minDate: getFormattedDate(new Date())
+            minDate: '01-01-2016'
+            // minDate: getFormattedDate(new Date())
         });
         $('#txtDateCierre').datetimepicker({
             language: 'es',
-            // minDate: new Date(),
+            minDate: new Date(),
             useCurrent: false,
             dateFormat: 'dd-mm-yy',
             format: 'YYYY-MM-DD HH:mm:ss',
-            minDate: getFormattedDate(new Date())
+            minDate: '01-01-2016'
+            // minDate: getFormattedDate(new Date())
         });
         $('#PresCierre').datetimepicker({
             language: 'es',
-            // minDate: new Date(),
+            minDate: new Date(),
             useCurrent: false,
             dateFormat: 'dd-mm-yy',
             format: 'YYYY-MM-DD HH:mm:ss',
-            minDate: getFormattedDate(new Date())
+            minDate: '01-01-2016'
+            // minDate: getFormattedDate(new Date())
         });
         $('#txtDateFinal').datetimepicker({
             language: 'es',
-            // minDate: new Date(),
+            minDate: new Date(),
             useCurrent: false,
             dateFormat: 'dd-mm-yy',
             format: 'YYYY-MM-DD HH:mm:ss',
-            minDate: getFormattedDate(new Date())
+            minDate: '01-01-2016'
+            // minDate: getFormattedDate(new Date())
         });
 
     });
@@ -92,12 +97,18 @@
     });
 </script>
 
-<legend>Datos Cumplimentacion</legend>
+<br>
+<br>
+<br>
+<br>
+
+<fieldset class="letraBl">
+<legend class="titulo">Datos Cumplimentacion</legend>
 
 <form class="form-horizontal" name="frm_CreateCumplimentacion" id="frm_CreateCumplimentacion" method="POST" enctype='multipart/form-data'>
 
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-hover">
         <tr>
             <td><b>Numero Descargo:</b></td>
             <td>
@@ -181,7 +192,11 @@
                 </select>
             </td>
         </tr>
+    </table>
 
+    <legend class="titulo">Datos Apertura y Cierre</legend>
+
+    <table class="table table-bordered table-hover">
         <tr>
             <td><b>Datos de Apertura</b></td>
             <td>
@@ -244,3 +259,4 @@
 
 
 <div id="div_subestacion"></div>
+</fieldset>

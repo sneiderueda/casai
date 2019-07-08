@@ -21,7 +21,17 @@
 
     <br><br><br><br><br>
   	<fieldset style="color: black">
-  		<legend class="titulo">Generar Presupuesto</legend>
+  		<legend class="titulo text-center">Generar Presupuesto</legend>
+        <legend class="titulo" style="display: flex; justify-content: space-around;">
+            <div class="text-center">
+                <label>Total Presupuesto: </label>
+                <input id="txt_total" class="text-center" type="text" disabled="disabled">
+            </div>
+            <div class="text-center">
+                <label>No. Labores: </label>
+                <label class="text-center"><p id="lbl_labores"></p></label>
+            </div>
+        </legend>
 
         <!-- Siguiente div contiene as tabs -->
         <div class="container">

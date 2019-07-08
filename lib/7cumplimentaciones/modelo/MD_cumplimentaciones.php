@@ -29,10 +29,16 @@ class MD_cumplimentaciones {
                 visibility: hidden;
                 }
                 </style>";
-        $tabla .= "<fieldset>";
+        $tabla .= "<br>";
+        $tabla .= "<br>";
+        $tabla .= "<br>";
+        $tabla .= "<br>";
+        
+        $tabla .= "<fieldset class='letraBl'>";
+        $tabla .= "<legend class='titulo'>Cumplimentaciones</legend>";
 
         $url = "'lib/7cumplimentaciones/view/formCreateCumplimentacion.php','contenido','0'";
-        $tabla .= '<button class="btn btn-default" type="button" onclick="loadingFunctions(' . $url . ')">Agregar</button>';
+        $tabla .= '<button class="btn btn-primary fondo" type="button" onclick="loadingFunctions(' . $url . ')">Agregar</button>';
 
         $tabla .= "<br>";
         $tabla .= "<br>";
@@ -62,7 +68,7 @@ class MD_cumplimentaciones {
                 <td>" . utf8_encode($row['tipodescargo_descripcion']) . "</td>                
                 <td>" . $row['subestacion_nombre'] . " </td>                     
                 <td>" . utf8_encode($row['gestor'] ). "</td>                                             
-                <td><button class='btn btn-default'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>Editar  </button>                 
+                <td><button class='btn btn-info fondo'  onclick='loadingFunctions(" . $urlEdit . ")'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span>Editar  </button>                 
                 </td> 
             </tr>";
         }
@@ -342,9 +348,9 @@ class MD_cumplimentaciones {
 
             $retorno = "<option value=''>seleccione</option>";
             while ($row = $obj_bd->FuncionFetch($resul_ing)) {
-                if (utf8_encode($row['perfil_nombre']) == "INGENIERO") {
+                // if (utf8_encode($row['perfil_nombre']) == "INGENIERO") {
                     $retorno .= "<option value='" . $row['perfilusuario_id'] . "'>" . utf8_encode($row['usuario_apellidos'] . ' ' . $row['usuario_nombre']) . "-" . utf8_encode($row['perfil_nombre']) . "</option>";
-                }
+                // }
             }
             return $retorno;
         } catch (Exception $ex) {

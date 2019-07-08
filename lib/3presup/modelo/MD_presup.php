@@ -741,6 +741,28 @@ class MD_presup
         return $json;
     }
 
+    public function contar_labores($post)
+    {
+        /////////////
+        // OBJETOS //
+        /////////////
+        $obj_bd = new BD();
+
+        ///////////////
+        // VARIABLES //
+        ///////////////
+        $id = $post['detallepresupuesto_id'];
+
+        //////////////
+        // CONSULTA //
+        //////////////
+        $sql = "CALL SP_ptpresupuesto('3','','','','','','','','','','','','','','','','" . $id . "','','','','','');";
+        $result = $obj_bd->EjecutaConsulta($sql);
+        $filas = $obj_bd->Filas($sql);
+
+        return $filas;
+    }
+
     public function ListActividadesPresupuesto($data)
     {
 
@@ -794,7 +816,10 @@ class MD_presup
         $sql = "CALL SP_ptpresupuesto('3','','','','','','','','','','','','','','','','" . trim($data['detallepresupuesto_id']) . "','','','','','');";
 
         $resultado = $obj_bd->EjecutaConsulta($sql);
+
+
         while ($row = $obj_bd->FuncionFetch($resultado)) {
+
 
             $obs = '"' . preg_replace("/\s+/", " ", utf8_encode($row['presupuesto_obs'])) . '"';
             $tabla .= "

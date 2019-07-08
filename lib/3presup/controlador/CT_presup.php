@@ -76,6 +76,11 @@ if ($opcion == 'JsonDetallePresupuesto') {
     echo $retorno;    
 }
 
+if ($opcion == 'contar_labores') {
+    $retorno = $obj_presup->contar_labores($_POST);
+    echo $retorno;    
+}
+
 if ($opcion == 'ListActividadesPresupuesto') {
     $retorno = $obj_presup->ListActividadesPresupuesto($_POST);
     echo $retorno;    
