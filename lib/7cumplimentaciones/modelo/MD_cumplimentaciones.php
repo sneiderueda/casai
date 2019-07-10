@@ -270,7 +270,30 @@ class MD_cumplimentaciones {
 
 
         $result = $obj_bd->EjecutaConsulta($sql);
+        $filas = $obj_bd->Filas($sql);
         $array = $obj_bd->FuncionFetch($result);
+
+
+        $sql1 = "call energy_ac.SP_ptCumplimentaciones('10', '', '', '" . trim($data['cumplmentacion_id']) . "', '', '', '', '', '', '', '', '', '', '', '', '', '');";
+        $res1 = $obj_bd->EjecutaConsulta($sql1);
+        $filas1 = $obj_bd->Filas($sql1);
+        
+        $tabla .= '<div class="table-responsive mt-0">';
+        $tabla .= '<table cellpadding="0" class="table table-bordered table-hover" cellspacing="0" border="0" id="example">';
+
+        while ($row1 = $obj_bd->FuncionFetch($res1))
+        {
+
+            $tabla .= '<tr>
+                            <td>'. utf8_encode($row1["nombre"]) .'</td>
+
+                        </tr>
+                        <br>';
+        }
+        
+        $tabla .= '</table></div>';               
+       
+
 
         $arreglo_retorno['cumplimentacion_aperturarp'] = $array['cumplimentacion_aperturarp'];
         $arreglo_retorno['cumplimentacion_cierreapertura'] = $array['cumplimentacion_cierreapertura'];
@@ -287,7 +310,7 @@ class MD_cumplimentaciones {
         $arreglo_retorno['cumplimentacion_operariocierre'] = utf8_encode($array['cumplimentacion_operariocierre']);
         $arreglo_retorno['cumplimentacion_usuariocreo'] = $array['cumplimentacion_usuariocreo'];
         $arreglo_retorno['cumplimentacion_usuariomodifico'] = $array['cumplimentacion_usuariomodifico'];
-        $arreglo_retorno['ingenieros'] = utf8_encode($array['ingenieros']);
+        $arreglo_retorno['ingenieros'] = $tabla;
         $arreglo_retorno['tipodescargo_id'] = $array['tipodescargo_id'];
         $arreglo_retorno['subestacion_id'] = $array['subestacion_id'];
 

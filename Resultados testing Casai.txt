@@ -1,0 +1,6 @@
+-colocar precio y contador labores en barra al crear presupuesto			(solucionada)
+-mostrar valores con intremento en la tabla						(solucionada)
+-en el word presupuesto diferenciar por observación 					(Solucionada)
+-no hay funcion para cargar normas,alcances e entregables				(solucionada)
+-verificar por que no guarda el numero de cumplimentacion al agregar el soporte
+-volver el menu responsive ya que se ve grande
